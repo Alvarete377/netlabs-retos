@@ -16,6 +16,26 @@ REPO = Path(os.environ.get("NETLABS_HOME", Path(__file__).resolve().parents[2]))
 STORE_PATH = Path.home() / ".netlabs" / "state.json"
 OK, KO, ERR = "✔", "✘", "!"
 
+# Nombres de los módulos (igual que en la web). Los ids de los retos no cambian.
+MODULES = {
+    0: "Protocolos",
+    1: "Switching y VLANs",
+    2: "Rutas estáticas",
+    3: "Enrutamiento dinámico",
+    4: "Firewalls",
+    5: "Acceso y enlace",
+    6: "VPNs",
+    7: "Multifabricante",
+}
+
+
+def module_name(level) -> str:
+    try:
+        n = int(float(level))
+    except (TypeError, ValueError):
+        return str(level)
+    return MODULES.get(n, f"Módulo {n}")
+
 
 class Abort(Exception):
     pass
@@ -43,7 +63,7 @@ def cmd_list(args, store):
     for ch in discover(challenges_dir()):
         if ch.level != level:
             level = ch.level
-            print(f"\n== Nivel {level} ==")
+            print(f"\n== {module_name(level)} ==")
         mark = OK if store.is_completed(ch.id) else " "
         act = "  <- activo" if store.active == ch.id else ""
         print(f" [{mark}] {ch.id:30} {ch.type:12} {ch.difficulty:6} {ch.title}{act}")
@@ -70,7 +90,7 @@ def cmd_up(args, store):
     print("Esperando a que arranquen los routers (1-2 min)...")
     runtime.wait_ready(ch)
     runtime.apply_dir(ch, "configs")
-    print(f"\n{ch.title}  [nivel {ch.level} · {ch.type} · {ch.difficulty}]\n")
+    print(f"\n{ch.title}  [{module_name(ch.level)} · {ch.type} · {ch.difficulty}]\n")
     for o in ch.objectives:
         print(f"  - {o}")
     print(f"\nEnunciado: {ch.path / 'README.md'}")
