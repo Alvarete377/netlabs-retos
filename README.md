@@ -56,3 +56,11 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Vecinos que no se hablan | `l3-05-ospf-roto` | Troubleshooting | Media |
 | Corre la voz | `l3-06-rip-basico` | Montar | Fácil |
 | Dos idiomas, una red | `l3-07-rip-ospf` | Montar | Media |
+### Firewalls
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| Cierra la puerta | `l4-01-cierra-la-puerta` | Montar | Fácil |
+| Todos a Internet | `l4-02-todos-a-internet` | Montar | Fácil |
+| Publica el servidor | `l4-03-publica-el-servidor` | Montar | Media |
+| Lo justo y necesario | `l4-04-lo-justo` | Montar | Media |
+| El firewall que no deja pasar | `l4-05-no-deja-pasar` | Troubleshooting | Media |

@@ -1,0 +1,17 @@
+id: l4-04-lo-justo
+title: Lo justo y necesario
+level: 4
+type: build
+difficulty: medium
+objectives:
+  - "Internet sólo puede llegar a la web (TCP 80) del servidor de la DMZ; ni a su SSH, ni a su base de datos, ni a la LAN"
+  - "La LAN puede ir a cualquier sitio: Internet y la DMZ (incluido el SSH del servidor)"
+  - "La DMZ puede salir a Internet, pero nunca abrir conexiones hacia la LAN"
+  - "Las respuestas de lo permitido vuelven sin problema y lo que no está permitido se descarta"
+hints:
+  - "Ahora todo atraviesa r1 sin filtro: prueba desde inet `nc -zv 198.51.100.10 3306` o `nc -zv 192.168.1.10 22`. El tráfico que ATRAVIESA el router se filtra en la cadena `forward` (la `input` es sólo para el router en sí)."
+  - "Piensa en zonas: LAN (ether2), DMZ (ether3) e Internet (ether4). Escribe en un papel qué se permite de cada zona a cada otra. Todo lo demás, fuera."
+  - "Mismo patrón que en input: primero `connection-state=established,related` → accept y `invalid` → drop; luego una regla accept por cada permiso (usa `in-interface`, `out-interface`, `protocol` y `dst-port`); y al final un `drop`."
+  - "Permisos: todo lo que entra por ether2; de ether4 a ether3 sólo `protocol=tcp dst-port=80`; de ether3 a ether4 todo. La regla `established,related` es la que deja volver las respuestas, por eso la DMZ puede contestar a la LAN sin poder iniciar nada hacia ella."
+flag_seed: l4-04-lo-justo
+ram_mb: 650

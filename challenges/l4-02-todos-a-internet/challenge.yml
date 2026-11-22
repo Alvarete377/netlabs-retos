@@ -1,0 +1,16 @@
+id: l4-02-todos-a-internet
+title: Todos a Internet
+level: 4
+type: build
+difficulty: easy
+objectives:
+  - "pc1 (red privada 192.168.1.0/24) navega por la web del servidor de Internet (203.0.113.10)"
+  - "El servidor ve llegar la conexión desde la IP pública de la oficina (198.51.100.2), no desde la IP privada de pc1"
+  - El proveedor (isp) no se toca
+hints:
+  - "Haz `curl http://203.0.113.10/` desde pc1 y un `ping`: no responde nada. Ahora mira en el router del proveedor (`lab console isp`) `/ip route print`: ¿sabe volver a 192.168.1.0/24?"
+  - "No lo sabe ni lo va a saber: las redes 192.168.x.x son privadas y en Internet nadie las enruta. La respuesta del servidor no tiene a dónde volver."
+  - "La solución es que la oficina salga a Internet con su IP pública (198.51.100.2): traducción de direcciones de origen, en `/ip firewall nat`, cadena `srcnat`."
+  - "`/ip firewall nat add chain=srcnat out-interface=ether3 action=masquerade` en r1: todo lo que sale por la WAN cambia su IP de origen por la de la interfaz. Comprueba con `curl` qué IP ve el servidor."
+flag_seed: l4-02-todos-a-internet
+ram_mb: 1100

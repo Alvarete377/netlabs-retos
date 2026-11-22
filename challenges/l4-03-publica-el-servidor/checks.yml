@@ -1,0 +1,6 @@
+- http: {from: inet, url: "http://203.0.113.1:8080/", contains: "web de la oficina", desc: "Desde Internet se abre la web de la oficina en http://203.0.113.1:8080"}
+- http: {from: inet, url: "http://203.0.113.1:8080/", contains: "cliente=203.0.113.10", desc: "El servidor ve la IP real del visitante de Internet"}
+- tcp: {from: inet, host: 203.0.113.1, port: 22, expect: closed, desc: "El SSH interno del servidor no queda publicado en Internet"}
+- tcp: {from: inet, host: 203.0.113.1, port: 2222, expect: closed, desc: "No se publica ningún otro puerto hacia el servidor"}
+- http: {from: pc1, url: "http://192.168.1.20/", contains: "web de la oficina", desc: "Desde la LAN se sigue usando la web por su IP interna"}
+- routeros: {node: r1, cmd: "/ip firewall nat print count-only where chain=dstnat and !disabled", expect: "re:^[1-9][0-9]*$", desc: "r1 publica el servidor con NAT de destino"}

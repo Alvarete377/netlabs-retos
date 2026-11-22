@@ -1,0 +1,16 @@
+id: l4-05-no-deja-pasar
+title: El firewall que no deja pasar
+level: 4
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "Se cumple la política de la empresa: Internet sólo llega a la web de la DMZ; la LAN va a todas partes; la DMZ sale a Internet pero no abre conexiones hacia la LAN"
+  - La LAN sale a Internet con la IP pública de la empresa
+  - Las respuestas de lo permitido vuelven
+hints:
+  - "Haz la tabla de pruebas antes de tocar nada: desde pc1, srv e inet, ¿qué funciona y qué no? Luego mira `/ip firewall filter print stats`: los contadores dicen qué regla está cazando cada paquete."
+  - "Lee las reglas de `forward` de arriba abajo como lo hace el router: la primera que encaja decide. ¿Hay alguna regla que nunca llega a usarse? ¿Qué pasa con las RESPUESTAS que vuelven de Internet?"
+  - "Que una regla diga en su comentario lo que hace no significa que lo haga: compara cada comentario con sus condiciones reales (`in-interface`, `out-interface`...). Y revisa también `/ip firewall nat`."
+  - "Hay cuatro fallos: falta la regla de `established,related`, el `drop` general no está al final, una regla de permiso es más amplia de lo que dice su comentario y el NAT de salida está en la interfaz equivocada."
+flag_seed: l4-05-no-deja-pasar
+ram_mb: 650

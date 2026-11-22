@@ -1,0 +1,14 @@
+- http: {from: inet, url: "http://198.51.100.10/", contains: "web publica", desc: "Internet ve la web pública de la DMZ"}
+- http: {from: pc1, url: "http://198.51.100.10/", contains: "web publica", desc: "La LAN ve la web de la DMZ"}
+- tcp: {from: pc1, host: 198.51.100.10, port: 22, expect: open, desc: "Los empleados administran el servidor de la DMZ por SSH"}
+- http: {from: pc1, url: "http://203.0.113.10/", contains: "alguna web", desc: "La LAN navega por Internet"}
+- http: {from: pc1, url: "http://203.0.113.10/", contains: "cliente=203.0.113.1", desc: "La LAN sale a Internet con la IP pública de la empresa"}
+- http: {from: srv, url: "http://203.0.113.10/", contains: "alguna web", desc: "El servidor de la DMZ puede salir a Internet"}
+- tcp: {from: inet, host: 198.51.100.10, port: 22, expect: closed, desc: "Desde Internet no se llega al SSH de la DMZ"}
+- tcp: {from: inet, host: 198.51.100.10, port: 3306, expect: closed, desc: "Desde Internet no se llega a la base de datos de la DMZ"}
+- tcp: {from: inet, host: 192.168.1.10, port: 22, expect: closed, desc: "Desde Internet no se llega a ningún PC de la LAN"}
+- tcp: {from: srv, host: 192.168.1.10, port: 22, expect: closed, desc: "Desde la DMZ no se pueden abrir conexiones hacia la LAN"}
+- ping: {from: srv, to: 192.168.1.10, expect: fail, desc: "Desde la DMZ no se llega a la LAN (ni con ping)"}
+- routeros: {node: r1, cmd: "/ip firewall filter print count-only where chain=forward and action=drop and !disabled", expect: "re:^[1-9][0-9]*$", desc: "La cadena forward descarta lo que no está permitido"}
+- routeros: {node: r1, cmd: "/ip firewall nat print count-only where chain=dstnat", expect: "0", desc: "Sin NAT de destino (la DMZ ya tiene IPs públicas)"}
+- routeros: {node: r1, cmd: ":put [/ip firewall filter get ([find chain=input]->0) in-interface]", expect: "ether1", desc: "La regla de gestión del laboratorio sigue siendo la primera de input"}

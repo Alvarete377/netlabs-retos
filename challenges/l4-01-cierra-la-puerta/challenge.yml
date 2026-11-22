@@ -1,0 +1,18 @@
+id: l4-01-cierra-la-puerta
+title: Cierra la puerta
+level: 4
+type: build
+difficulty: easy
+objectives:
+  - "Desde Internet (inet, 203.0.113.10) no se puede administrar r1: sus servicios (SSH, web, Winbox...) no responden por la interfaz de Internet"
+  - Desde Internet sí se puede hacer ping a r1 (ICMP permitido)
+  - Desde la LAN (pc1) se puede administrar r1 con normalidad
+  - "r1 sigue pudiendo hacer ping y descargar de Internet (las respuestas a lo que él inicia entran)"
+  - La regla de gestión del laboratorio (ether1) sigue la primera
+hints:
+  - "El tráfico dirigido AL PROPIO router pasa por la cadena `input` de `/ip firewall filter`. Ahora mismo sólo tiene una regla (la del laboratorio) y deja entrar todo."
+  - "Un firewall se lee de arriba abajo y la primera regla que encaja decide. El patrón típico: aceptar lo `established,related`, tirar lo `invalid`, aceptar lo que quieras permitir y, al final, un `drop` para todo lo demás."
+  - "Lo que quieres permitir: ICMP (`protocol=icmp`) desde cualquier sitio y todo lo que entre por la LAN (`in-interface=ether2`). Añade las reglas con `/ip firewall filter add chain=input ...` (se añaden al final, debajo de la del laboratorio)."
+  - "Sin la regla `connection-state=established,related` el router no recibe las respuestas a lo que él pide (por ejemplo, una descarga). Compruébalo con `/tool fetch url=http://203.0.113.10/ output=none` en r1 (el ping no sirve: sus respuestas ya entran por la regla de ICMP)."
+flag_seed: l4-01-cierra-la-puerta
+ram_mb: 600

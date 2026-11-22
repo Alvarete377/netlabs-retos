@@ -1,0 +1,17 @@
+id: l4-03-publica-el-servidor
+title: Publica el servidor
+level: 4
+type: build
+difficulty: medium
+objectives:
+  - "Desde Internet (inet) se abre la web interna de la oficina en http://203.0.113.1:8080"
+  - El servidor ve la IP real de quien le visita desde Internet
+  - "Sólo se publica la web: el SSH interno del servidor (puerto 22) y cualquier otro puerto siguen sin verse desde Internet"
+  - Desde la LAN se sigue usando el servidor por su IP interna
+hints:
+  - "La web vive en 192.168.1.20, una IP privada: desde Internet nadie puede llegar a ella. Lo único que Internet ve de la oficina es la IP pública de r1, 203.0.113.1."
+  - "Hay que hacer lo contrario que en 'Todos a Internet': cambiar el DESTINO de lo que entra. Cadena `dstnat` de `/ip firewall nat`, acción `dst-nat`."
+  - "Afina la regla para que sólo traduzca lo que debe: lo que entra por la WAN (`in-interface`), por TCP (`protocol=tcp`) y al puerto 8080 (`dst-port`). Luego indica a dónde va: `to-addresses` y `to-ports`."
+  - "`/ip firewall nat add chain=dstnat in-interface=ether4 protocol=tcp dst-port=8080 action=dst-nat to-addresses=192.168.1.20 to-ports=80`. Sin `dst-port` publicarías TODOS los puertos del servidor, también su SSH."
+flag_seed: l4-03-publica-el-servidor
+ram_mb: 600

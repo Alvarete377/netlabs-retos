@@ -1,0 +1,14 @@
+- tcp: {from: inet, host: 203.0.113.1, port: 22, expect: closed, desc: "Desde Internet, el SSH de r1 no responde"}
+- tcp: {from: inet, host: 203.0.113.1, port: 80, expect: closed, desc: "Desde Internet, la web de administración de r1 no responde"}
+- tcp: {from: inet, host: 203.0.113.1, port: 8291, expect: closed, desc: "Desde Internet, Winbox de r1 no responde"}
+- ping: {from: inet, to: 203.0.113.1, expect: ok, desc: "Desde Internet se puede hacer ping a r1"}
+- tcp: {from: pc1, host: 192.168.1.1, port: 22, expect: open, desc: "Desde la LAN se llega al SSH de r1"}
+- tcp: {from: pc1, host: 192.168.1.1, port: 80, expect: open, desc: "Desde la LAN se llega a la web de administración de r1"}
+- ping: {from: pc1, to: 192.168.1.1, expect: ok, desc: "Desde la LAN se puede hacer ping a r1"}
+- routeros: {node: r1, cmd: "/ping 203.0.113.10 count=3", expect: "re:received=[1-9]", desc: "r1 recibe las respuestas de sus propios pings a Internet"}
+- routeros: {node: r1, cmd: "/tool fetch url=http://203.0.113.10/ output=none", expect: "re:status: finished", desc: "r1 puede descargar de Internet (le llegan las respuestas TCP a lo que él pide)"}
+- routeros: {node: r1, cmd: "/ip firewall filter print count-only where chain=input and action=drop and !disabled", expect: "re:^[1-9][0-9]*$", desc: "La cadena input termina descartando lo no permitido"}
+- routeros: {node: r1, cmd: "/ip service print count-only where (name=\"ssh\" or name=\"www\" or name=\"winbox\") and !disabled", expect: "3", desc: "SSH, web y Winbox siguen activos (se protegen con el firewall, no apagándolos)"}
+- routeros: {node: r1, cmd: "/ip service print count-only where address!=\"\"", expect: "0", desc: "Los servicios no se limitan por dirección (se protegen con el firewall)"}
+- routeros: {node: r1, cmd: ":put [/ip firewall filter get ([find chain=input]->0) in-interface]", expect: "ether1", desc: "La regla de gestión del laboratorio sigue siendo la primera de input"}
+- routeros: {node: r1, cmd: ":put [/ip firewall filter get ([find chain=input]->0) action]", expect: "accept", desc: "La regla de gestión del laboratorio sigue aceptando"}

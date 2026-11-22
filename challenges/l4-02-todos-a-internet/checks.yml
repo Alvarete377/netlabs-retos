@@ -1,0 +1,7 @@
+- http: {from: pc1, url: "http://203.0.113.10/", contains: "servidor de Internet", desc: "pc1 abre la web del servidor de Internet"}
+- http: {from: pc1, url: "http://203.0.113.10/", contains: "cliente=198.51.100.2", desc: "El servidor ve llegar a pc1 desde la IP pública de la oficina (198.51.100.2)"}
+- ping: {from: pc1, to: 203.0.113.10, expect: ok, desc: "pc1 hace ping al servidor de Internet"}
+- ping: {from: srv, to: 192.168.1.10, expect: fail, desc: "Desde Internet no se llega directamente a la red privada de la oficina"}
+- routeros: {node: isp, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "El proveedor no tiene rutas hacia tu red privada (y no las va a tener)"}
+- routeros: {node: isp, cmd: "/ip firewall nat print count-only", expect: "0", desc: "El proveedor no hace NAT por ti"}
+- routeros: {node: r1, cmd: "/ip firewall nat print count-only where chain=dstnat", expect: "0", desc: "r1 no publica nada hacia dentro (no hace falta para salir)"}
