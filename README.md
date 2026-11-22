@@ -26,6 +26,9 @@ Para tener los retos nuevos: `git pull` dentro de la carpeta.
     lab hint                 # pista
     lab down
 
+Para el módulo Multifabricante (routers VyOS), construye su imagen una vez: `bash images/build-vyos.sh`
+(descarga ~650 MB).
+
 Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu flag personal para el ranking.
 
 ## Retos
@@ -79,3 +82,9 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | WireGuard entre sedes | `l6-02-wireguard` | Montar | Media |
 | IPsec y el NAT traicionero | `l6-03-ipsec` | Montar | Media |
 | El túnel que no levanta | `l6-04-tunel-no-levanta` | Troubleshooting | Media |
+### Multifabricante
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| Hola, VyOS | `l7-01-hola-vyos` | Montar | Fácil |
+| OSPF entre fabricantes | `l7-02-ospf-entre-fabricantes` | Montar | Media |
+| IPsec entre fabricantes | `l7-03-ipsec-entre-fabricantes` | Montar | Difícil |

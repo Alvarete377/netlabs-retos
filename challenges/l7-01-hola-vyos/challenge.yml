@@ -1,0 +1,16 @@
+id: l7-01-hola-vyos
+title: Hola, VyOS
+level: 7
+type: build
+difficulty: easy
+objectives:
+  - "pc1 (LAN de la central, MikroTik) y pc2 (LAN de la filial, VyOS) se hacen ping en los dos sentidos"
+  - "vy1 tiene 172.16.12.2/30 en eth1 (enlace con la central) y 192.168.2.1/24 en eth2 (su LAN)"
+  - vy1 llega a la LAN de la central con una ruta estática
+hints:
+  - "VyOS se configura por modos: entras con `configure`, escribes cambios con `set ...`, los aplicas con `commit` y los guardas para el próximo arranque con `save`. `exit` vuelve al modo de consulta, donde están los `show ...`."
+  - "Las interfaces de VyOS se llaman como en Linux: `eth1`, `eth2`... (nada de `ether2`). Una IP se pone con `set interfaces ethernet eth1 address 172.16.12.2/30`."
+  - "La ruta estática: `set protocols static route <red> next-hop <IP del siguiente router>`. La central ya sabe llegar a tu LAN; tú tienes que saber volver a la suya."
+  - "`set interfaces ethernet eth1 address 172.16.12.2/30`, `set interfaces ethernet eth2 address 192.168.2.1/24`, `set protocols static route 192.168.1.0/24 next-hop 172.16.12.1`, `commit`, `save`. Comprueba con `show interfaces` y `show ip route`."
+flag_seed: l7-01-hola-vyos
+ram_mb: 1150

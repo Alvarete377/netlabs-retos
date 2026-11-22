@@ -64,3 +64,4 @@ else
 fi
 
 echo "Listo. Abre una terminal nueva de WSL para que se apliquen los grupos docker/kvm."
+echo "Para el módulo Multifabricante (routers VyOS): bash images/build-vyos.sh  (descarga ~650 MB, una sola vez)."

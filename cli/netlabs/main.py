@@ -115,6 +115,9 @@ def cmd_console(args, store):
     if ch.nodes[args.node] == runtime.ROS_KIND:
         print("Usuario: admin  Contraseña: admin   (salir: Ctrl+] y luego 'quit')")
         argv = ["docker", "exec", "-it", name, "telnet", "127.0.0.1", "5000"]
+    elif ch.nodes[args.node] == runtime.VYOS_KIND:
+        print("CLI de VyOS (configure / set ... / commit / exit; salir: exit)")
+        argv = ["docker", "exec", "-it", name, "su", "-", "vyos"]
     else:
         argv = ["docker", "exec", "-it", name, "bash"]
     os.execvp("docker", argv)

@@ -1,0 +1,10 @@
+- ping: {from: pc1, to: 192.168.2.10, expect: ok, desc: "pc1 (central) llega a pc2 (filial)"}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok, desc: "pc2 (filial) llega a pc1 (central)"}
+- routeros: {node: r1, cmd: "/ip ipsec active-peers print count-only where state=established", expect: "re:^[1-9]$", desc: "La central tiene la sesión IPsec con la filial establecida"}
+- routeros: {node: r1, cmd: "/ip ipsec policy print count-only where ph2-state=established", expect: "1", desc: "La política de la central cifra el tráfico entre LANs"}
+- vyos: {node: vy1, cmd: "show vpn ipsec sa", expect: 're:\bup\b.*AES_CBC_256/HMAC_SHA2_256_128', desc: "El túnel de la filial está arriba con AES-256 y SHA-256 (política de la empresa)"}
+- routeros: {node: r1, cmd: "/ip ipsec profile print count-only where name=default and enc-algorithm=aes-256 and hash-algorithm=sha256 and dh-group=modp2048", expect: "1", desc: "La fase 1 de la central cumple la política (AES-256, SHA-256, DH 14)"}
+- routeros: {node: r1, cmd: "/ip ipsec proposal print count-only where name=default and enc-algorithms=aes-256-cbc and auth-algorithms=sha256 and pfs-group=modp2048", expect: "1", desc: "La fase 2 de la central cumple la política (AES-256, SHA-256, PFS DH 14)"}
+- http: {from: pc1, url: "http://192.0.2.10/", contains: "cliente=198.51.100.2", desc: "La central sigue saliendo a Internet con su IP pública"}
+- http: {from: pc2, url: "http://192.0.2.10/", contains: "cliente=203.0.113.2", desc: "La filial sigue saliendo a Internet con su IP pública"}
+- routeros: {node: isp, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "Internet no sabe nada de las redes privadas"}

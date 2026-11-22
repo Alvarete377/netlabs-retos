@@ -8,6 +8,20 @@ from netlabs.routeros import RouterOS
 
 RUN_DIR = Path.home() / ".netlabs" / "run"
 ROS_KIND = "mikrotik_ros"
+VYOS_KIND = "vyosnetworks_vyos"
+VYOS_OP = "/opt/vyatta/bin/vyatta-op-cmd-wrapper"
+
+
+def vyos_script(lines: str) -> str:
+    """Envuelve comandos `set`/`delete` de VyOS en una sesión de configuración con commit."""
+    body = "\n".join(l for l in lines.splitlines() if l.strip() and not l.lstrip().startswith("#"))
+    return (
+        "source /opt/vyatta/etc/functions/script-template\n"
+        "configure\n"
+        f"{body}\n"
+        "commit\n"
+        "exit\n"
+    )
 
 
 class LabError(Exception):
@@ -29,6 +43,11 @@ def preflight(ch: Challenge) -> None:
     if not Path("/dev/kvm").exists():
         raise LabError("No hay /dev/kvm. En Windows añade nestedVirtualization=true en "
                        "%UserProfile%\\.wslconfig y ejecuta `wsl --shutdown`.")
+    if any(k == VYOS_KIND for k in ch.nodes.values()):
+        r = subprocess.run(["docker", "image", "inspect", "netlabs/vyos:rolling"], capture_output=True)
+        if r.returncode != 0:
+            raise LabError("Este reto usa routers VyOS y falta su imagen. Constrúyela una vez con: "
+                           "bash images/build-vyos.sh (descarga ~650 MB).")
     avail = parse_meminfo(Path("/proc/meminfo").read_text())
     if avail < ch.ram_mb:
         raise LabError(f"El reto necesita ~{ch.ram_mb} MB de RAM y hay {avail} MB libres. Cierra programas o apaga otros labs.")
@@ -94,19 +113,35 @@ def is_running(node: str) -> bool:
 
 def wait_ready(ch: Challenge, timeout: int = 420, poll: int = 5, on_wait=None) -> None:
     routers = [n for n, k in ch.nodes.items() if k == ROS_KIND]
+    vyos = [n for n, k in ch.nodes.items() if k == VYOS_KIND]
     deadline = time.monotonic() + timeout
     while True:
         states = {n: health(n) for n in routers}
-        if any(s == "missing" for s in states.values()) or not all(is_running(n) for n in routers):
+        if any(s == "missing" for s in states.values()) or not all(is_running(n) for n in routers + vyos):
             raise LabError("El lab no está en marcha (¿reiniciaste WSL?). Usa `lab reset`.")
-        pending = [n for n in routers if states[n] != "healthy"]
+        pending = [n for n in routers if states[n] != "healthy"] + [n for n in vyos if not vyos_ready(n)]
         if not pending:
+            for n in vyos:
+                # Docker deja en VyOS una ruta por defecto por eth0 (gestión) que gana a la del reto:
+                # el tráfico "a Internet" se escaparía por la red del laboratorio. La gestión no la necesita.
+                subprocess.run(["docker", "exec", container(n), "ip", "route", "del", "default", "dev", "eth0"],
+                               capture_output=True)
             return
         if time.monotonic() > deadline:
             raise LabError(f"Los routers no arrancaron en {timeout}s: {', '.join(pending)}")
         if on_wait:
             on_wait(pending)
         time.sleep(poll)
+
+
+def vyos_ready(node: str) -> bool:
+    """VyOS está listo cuando su CLI de operación responde."""
+    try:
+        r = subprocess.run(["docker", "exec", container(node), VYOS_OP, "show", "version"],
+                           capture_output=True, text=True, timeout=20)
+    except subprocess.TimeoutExpired:
+        return False
+    return r.returncode == 0 and "Version" in r.stdout
 
 
 def mgmt_ip(node: str) -> str:
@@ -125,8 +160,8 @@ def files_for(ch: Challenge, sub: str) -> list[tuple[str, Path]]:
     for f in sorted(d.iterdir()):
         if f.name == "README.md":
             continue
-        if f.suffix not in (".rsc", ".sh"):
-            raise LabError(f"{sub}/{f.name}: solo se admiten .rsc (routers) y .sh (clientes)")
+        if f.suffix not in (".rsc", ".sh", ".vyos"):
+            raise LabError(f"{sub}/{f.name}: solo se admiten .rsc (MikroTik), .vyos (VyOS) y .sh (clientes)")
         if f.stem not in ch.nodes:
             raise LabError(f"{sub}/{f.name}: el nodo '{f.stem}' no existe en la topología")
         out.append((f.stem, f))
@@ -138,6 +173,10 @@ def apply_dir(ch: Challenge, sub: str) -> None:
         content = f.read_text(encoding="utf-8")
         if f.suffix == ".rsc":
             RouterOS(mgmt_ip(node)).import_script(f.name, content)
+        elif f.suffix == ".vyos":
+            out = _run(["docker", "exec", "-i", container(node), "/bin/vbash", "-s"], input=vyos_script(content))
+            if "Commit failed" in out or "Set failed" in out or "Invalid command" in out:
+                raise LabError(f"{sub}/{f.name}: VyOS rechazó la configuración:\n{out[-1500:]}")
         else:
             _run(["docker", "exec", "-i", container(node), "sh", "-s"], input=content)
 
@@ -149,3 +188,9 @@ class LabExecutor:
 
     def routeros(self, node: str, cmd: str) -> str:
         return RouterOS(mgmt_ip(node)).run(cmd)
+
+    def vyos(self, node: str, cmd: str) -> str:
+        """Comando de operación de VyOS (p. ej. `show ip ospf neighbor`)."""
+        r = subprocess.run(["docker", "exec", container(node), VYOS_OP, *cmd.split()],
+                           capture_output=True, text=True, timeout=30)
+        return r.stdout + r.stderr

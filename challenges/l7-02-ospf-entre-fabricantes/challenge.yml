@@ -1,0 +1,16 @@
+id: l7-02-ospf-entre-fabricantes
+title: OSPF entre fabricantes
+level: 7
+type: build
+difficulty: medium
+objectives:
+  - pc1 (central, MikroTik) y pc2 (filial, VyOS) se hacen ping en los dos sentidos
+  - "La central y la filial intercambian sus rutas por OSPF (área 0): vecinos en Full en los dos lados"
+  - Sin rutas estáticas
+hints:
+  - "La central (MikroTik) ya habla OSPF en el área backbone por el enlace 172.16.12.0/30, con router-id 10.255.255.1. OSPF es un estándar: el VyOS sólo tiene que hablarlo igual. En VyOS está en `set protocols ospf ...`."
+  - "Las piezas en VyOS: un `router-id` único (`set protocols ospf parameters router-id ...`), y las redes que entran en el área 0 (`set protocols ospf area 0 network ...`): el enlace y la LAN."
+  - "Para que la LAN se anuncie pero no se manden Hellos por ella: `set protocols ospf interface eth2 passive`. Comprueba con `show ip ospf neighbor` (estado Full) y `show ip route` (rutas `O`)."
+  - "`set protocols ospf parameters router-id 10.255.255.2`, `set protocols ospf area 0 network 172.16.12.0/30`, `set protocols ospf area 0 network 192.168.2.0/24`, `set protocols ospf interface eth2 passive`, `commit`, `save`."
+flag_seed: l7-02-ospf-entre-fabricantes
+ram_mb: 1150

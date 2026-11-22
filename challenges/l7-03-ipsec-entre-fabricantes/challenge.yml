@@ -1,0 +1,17 @@
+id: l7-03-ipsec-entre-fabricantes
+title: IPsec entre fabricantes
+level: 7
+type: build
+difficulty: hard
+objectives:
+  - "pc1 (central, MikroTik) y pc2 (filial, VyOS) se hacen ping en los dos sentidos por un túnel IPsec IKEv2 (clave compartida Central-Filial-2026)"
+  - "El túnel cumple la política de la empresa en las dos fases: AES-256, SHA-256 y Diffie-Hellman grupo 14 (también PFS en la fase 2)"
+  - Las dos sedes siguen saliendo a Internet con su IP pública
+  - El proveedor (isp) no se toca
+hints:
+  - "Empieza por la filial: monta en VyOS el IPsec con la política de la empresa (`set vpn ipsec ike-group ...`, `esp-group ...`, `authentication psk ...` y `site-to-site peer ...`). Luego mira el registro de la central (`/log print where topics~\"ipsec\"`) y `show vpn ipsec sa` en VyOS: ¿se ponen de acuerdo?"
+  - "La central se montó con lo que RouterOS trae por defecto. Míralo: `/ip ipsec profile print` (fase 1) y `/ip ipsec proposal print` (fase 2). ¿Coinciden con la política? Dos fabricantes sólo se entienden si proponen exactamente lo mismo."
+  - "Con el túnel arriba, si aún no pasan los pings, mira qué hace el NAT en CADA sede con el tráfico hacia la otra (`/ip firewall nat print stats` en la central, `show nat source statistics` en VyOS)."
+  - "Central: `profile` con `enc-algorithm=aes-256 hash-algorithm=sha256 dh-group=modp2048` y `proposal` con `enc-algorithms=aes-256-cbc auth-algorithms=sha256 pfs-group=modp2048`; más una regla srcnat `accept` encima del masquerade. Filial: grupos IKE y ESP con aes256/sha256/grupo 14 (`pfs dh-group14`) y una regla `nat source` con `exclude` antes de la del masquerade."
+flag_seed: l7-03-ipsec-entre-fabricantes
+ram_mb: 1700

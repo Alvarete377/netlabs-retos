@@ -1,0 +1,8 @@
+- ping: {from: pc1, to: 192.168.2.10, expect: ok, desc: "pc1 (red MikroTik) llega a pc2 (red VyOS)"}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok, desc: "pc2 (red VyOS) llega a pc1 (red MikroTik)"}
+- routeros: {node: r1, cmd: "/routing ospf neighbor print count-only where state=Full", expect: "1", desc: "La central (MikroTik) tiene al VyOS como vecino OSPF en Full"}
+- vyos: {node: vy1, cmd: "show ip ospf neighbor", expect: 're:10\.255\.255\.1\s+\d+\s+Full', desc: "vy1 (VyOS) tiene a la central como vecino OSPF en Full"}
+- routeros: {node: r1, cmd: "/ip route print count-only where dst-address=192.168.2.0/24 and ospf and active", expect: "1", desc: "La central aprende la LAN de la filial por OSPF"}
+- vyos: {node: vy1, cmd: "show ip route", expect: 're:O>\*\s+192\.168\.1\.0/24', desc: "vy1 aprende la LAN de la central por OSPF"}
+- vyos: {node: vy1, cmd: "show ip route", expect: 're:(?s)^(?!.*S>\*\s+192\.168\.1\.0/24)', desc: "vy1 no usa rutas estáticas hacia la central"}
+- routeros: {node: r1, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "La central no usa rutas estáticas"}

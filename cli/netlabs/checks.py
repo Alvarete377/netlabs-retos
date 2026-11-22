@@ -9,6 +9,7 @@ KINDS = {
     "udp": ("from", "host", "port", "expect"),
     "http": ("from", "url"),
     "routeros": ("node", "cmd", "expect"),
+    "vyos": ("node", "cmd", "expect"),
     "answer": ("id", "question", "answer"),
 }
 EXPECT_VALUES = {"ping": ("ok", "fail"), "tcp": ("open", "closed"), "udp": ("open", "closed")}
@@ -36,6 +37,7 @@ class CheckResult:
 class Executor(Protocol):
     def exec(self, node: str, argv: list[str]) -> tuple[int, str]: ...
     def routeros(self, node: str, cmd: str) -> str: ...
+    def vyos(self, node: str, cmd: str) -> str: ...
 
 
 def _default_desc(kind: str, p: dict) -> str:
@@ -47,7 +49,7 @@ def _default_desc(kind: str, p: dict) -> str:
         return f"{p['from']} → {p['host']}:{p['port']}/{kind} {state}"
     if kind == "http":
         return f"{p['from']} → {p['url']}"
-    if kind == "routeros":
+    if kind in ("routeros", "vyos"):
         return f"{p['node']}: {p['cmd']}"
     return p["question"]
 
@@ -120,8 +122,9 @@ def _run(check: Check, ex: Executor, answered) -> CheckResult:
         if "contains" in p:
             ok = ok and str(p["contains"]) in body
         return CheckResult(check, ok, f"HTTP {code}" if code not in ("", "000") else "sin respuesta")
-    if check.kind == "routeros":
-        out = ex.routeros(p["node"], p["cmd"]).strip()
+    if check.kind in ("routeros", "vyos"):
+        run = ex.routeros if check.kind == "routeros" else ex.vyos
+        out = run(p["node"], p["cmd"]).strip()
         expect = str(p["expect"])
         ok = bool(re.search(expect[3:], out)) if expect.startswith("re:") else out == expect
         return CheckResult(check, ok, f"salida: {out[:80]!r}")
