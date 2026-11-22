@@ -1,0 +1,13 @@
+- routeros: {node: r1, cmd: "/ip dhcp-server lease print count-only where status=\"bound\"", expect: "1", desc: "pc1 tiene dirección por DHCP"}
+- http: {from: pc1, url: "http://203.0.113.10/", contains: "servidor de Internet", desc: "pc1 navega por Internet"}
+- http: {from: pc1, url: "http://203.0.113.10/", contains: "cliente=198.51.100.2\n", desc: "pc1 sale por r1, el router principal"}
+- routeros: {node: sw, cmd: "/interface bonding print count-only where mode=802.3ad", expect: "1", desc: "El switch agrupa los dos cables hacia r1 con LACP"}
+- routeros: {node: r1, cmd: "/interface bonding print count-only where mode=802.3ad", expect: "1", desc: "r1 agrupa los dos cables hacia el switch con LACP"}
+- routeros: {node: sw, cmd: "/interface bonding monitor [find] once", expect: 're:active-ports:\s*ether3,ether4', desc: "En el switch, los dos cables hacia r1 están activos en el grupo"}
+- routeros: {node: r1, cmd: "/interface bonding monitor [find] once", expect: 're:active-ports:\s*ether2,ether3', desc: "En r1, los dos cables hacia el switch están activos en el grupo"}
+- routeros: {node: r1, cmd: "/interface vrrp print count-only where master", expect: "1", desc: "r1 es el router activo (maestro VRRP)"}
+- routeros: {node: r2, cmd: "/interface vrrp print count-only where backup", expect: "1", desc: "r2 está en reserva (respaldo VRRP), listo para tomar el relevo"}
+- routeros: {node: r1, cmd: ":local v [/interface vrrp get ([find]->0) name]; /ip address print count-only where interface=$v and address~\"^192\\\\.168\\\\.1\\\\.1/\"", expect: "1", desc: "En r1, la puerta de enlace es la dirección virtual"}
+- routeros: {node: r2, cmd: ":local v [/interface vrrp get ([find]->0) name]; /ip address print count-only where interface=$v and address~\"^192\\\\.168\\\\.1\\\\.1/\"", expect: "1", desc: "En r2, la puerta de enlace también está preparada como dirección virtual"}
+- routeros: {node: r1, cmd: "/ip dhcp-server network print count-only where gateway=192.168.1.1", expect: "1", desc: "El DHCP entrega como puerta de enlace la dirección virtual (la que sobrevive si cae r1)"}
+- routeros: {node: r2, cmd: "/ping 203.0.113.10 count=3", expect: "re:received=[1-9]", desc: "r2 tiene salida propia a Internet (para cuando le toque)"}

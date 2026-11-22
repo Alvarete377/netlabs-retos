@@ -59,6 +59,7 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Vecinos que no se hablan | `l3-05-ospf-roto` | Troubleshooting | Media |
 | Corre la voz | `l3-06-rip-basico` | Montar | Fácil |
 | Dos idiomas, una red | `l3-07-rip-ospf` | Montar | Media |
+| La filial heredada | `l3-08-filial-heredada` | Troubleshooting | Difícil |
 ### Firewalls
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|
@@ -67,6 +68,7 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Publica el servidor | `l4-03-publica-el-servidor` | Montar | Media |
 | Lo justo y necesario | `l4-04-lo-justo` | Montar | Media |
 | El firewall que no deja pasar | `l4-05-no-deja-pasar` | Troubleshooting | Media |
+| La auditoría | `l4-06-la-auditoria` | Troubleshooting | Difícil |
 ### Acceso y enlace
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|
@@ -75,6 +77,7 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Reparto automático | `l5-03-dhcp` | Montar | Fácil |
 | El router de reserva | `l5-04-router-de-reserva` | Montar | Media |
 | La sucursal sin Internet | `l5-05-sucursal-sin-internet` | Troubleshooting | Media |
+| La oficina que se cae | `l5-06-oficina-que-se-cae` | Troubleshooting | Difícil |
 ### VPNs
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|
@@ -82,6 +85,7 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | WireGuard entre sedes | `l6-02-wireguard` | Montar | Media |
 | IPsec y el NAT traicionero | `l6-03-ipsec` | Montar | Media |
 | El túnel que no levanta | `l6-04-tunel-no-levanta` | Troubleshooting | Media |
+| Todos pasan por la central | `l6-05-hub-and-spoke` | Troubleshooting | Difícil |
 ### Multifabricante
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|

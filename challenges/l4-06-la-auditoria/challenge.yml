@@ -1,0 +1,18 @@
+id: l4-06-la-auditoria
+title: La auditoría
+level: 4
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "Desde Internet, http://203.0.113.1 abre la web de la oficina, y el servidor ve la IP real del visitante"
+  - Desde la LAN, la web funciona tanto por su IP interna como por la dirección pública
+  - Los empleados navegan por Internet con la IP pública de la oficina
+  - "La gestión del router (SSH y Winbox) sólo desde la LAN"
+  - "Desde Internet no se llega a nada más de la LAN; los dos filtros siguen terminando en drop"
+hints:
+  - "Empieza por el NAT: `/ip firewall nat print stats` mientras navegas desde pc1 a http://203.0.113.10/. ¿Qué regla está cogiendo el tráfico de los empleados? Una regla de `dstnat` debe reconocer lo que va **a tu IP pública**, no lo que entra por una interfaz cualquiera."
+  - "Con el NAT de destino bien, si la web sigue sin abrir desde Internet, mira `/ip firewall filter print stats` en la cadena `forward`: las reglas se evalúan **en orden** y gana la primera que coincide. ¿Qué regla ve antes el tráfico publicado?"
+  - "Desde la LAN, la IP pública: el router traduce el destino al servidor, pero el servidor está en la misma red que pc1 y le contesta **directamente**, con su IP interna, a una conexión que pc1 abrió hacia la pública. Eso es el *hairpin NAT*: hace falta también un `srcnat` sólo para ese caso."
+  - "Cuatro fallos: el `dstnat` usa `in-interface=lan` en vez de `dst-address=203.0.113.1`; la regla `forward` que acepta lo publicado está debajo del `drop` de Internet (`move`); falta un `masquerade` de la LAN hacia 192.168.1.20:80 por `lan` (hairpin); y la regla de gestión de `input` no limita la interfaz (añade `in-interface=lan`). Tras cambiar NAT, borra las conexiones (`/ip firewall connection remove [find]`)."
+flag_seed: l4-06-la-auditoria
+ram_mb: 700

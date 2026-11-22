@@ -1,0 +1,17 @@
+id: l5-06-oficina-que-se-cae
+title: La oficina que se cae
+level: 5
+type: troubleshoot
+difficulty: hard
+objectives:
+  - pc1 recibe dirección por DHCP y navega por Internet saliendo por r1
+  - "El switch y r1 se unen con LACP (802.3ad) y los dos cables están activos a la vez"
+  - "r1 es el router activo y r2 el de reserva, con VRRP sobre la puerta de enlace virtual 192.168.1.1"
+  - "Si cae r1, los PCs siguen saliendo por r2 sin tocar nada: la puerta de enlace que reparte el DHCP es la virtual"
+hints:
+  - "Empieza por abajo: ¿tiene pc1 dirección? El servidor DHCP está en r1, detrás de los dos cables agrupados. Mira `/interface bonding monitor [find] once` en el switch y en r1: ¿se ven como pareja LACP? ¿Están en el mismo modo?"
+  - "Con pc1 navegando, mira VRRP en los dos routers (`/interface vrrp print detail`). Dos maestros a la vez significa que no se oyen como el mismo grupo: ¿qué tiene que coincidir? Y cuando se oigan, ¿quién gana?"
+  - "Que funcione no significa que aguante la caída de r1. ¿Qué puerta de enlace reciben los PCs (`/ip dhcp-server network print`)? ¿Seguiría existiendo esa dirección si r1 se apaga?"
+  - "Cuatro fallos: el bonding del switch está en `balance-rr` (debe ser `802.3ad`); r2 usa `vrid=20` (debe ser 10, como r1); r2 tiene `priority=250`, más que r1 (bájala por debajo de 200); y el DHCP reparte `gateway=192.168.1.2` (la IP física de r1) en vez de la virtual 192.168.1.1."
+flag_seed: l5-06-oficina-que-se-cae
+ram_mb: 1050

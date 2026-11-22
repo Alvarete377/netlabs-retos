@@ -1,0 +1,17 @@
+id: l6-05-hub-and-spoke
+title: Todos pasan por la central
+level: 6
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "Las tres LANs (central 192.168.0.0/24, sede 1 192.168.1.0/24 y sede 2 192.168.2.0/24) se hacen ping entre sí en todos los sentidos"
+  - "Todo por WireGuard en estrella: cada sede tiene un único túnel, con la central; entre sedes, el tráfico pasa por ella"
+  - El firewall de la central sigue terminando en drop
+  - El proveedor (isp) no se toca
+hints:
+  - "Primero, ¿suben los túneles? `/interface wireguard peers print detail` en la central y en cada sede: sin `last-handshake`, no hay túnel. Compara lo que la sede cree sobre la central (dirección y **puerto**) con lo que la central tiene de verdad."
+  - "Con los túneles arriba, `allowed-address` es la tabla de rutas de WireGuard: en la central decide **a qué sede** va cada destino y **de quién** se acepta cada origen. Léela peer a peer: ¿cuadra con las LANs de cada sede?"
+  - "Entre sedes, el viaje es sede 1 → central → sede 2 y vuelta. En cada salto hace falta: una ruta en el router, el prefijo en `allowed-address` del peer por el que sale, y que el firewall lo deje pasar. Compara la configuración de las dos sedes: una está más completa que la otra. Y mira `/ip firewall filter print stats` en la central."
+  - "Cuatro fallos: la sede 2 apunta al puerto 51821 de la central (es 51820); en la central, el peer de la sede 2 tiene `192.168.20.0/24` en vez de `192.168.2.0/24`; a la sede 1 le falta `192.168.2.0/24` en `allowed-address` y la ruta hacia ella por 10.255.0.1; y el `forward` de la central no acepta de `wg-sedes` a `wg-sedes`."
+flag_seed: l6-05-hub-and-spoke
+ram_mb: 1450

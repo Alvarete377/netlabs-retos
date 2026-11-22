@@ -1,0 +1,21 @@
+- ping: {from: pc1, to: 192.168.4.10, expect: ok, desc: "pc1 (central) llega a pc2 (filial)"}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok, desc: "pc2 (filial) llega a pc1 (central)"}
+- routeros: {node: r2, cmd: "/routing ospf neighbor print count-only where state=Full and address=10.0.12.1", expect: "1", desc: "r2 y r1 son vecinos OSPF en Full (área 0)"}
+- routeros: {node: r2, cmd: "/routing ospf neighbor print count-only where state=Full and address=10.0.23.2", expect: "1", desc: "r2 y r3 son vecinos OSPF en Full"}
+- routeros: {node: r3, cmd: "/routing ospf area print count-only where !disabled and area-id!=0.0.0.1", expect: "0", desc: "r3 sigue estando sólo en el área 1"}
+- routeros: {node: r3, cmd: '/routing ospf interface print count-only where address~"^10\\.0\\.23\\.2"', expect: "1", desc: "El enlace r2–r3 sigue en OSPF"}
+- routeros: {node: r2, cmd: "/routing ospf area print count-only where area-id=0.0.0.1 and type=nssa", expect: "1", desc: "En r2, el área 1 sigue sin recibir externas del resto (tipo NSSA)"}
+- routeros: {node: r3, cmd: "/routing ospf area print count-only where area-id=0.0.0.1 and type=nssa", expect: "1", desc: "En r3, el área 1 sigue sin recibir externas del resto (tipo NSSA)"}
+- routeros: {node: r1, cmd: "/ip route print count-only where dst-address=192.168.4.0/24 and ospf and active", expect: "1", desc: "La central aprende la LAN de la filial por OSPF"}
+- routeros: {node: r4, cmd: "/ip route print count-only where dst-address=192.168.1.0/24 and rip and active", expect: "1", desc: "El router heredado aprende la LAN de la central por RIP"}
+- routeros: {node: r4, cmd: "/routing ospf instance print count-only", expect: "0", desc: "El router heredado sigue hablando sólo RIP"}
+- routeros: {node: r1, cmd: "/routing rip instance print count-only", expect: "0", desc: "La central no usa RIP"}
+- routeros: {node: r2, cmd: "/routing rip instance print count-only", expect: "0", desc: "r2 no usa RIP"}
+- routeros: {node: r1, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "r1 no tiene rutas estáticas"}
+- routeros: {node: r2, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "r2 no tiene rutas estáticas"}
+- routeros: {node: r3, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "r3 no tiene rutas estáticas"}
+- routeros: {node: r4, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "r4 no tiene rutas estáticas"}
+- routeros: {node: r1, cmd: "/ip firewall nat print count-only", expect: "0", desc: "Sin NAT en r1"}
+- routeros: {node: r2, cmd: "/ip firewall nat print count-only", expect: "0", desc: "Sin NAT en r2"}
+- routeros: {node: r3, cmd: "/ip firewall nat print count-only", expect: "0", desc: "Sin NAT en r3"}
+- routeros: {node: r4, cmd: "/ip firewall nat print count-only", expect: "0", desc: "Sin NAT en r4"}

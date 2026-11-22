@@ -1,0 +1,15 @@
+- ping: {from: pc0, to: 192.168.1.10, expect: ok, desc: "pc0 (central) llega a pc1 (sede 1)"}
+- ping: {from: pc0, to: 192.168.2.10, expect: ok, desc: "pc0 (central) llega a pc2 (sede 2)"}
+- ping: {from: pc1, to: 192.168.0.10, expect: ok, desc: "pc1 (sede 1) llega a pc0 (central)"}
+- ping: {from: pc1, to: 192.168.2.10, expect: ok, desc: "pc1 (sede 1) llega a pc2 (sede 2)"}
+- ping: {from: pc2, to: 192.168.0.10, expect: ok, desc: "pc2 (sede 2) llega a pc0 (central)"}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok, desc: "pc2 (sede 2) llega a pc1 (sede 1)"}
+- routeros: {node: hub, cmd: "/interface wireguard peers print count-only where last-handshake", expect: "2", desc: "La central ha completado el saludo cifrado con las dos sedes"}
+- routeros: {node: s1, cmd: "/interface wireguard peers print count-only", expect: "1", desc: "La sede 1 sólo tiene un túnel: el de la central"}
+- routeros: {node: s2, cmd: "/interface wireguard peers print count-only", expect: "1", desc: "La sede 2 sólo tiene un túnel: el de la central"}
+- routeros: {node: s1, cmd: "/interface wireguard peers print count-only where last-handshake", expect: "1", desc: "El túnel de la sede 1 está arriba"}
+- routeros: {node: s2, cmd: "/interface wireguard peers print count-only where last-handshake", expect: "1", desc: "El túnel de la sede 2 está arriba"}
+- routeros: {node: hub, cmd: "/ip firewall filter print count-only where chain=forward and action=drop and !disabled", expect: 're:^[1-9][0-9]*$', desc: "El firewall de la central sigue terminando en drop"}
+- routeros: {node: hub, cmd: "/interface gre print count-only", expect: "0", desc: "Sin túneles GRE: todo va cifrado"}
+- routeros: {node: isp, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "Internet no sabe nada de las redes privadas"}
+- routeros: {node: isp, cmd: "/ip firewall nat print count-only", expect: "0", desc: "El proveedor no hace NAT por ti"}

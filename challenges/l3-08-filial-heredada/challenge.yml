@@ -1,0 +1,18 @@
+id: l3-08-filial-heredada
+title: La filial heredada
+level: 3
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "pc1 (central, 192.168.1.10) y pc2 (filial, 192.168.4.10) se hacen ping en los dos sentidos"
+  - "OSPF: r1 y r2 en el área 0; el enlace r2–r3 y r3, en el área 1"
+  - "El área 1 sigue sin recibir rutas externas del resto de la red (era su diseño)"
+  - "r4 (router heredado de la filial) sigue hablando sólo RIP; r3 traduce entre RIP y OSPF"
+  - Sin rutas estáticas y sin NAT
+hints:
+  - "Empieza por las vecindades, de la central hacia la filial: `/routing ospf neighbor print` en r1, r2 y r3. Si dos vecinos no llegan a Full, compara su `/routing ospf interface-template print detail` y su `/routing ospf area print` en los DOS extremos: ¿qué tiene que coincidir?"
+  - "Arreglada la vecindad r2–r3, mira si la central conoce la LAN de la filial (`/ip route print where ospf` en r1) y qué LSAs hay en el área 1 (`/routing ospf lsa print` en r3). r3 redistribuye RIP: ¿qué dice el estándar de las rutas externas en un área `stub`? ¿Qué tipo de área permite importar externas sin recibir las del resto? (Tras cambiar el tipo de un área, dale un par de minutos a OSPF o desactiva y activa su instancia.)"
+  - "Si la central ya ve la filial pero el ping sigue fallando, mira el camino de vuelta: ¿conoce r4 la LAN de la central? ¿Qué le cuenta r3 por RIP? (`/routing rip instance print` en r3)."
+  - "Cuatro fallos: `hello-interval` distinto en r1–r2 (r2 usa 5 s); el enlace r2–r3 está en el área 0 en r2 y en la 1 en r3; el área 1 es `stub` y debe ser `nssa` (en r2 y r3: el tipo tiene que coincidir); y la instancia RIP de r3 no redistribuye `ospf`."
+flag_seed: l3-08-filial-heredada
+ram_mb: 1500

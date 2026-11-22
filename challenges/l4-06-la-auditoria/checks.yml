@@ -1,0 +1,15 @@
+- http: {from: inet, url: "http://203.0.113.1/", contains: "web de la oficina", desc: "Desde Internet se abre la web de la oficina en http://203.0.113.1"}
+- http: {from: inet, url: "http://203.0.113.1/", contains: "cliente=203.0.113.10", desc: "El servidor ve la IP real del visitante de Internet"}
+- http: {from: pc1, url: "http://203.0.113.1/", contains: "web de la oficina", desc: "Desde la LAN, la dirección pública también lleva a la web de la oficina"}
+- http: {from: pc1, url: "http://192.168.1.20/", contains: "web de la oficina", desc: "Desde la LAN se sigue usando la web por su IP interna"}
+- http: {from: pc1, url: "http://203.0.113.10/", contains: "servidor de Internet", desc: "Los empleados navegan por Internet (y ven la web que piden, no la de la oficina)"}
+- http: {from: pc1, url: "http://203.0.113.10/", contains: "cliente=203.0.113.1\n", desc: "La LAN sale a Internet con la IP pública"}
+- tcp: {from: inet, host: 203.0.113.1, port: 22, expect: closed, desc: "El SSH del router no se ve desde Internet"}
+- tcp: {from: inet, host: 203.0.113.1, port: 8291, expect: closed, desc: "El Winbox del router no se ve desde Internet"}
+- tcp: {from: pc1, host: 192.168.1.1, port: 22, expect: open, desc: "Desde la LAN se sigue administrando el router por SSH"}
+- tcp: {from: inet, host: 192.168.1.20, port: 22, expect: closed, desc: "Desde Internet no se llega a la LAN directamente (SSH del servidor)"}
+- tcp: {from: inet, host: 192.168.1.20, port: 80, expect: closed, desc: "Desde Internet no se llega a la LAN directamente (web por la IP interna)"}
+- tcp: {from: inet, host: 203.0.113.1, port: 2222, expect: closed, desc: "No se publica ningún otro puerto"}
+- routeros: {node: r1, cmd: '/ip firewall filter print count-only where comment~"LABORATORIO" and !disabled', expect: "1", desc: "La regla de gestión del laboratorio sigue en su sitio"}
+- routeros: {node: r1, cmd: "/ip firewall filter print count-only where chain=forward and action=drop and !disabled", expect: 're:^[1-9][0-9]*$', desc: "El reenvío sigue terminando en drop"}
+- routeros: {node: r1, cmd: "/ip firewall filter print count-only where chain=input and action=drop and !disabled", expect: 're:^[1-9][0-9]*$', desc: "La entrada al router sigue terminando en drop"}
