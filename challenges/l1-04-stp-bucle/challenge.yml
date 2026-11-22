@@ -1,0 +1,17 @@
+id: l1-04-stp-bucle
+title: El bucle maldito
+level: 1
+type: build
+difficulty: medium
+objectives:
+  - Activar el enlace sw2–sw3 sin provocar un bucle
+  - Los tres switches usan RSTP
+  - sw1 es el bridge raíz y sw2 el raíz secundario
+  - pc1 ↔ pc2 siguen comunicándose
+hints:
+  - Un enlace redundante sin STP es un bucle.
+  - protocol-mode=rstp en los tres bridges.
+  - La raíz es el bridge con menor prioridad. Mira el parámetro priority del bridge.
+  - Activa el puerto de sw2 hacia sw3 sólo cuando todos tengan RSTP.
+flag_seed: l1-04-stp-bucle
+ram_mb: 1600

@@ -1,0 +1,17 @@
+id: l1-05-switch-misterioso
+title: El switch misterioso
+level: 1
+type: troubleshoot
+difficulty: hard
+objectives:
+  - pc1 ↔ pc2 (VLAN 10) funciona a través de los tres switches
+  - pc3 ↔ pc4 (VLAN 20) funciona a través de los tres switches
+  - La VLAN 10 y la VLAN 20 siguen aisladas entre sí
+hints:
+  - Ni la VLAN 10 ni la 20 cruzan sw2. Empieza por ahí.
+  - "Mira `frame-types` en los puertos de sw2 (y, de paso, `ingress-filtering`)."
+  - Hay tres fallos, dos en sw2 y uno en sw3.
+  - "/interface bridge vlan print en sw2: ¿están las dos VLANs en los dos trunks?"
+  - "Si tras arreglar sw2 la VLAN 20 sigue sin funcionar, mira el `pvid` de los puertos de acceso de sw3 y las entradas dinámicas de `/interface bridge vlan print`."
+flag_seed: l1-05-switch-misterioso
+ram_mb: 1700

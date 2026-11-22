@@ -1,0 +1,6 @@
+- ping: {from: pc1, to: 192.168.2.10, expect: ok}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok}
+- routeros: {node: r1, cmd: "/ip route print count-only where static and dst-address=192.168.2.0/24 and gateway=172.16.12.2 and !disabled", expect: "1", desc: "r1 tiene una ruta estática activa a 192.168.2.0/24 por 172.16.12.2 (r2)"}
+- routeros: {node: r2, cmd: "/ip route print count-only where static and dst-address=192.168.1.0/24 and gateway=172.16.12.1 and !disabled", expect: "1", desc: "r2 tiene una ruta estática activa a 192.168.1.0/24 por 172.16.12.1 (r1)"}
+- routeros: {node: r1, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r1 no usa NAT (enruta, no enmascara)"}
+- routeros: {node: r2, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r2 no usa NAT (enruta, no enmascara)"}

@@ -1,0 +1,14 @@
+id: l1-02-vlans-basicas
+title: Separa a los de contabilidad
+level: 1
+type: build
+difficulty: easy
+objectives:
+  - pc1 y pc2 (VLAN 10) se comunican
+  - pc3 (VLAN 20) NO llega a pc1 ni a pc2, aunque estén en la misma subred
+hints:
+  - Los tres PCs están en la misma subred IP. Lo que los separa tiene que ser capa 2.
+  - Cada puerto de acceso necesita un pvid (la VLAN a la que pertenece lo que entra sin etiqueta).
+  - Sin vlan-filtering=yes en el bridge, las VLANs se ignoran.
+flag_seed: l1-02-vlans-basicas
+ram_mb: 650

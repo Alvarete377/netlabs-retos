@@ -1,0 +1,5 @@
+- ping: {from: pc1, to: 192.168.2.10, expect: ok}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok}
+- routeros: {node: r1, cmd: "/ip address print count-only where network=192.168.1.0 and interface=ether2 and !disabled", expect: "1", desc: "r1 tiene una IP activa de 192.168.1.0/24 en ether2 (la LAN de pc1)"}
+- routeros: {node: r1, cmd: "/ip address print count-only where network=192.168.2.0 and interface=ether3 and !disabled", expect: "1", desc: "r1 tiene una IP activa de 192.168.2.0/24 en ether3 (la LAN de pc2)"}
+- routeros: {node: r1, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r1 no usa NAT (enruta, no enmascara)"}

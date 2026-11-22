@@ -1,0 +1,17 @@
+id: l3-01-ospf-basico
+title: Que se descubran solos
+level: 3
+type: build
+difficulty: easy
+objectives:
+  - pc1 (192.168.1.10) y pc2 (192.168.3.10) se hacen ping en los dos sentidos a través de r1, r2 y r3
+  - Los tres routers hablan OSPF en el área backbone (0.0.0.0) y r2 tiene a r1 y a r3 como vecinos en estado Full
+  - Las rutas hacia las LANs remotas las aprende OSPF; sin rutas estáticas
+  - Sin NAT en ningún router
+hints:
+  - "OSPF es un protocolo de enrutamiento dinámico: cada router busca vecinos en sus enlaces, se hacen amigos (estado Full) y se cuentan qué redes tienen. Hay que activarlo en los tres routers."
+  - "En cada router, primero la instancia y el área: `/routing ospf instance add name=default router-id=10.255.255.N` (N = número del router) y `/routing ospf area add name=backbone area-id=0.0.0.0 instance=default`."
+  - "Luego dile a OSPF qué redes meter: `/routing ospf interface-template add area=backbone networks=...` con las redes conectadas de ese router (sus enlaces 172.16.x.x/30 y, si tiene, su LAN)."
+  - "Comprueba en cada router `/routing ospf neighbor print` y `/ip route print where ospf`: si un vecino no llega a Full, revisa que las redes de `interface-template` cubren el enlace."
+flag_seed: l3-01-ospf-basico
+ram_mb: 1600

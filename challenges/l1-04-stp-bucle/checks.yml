@@ -1,0 +1,11 @@
+- ping: {from: pc1, to: 192.168.10.2, expect: ok}
+- ping: {from: pc2, to: 192.168.10.1, expect: ok}
+- routeros: {node: sw1, cmd: "/interface bridge print count-only where protocol-mode=rstp", expect: "1", desc: "sw1 usa RSTP"}
+- routeros: {node: sw2, cmd: "/interface bridge print count-only where protocol-mode=rstp", expect: "1", desc: "sw2 usa RSTP"}
+- routeros: {node: sw3, cmd: "/interface bridge print count-only where protocol-mode=rstp", expect: "1", desc: "sw3 usa RSTP"}
+- routeros: {node: sw2, cmd: "/interface bridge port print count-only where interface=ether3 and !disabled", expect: "1", desc: "el enlace sw2-sw3 está activo"}
+- routeros: {node: sw1, cmd: "/interface bridge port print count-only where role=root-port", expect: "0", desc: "sw1 es el bridge raíz (ninguno de sus puertos es root-port)"}
+- routeros: {node: sw2, cmd: "/interface bridge port print count-only where role=root-port", expect: "1", desc: "sw2 es el raíz secundario: su root-port va hacia sw1"}
+- routeros: {node: sw3, cmd: "/interface bridge port print count-only where role=alternate-port and interface=ether2", expect: "1", desc: "STP bloquea el enlace sw2-sw3 en sw3, no el directo a sw1"}
+- routeros: {node: sw1, cmd: "/interface bridge print count-only where priority=0x1000", expect: "1", desc: "sw1 tiene prioridad 0x1000"}
+- routeros: {node: sw2, cmd: "/interface bridge print count-only where priority=0x2000", expect: "1", desc: "sw2 tiene prioridad 0x2000"}

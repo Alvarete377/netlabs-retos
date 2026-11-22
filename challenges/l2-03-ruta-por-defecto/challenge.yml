@@ -1,0 +1,16 @@
+id: l2-03-ruta-por-defecto
+title: Todo hacia el núcleo
+level: 2
+type: build
+difficulty: medium
+objectives:
+  - pc1 (sucursal) llega a pc2 (192.168.2.10) y al servidor (192.168.99.10), y el servidor responde a pc1
+  - r1 (sucursal) llega a todo con una única ruta por defecto, sin rutas específicas
+  - r2 (núcleo) vuelve a la sucursal con una ruta específica a 192.168.1.0/24, sin ruta por defecto
+  - Sin NAT en ningún router
+hints:
+  - "Una sucursal no necesita conocer cada red: le basta un camino por defecto."
+  - "/ip route add dst-address=0.0.0.0/0 gateway=..."
+  - "¿Sabe r2 volver a 192.168.1.0/24? El gateway es la IP del otro router en 172.16.12.0/30."
+flag_seed: l2-03-ruta-por-defecto
+ram_mb: 1150

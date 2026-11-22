@@ -1,0 +1,7 @@
+- ping: {from: pc1, to: 192.168.10.2, expect: ok}
+- ping: {from: pc2, to: 192.168.10.1, expect: ok}
+- routeros:
+    node: sw1
+    cmd: "/interface bridge port print count-only"
+    expect: "2"
+    desc: "sw1 tiene ether2 y ether3 en un bridge"

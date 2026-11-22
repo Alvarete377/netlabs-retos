@@ -1,0 +1,8 @@
+- ping: {from: pc1, to: 192.168.3.10, expect: ok}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok}
+- routeros: {node: r1, cmd: "/ip route print count-only where blackhole and !disabled", expect: "0", desc: "r1 no descarta el tráfico hacia otras sedes"}
+- routeros: {node: r2, cmd: "/ip route print count-only where static and dst-address=192.168.3.0/24 and gateway=172.16.23.2 and !disabled", expect: "re:^[1-9][0-9]*$", desc: "r2 sabe llegar a la LAN de pc2 a través de su vecino"}
+- routeros: {node: r3, cmd: "/ip route print count-only where static and gateway=172.16.23.1 and !disabled", expect: "re:^[1-9][0-9]*$", desc: "r3 sabe volver a la LAN de pc1"}
+- routeros: {node: r1, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r1 no usa NAT (enruta, no enmascara)"}
+- routeros: {node: r2, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r2 no usa NAT (enruta, no enmascara)"}
+- routeros: {node: r3, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r3 no usa NAT (enruta, no enmascara)"}

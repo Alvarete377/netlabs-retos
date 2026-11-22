@@ -1,0 +1,15 @@
+id: l2-02-dos-sedes
+title: Dos sedes
+level: 2
+type: build
+difficulty: easy
+objectives:
+  - pc1 (192.168.1.10) y pc2 (192.168.2.10) se hacen ping a través de r1 y r2
+  - r1 y r2 conocen la LAN del otro mediante rutas estáticas específicas (no por defecto)
+  - Sin NAT en ningún router
+hints:
+  - "r1 no conoce la red de pc2. ¿Y r2 la de pc1?"
+  - "/ip route add dst-address=... gateway=..."
+  - "El gateway es la IP del otro router en el enlace 172.16.12.0/30."
+flag_seed: l2-02-dos-sedes
+ram_mb: 1100

@@ -1,0 +1,4 @@
+/system identity set name=r2
+/ip address add address=172.16.12.2/30 interface=ether2
+/ip address add address=192.168.2.1/24 interface=ether3
+/ip address add address=192.168.99.1/24 interface=ether4

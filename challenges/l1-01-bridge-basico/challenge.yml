@@ -1,0 +1,13 @@
+id: l1-01-bridge-basico
+title: Tu primer switch
+level: 1
+type: build
+difficulty: easy
+objectives:
+  - pc1 y pc2 se hacen ping a través de sw1
+hints:
+  - Un router MikroTik no conmuta entre puertos por defecto. Necesitas un bridge.
+  - "/interface bridge add name=br1"
+  - "Ahora añade ether2 y ether3 al bridge con /interface bridge port add"
+flag_seed: l1-01-bridge-basico
+ram_mb: 600

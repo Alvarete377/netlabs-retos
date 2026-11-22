@@ -1,0 +1,15 @@
+id: l1-03-trunk-roto
+title: El trunk que no troncaba
+level: 1
+type: troubleshoot
+difficulty: medium
+objectives:
+  - pc1 ↔ pc2 (VLAN 10) funciona
+  - pc3 ↔ pc4 (VLAN 20) funciona
+  - La VLAN 10 y la VLAN 20 siguen aisladas entre sí
+hints:
+  - La VLAN 10 funciona de punta a punta. Compara cómo está configurada la 20 en cada switch.
+  - "/interface bridge vlan print y /interface bridge port print en los dos switches"
+  - Hay dos fallos, uno en cada switch.
+flag_seed: l1-03-trunk-roto
+ram_mb: 1200

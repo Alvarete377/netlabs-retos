@@ -1,0 +1,15 @@
+- ping: {from: pc1, to: 192.168.3.10, expect: ok}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok}
+- routeros: {node: r2, cmd: "/routing ospf neighbor print count-only where state=Full", expect: "2", desc: "r2 tiene dos vecinos OSPF en estado Full (r1 y r3)"}
+- routeros: {node: r2, cmd: "/routing ospf area print count-only where area-id=0.0.0.0 and !disabled", expect: "re:^[1-9][0-9]*$", desc: "r2 usa el área backbone (0.0.0.0)"}
+- routeros: {node: r1, cmd: "/routing ospf area print count-only where area-id!=0.0.0.0 and !disabled", expect: "0", desc: "r1 solo usa el área backbone (0.0.0.0)"}
+- routeros: {node: r2, cmd: "/routing ospf area print count-only where area-id!=0.0.0.0 and !disabled", expect: "0", desc: "r2 solo usa el área backbone (0.0.0.0)"}
+- routeros: {node: r3, cmd: "/routing ospf area print count-only where area-id!=0.0.0.0 and !disabled", expect: "0", desc: "r3 solo usa el área backbone (0.0.0.0)"}
+- routeros: {node: r1, cmd: "/ip route print count-only where dst-address=192.168.3.0/24 and ospf and active", expect: "1", desc: "r1 conoce la LAN de pc2 (192.168.3.0/24) por OSPF"}
+- routeros: {node: r3, cmd: "/ip route print count-only where dst-address=192.168.1.0/24 and ospf and active", expect: "1", desc: "r3 conoce la LAN de pc1 (192.168.1.0/24) por OSPF"}
+- routeros: {node: r1, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "r1 no tiene rutas estáticas (las rutas las pone OSPF)"}
+- routeros: {node: r2, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "r2 no tiene rutas estáticas (las rutas las pone OSPF)"}
+- routeros: {node: r3, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "r3 no tiene rutas estáticas (las rutas las pone OSPF)"}
+- routeros: {node: r1, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r1 no usa NAT (enruta, no enmascara)"}
+- routeros: {node: r2, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r2 no usa NAT (enruta, no enmascara)"}
+- routeros: {node: r3, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r3 no usa NAT (enruta, no enmascara)"}

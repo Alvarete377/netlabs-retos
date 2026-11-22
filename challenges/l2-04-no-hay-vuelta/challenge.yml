@@ -1,0 +1,16 @@
+id: l2-04-no-hay-vuelta
+title: No hay vuelta
+level: 2
+type: troubleshoot
+difficulty: medium
+objectives:
+  - pc1 llega a pc2 (192.168.3.10) y pc2 llega a pc1 (192.168.1.10)
+  - Cada router tiene lo que necesita para llevar el tráfico en los dos sentidos
+  - Sin NAT en ningún router
+hints:
+  - "Usa `/tool traceroute` desde r1 y mira dónde se para."
+  - "En `/ip route print`, una ruta sin la flag A no se usa."
+  - "Hay tres fallos, uno por router."
+  - "Que el ping llegue no basta: la respuesta también tiene que volver."
+flag_seed: l2-04-no-hay-vuelta
+ram_mb: 1600
