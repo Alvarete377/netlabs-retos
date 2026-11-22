@@ -38,6 +38,7 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | El trunk que no troncaba | `l1-03-trunk-roto` | Troubleshooting | Fácil |
 | El bucle maldito | `l1-04-stp-bucle` | Montar | Media |
 | El switch misterioso | `l1-05-switch-misterioso` | Troubleshooting | Media |
+| La planta nueva | `l1-06-planta-nueva` | Troubleshooting | Difícil |
 ### Rutas estáticas
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|

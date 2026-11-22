@@ -1,0 +1,38 @@
+# Conectividad dentro de cada VLAN (entre switches distintos)
+- ping: {from: pc1, to: 192.168.10.12, expect: ok, desc: "VLAN 10 (Oficina): pc1 alcanza a pc2"}
+- ping: {from: pc2, to: 192.168.10.11, expect: ok, desc: "VLAN 10 (Oficina): pc2 alcanza a pc1"}
+- ping: {from: pc3, to: 192.168.10.22, expect: ok, desc: "VLAN 20 (Voz): pc3 alcanza a pc4"}
+- ping: {from: pc4, to: 192.168.10.21, expect: ok, desc: "VLAN 20 (Voz): pc4 alcanza a pc3"}
+- ping: {from: pc5, to: 192.168.10.32, expect: ok, desc: "VLAN 30 (Invitados): pc5 alcanza a pc6"}
+- ping: {from: pc6, to: 192.168.10.31, expect: ok, desc: "VLAN 30 (Invitados): pc6 alcanza a pc5"}
+
+# Aislamiento entre VLANs (pings negativos)
+- ping: {from: pc1, to: 192.168.10.31, expect: fail, desc: "Aislamiento: pc1 (VLAN 10) NO alcanza a pc5 (VLAN 30)"}
+- ping: {from: pc1, to: 192.168.10.32, expect: fail, desc: "Aislamiento: pc1 (VLAN 10) NO alcanza a pc6 (VLAN 30)"}
+- ping: {from: pc2, to: 192.168.10.31, expect: fail, desc: "Aislamiento: pc2 (VLAN 10) NO alcanza a pc5 (VLAN 30)"}
+- ping: {from: pc1, to: 192.168.10.21, expect: fail, desc: "Aislamiento: pc1 (VLAN 10) NO alcanza a pc3 (VLAN 20)"}
+- ping: {from: pc2, to: 192.168.10.22, expect: fail, desc: "Aislamiento: pc2 (VLAN 10) NO alcanza a pc4 (VLAN 20)"}
+- ping: {from: pc3, to: 192.168.10.31, expect: fail, desc: "Aislamiento: pc3 (VLAN 20) NO alcanza a pc5 (VLAN 30)"}
+- ping: {from: pc4, to: 192.168.10.32, expect: fail, desc: "Aislamiento: pc4 (VLAN 20) NO alcanza a pc6 (VLAN 30)"}
+
+# Filtrado de VLANs y RSTP activos en los cuatro switches
+- routeros: {node: sw1, cmd: "/interface bridge print count-only where vlan-filtering=yes and protocol-mode=rstp", expect: "1", desc: "sw1 tiene RSTP y filtrado de VLANs activos en el bridge"}
+- routeros: {node: sw2, cmd: "/interface bridge print count-only where vlan-filtering=yes and protocol-mode=rstp", expect: "1", desc: "sw2 tiene RSTP y filtrado de VLANs activos en el bridge"}
+- routeros: {node: sw3, cmd: "/interface bridge print count-only where vlan-filtering=yes and protocol-mode=rstp", expect: "1", desc: "sw3 tiene RSTP y filtrado de VLANs activos en el bridge"}
+- routeros: {node: sw4, cmd: "/interface bridge print count-only where vlan-filtering=yes and protocol-mode=rstp", expect: "1", desc: "sw4 tiene RSTP y filtrado de VLANs activos en el bridge"}
+
+# Todos los puertos del anillo están habilitados en bridge y en interfaz física
+- routeros: {node: sw1, cmd: "/interface bridge port print count-only where (interface=ether2 or interface=ether3) and !disabled", expect: "2", desc: "sw1 mantiene ambos enlaces del anillo activos en el bridge"}
+- routeros: {node: sw2, cmd: "/interface bridge port print count-only where (interface=ether2 or interface=ether3) and !disabled", expect: "2", desc: "sw2 mantiene ambos enlaces del anillo activos en el bridge"}
+- routeros: {node: sw3, cmd: "/interface bridge port print count-only where (interface=ether2 or interface=ether3) and !disabled", expect: "2", desc: "sw3 mantiene ambos enlaces del anillo activos en el bridge"}
+- routeros: {node: sw4, cmd: "/interface bridge port print count-only where (interface=ether2 or interface=ether3) and !disabled", expect: "2", desc: "sw4 mantiene ambos enlaces del anillo activos en el bridge"}
+- routeros: {node: sw1, cmd: "/interface ethernet print count-only where (name=ether2 or name=ether3) and !disabled", expect: "2", desc: "sw1 mantiene encendidas las interfaces físicas del anillo"}
+- routeros: {node: sw2, cmd: "/interface ethernet print count-only where (name=ether2 or name=ether3) and !disabled", expect: "2", desc: "sw2 mantiene encendidas las interfaces físicas del anillo"}
+- routeros: {node: sw3, cmd: "/interface ethernet print count-only where (name=ether2 or name=ether3) and !disabled", expect: "2", desc: "sw3 mantiene encendidas las interfaces físicas del anillo"}
+- routeros: {node: sw4, cmd: "/interface ethernet print count-only where (name=ether2 or name=ether3) and !disabled", expect: "2", desc: "sw4 mantiene encendidas las interfaces físicas del anillo"}
+
+# Árbol RSTP: sw1 es el root bridge y el anillo converge sin desactivar enlaces
+- routeros: {node: sw1, cmd: "/interface bridge port print count-only where role=root-port", expect: "0", desc: "sw1 es el bridge raíz de RSTP (ningún puerto es root-port)"}
+- routeros: {node: sw2, cmd: "/interface bridge port print count-only where interface=ether2 and role=root-port", expect: "1", desc: "sw2 alcanza al bridge raíz por su enlace directo con sw1"}
+- routeros: {node: sw4, cmd: "/interface bridge port print count-only where interface=ether3 and role=root-port", expect: "1", desc: "sw4 alcanza al bridge raíz por su enlace directo con sw1"}
+- routeros: {node: sw3, cmd: "/interface bridge port print count-only where role=alternate-port", expect: "1", desc: "RSTP bloquea un enlace del anillo en sw3 para mantener la redundancia sin bucles"}

@@ -1,0 +1,19 @@
+id: l1-06-planta-nueva
+title: La planta nueva
+level: 1
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "VLAN 10 (Oficina): pc1 (192.168.10.11) ↔ pc2 (192.168.10.12) se comunican"
+  - "VLAN 20 (Voz): pc3 (192.168.10.21) ↔ pc4 (192.168.10.22) se comunican"
+  - "VLAN 30 (Invitados): pc5 (192.168.10.31) ↔ pc6 (192.168.10.32) se comunican"
+  - Las tres VLANs están completamente aisladas entre sí
+  - "sw1 es el bridge raíz de RSTP y los cuatro enlaces del anillo siguen activos (sin desactivar puertos)"
+  - Los cuatro switches mantienen RSTP y el filtrado de VLANs activados
+hints:
+  - "Antes de tocar VLANs, averigua por dónde viaja el tráfico de verdad: en los cuatro switches, `/interface bridge monitor br1 once` (¿quién es la raíz?) y `/interface bridge port print detail` (rol y estado de cada puerto). Dibuja el árbol."
+  - "La raíz no es la del diseño, y eso deja bloqueado un enlace del anillo. Arréglalo aunque empeore todo: un enlace que nunca llevó tráfico puede esconder fallos propios."
+  - "Revisa el anillo cable a cable comparando los DOS extremos: `pvid`, `frame-types` y en qué VLANs está cada puerto (`/interface bridge vlan print`, incluidas las entradas dinámicas que crea el pvid). Ojo con lo que viaja sin etiqueta por un trunk."
+  - "Hay cuatro fallos de tipos distintos: la prioridad STP, la VLAN nativa de un trunk que no coincide en sus dos extremos (y por eso mezcla dos VLANs), una VLAN que falta en un trunk y un filtro de entrada que descarta lo etiquetado en otro."
+flag_seed: l1-06-planta-nueva
+ram_mb: 2200
