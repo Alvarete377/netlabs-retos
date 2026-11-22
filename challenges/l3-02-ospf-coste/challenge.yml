@@ -1,0 +1,17 @@
+id: l3-02-ospf-coste
+title: El camino más corto no siempre es el mejor
+level: 3
+type: build
+difficulty: medium
+objectives:
+  - pc1 (192.168.1.10) y pc2 (192.168.4.10) se hacen ping en los dos sentidos
+  - "El tráfico entre ambas LANs pasa sólo por r3: en r1 la ruta activa a 192.168.4.0/24 sale únicamente por r3 (172.16.13.2) y en r4 la ruta activa a 192.168.1.0/24 sale únicamente por r3 (172.16.34.1)"
+  - "El camino de backup por r2 sigue vivo en OSPF: no se desactiva ninguna interfaz ni plantilla y todos los enlaces mantienen sus vecinos en estado Full"
+  - Todo sigue en una única instancia OSPF y el área backbone (0.0.0.0), sin rutas estáticas, sin filtros de rutas y sin NAT en ningún router
+hints:
+  - "OSPF ya está funcionando en los cuatro routers con el coste por defecto (1 en RouterOS 7) en todos los enlaces. Como r1–r2–r4 y r1–r3–r4 suman lo mismo (métrica 3), OSPF instala ambos caminos a la vez (flag + de ECMP). Compruébalo en r1 y r4 con `/ip route print`."
+  - "Para preferir r3 sin apagar r2 hay que subir el coste OSPF (`cost=`) en `/routing ospf interface-template` de la rama de backup (como el mínimo es 1, no puedes bajar el de r3: tienes que penalizar el camino de r2, p. ej. `cost=100`)."
+  - "El coste OSPF es de salida (unidireccional): si sólo subes el coste en r1 hacia r2, la ida (r1 → r4) irá por r3, pero la vuelta (r4 → r1) seguirá usando r2. Ajusta el coste en ambos sentidos (lo más limpio es poner `cost=100` en los dos extremos de r1–r2 y r2–r4: en r1, r2 y r4)."
+  - "En cada router, lista las plantillas con `/routing ospf interface-template print` y cambia el coste con `/routing ospf interface-template set <num> cost=100`. Luego verifica `/ip route print` en r1 y r4 y `/routing ospf neighbor print`."
+flag_seed: l3-02-ospf-coste
+ram_mb: 2150

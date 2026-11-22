@@ -1,0 +1,10 @@
+- ping: {from: pc1, to: 192.168.2.10, expect: ok}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok}
+- routeros: {node: r1, cmd: '/routing bgp session print count-only where established and ebgp and local.as="65001" and remote.as="65002" and remote.address=172.16.12.2', expect: "1", desc: "r1 tiene una sesión eBGP establecida con r2 (AS 65001 ↔ AS 65002)"}
+- routeros: {node: r2, cmd: '/routing bgp session print count-only where established and ebgp and local.as="65002" and remote.as="65001" and remote.address=172.16.12.1', expect: "1", desc: "r2 tiene una sesión eBGP establecida con r1 (AS 65002 ↔ AS 65001)"}
+- routeros: {node: r1, cmd: '/routing route print count-only where bgp and active and dst-address=192.168.2.0/24 and bgp.as-path="65002"', expect: "1", desc: "r1 aprende la LAN de pc2 (192.168.2.0/24) por BGP desde el AS 65002"}
+- routeros: {node: r2, cmd: '/routing route print count-only where bgp and active and dst-address=192.168.1.0/24 and bgp.as-path="65001"', expect: "1", desc: "r2 aprende la LAN de pc1 (192.168.1.0/24) por BGP desde el AS 65001"}
+- routeros: {node: r1, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "r1 no tiene rutas estáticas (las rutas las aprende BGP)"}
+- routeros: {node: r2, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "r2 no tiene rutas estáticas (las rutas las aprende BGP)"}
+- routeros: {node: r1, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r1 no usa NAT (enruta, no enmascara)"}
+- routeros: {node: r2, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r2 no usa NAT (enruta, no enmascara)"}

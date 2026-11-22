@@ -1,0 +1,17 @@
+id: l3-07-rip-ospf
+title: Dos idiomas, una red
+level: 3
+type: build
+difficulty: medium
+objectives:
+  - pc1 (192.168.1.10, sede vieja) y pc2 (192.168.3.10, sede nueva) se hacen ping en los dos sentidos
+  - r1 sigue hablando sólo RIP y r3 sólo OSPF; r2, en la frontera, traduce entre los dos
+  - r1 aprende la LAN de pc2 por RIP y r3 aprende la LAN de pc1 por OSPF
+  - Sin rutas estáticas ni NAT en ningún router
+hints:
+  - "Mira qué sabe cada router: `/ip route print` en r1, r2 y r3. r2 conoce las dos LANs (una por RIP y otra por OSPF), pero r1 y r3 sólo conocen la suya. ¿Por qué r2 no se lo cuenta?"
+  - "Cada protocolo sólo anuncia lo que le dices que anuncie. Pasar rutas de un protocolo a otro se llama redistribución, y se hace en el router que habla los dos: r2."
+  - "En r2, el parámetro `redistribute` de cada instancia: `/routing ospf instance set [find name=default] redistribute=...` y `/routing rip instance set [find name=default] redistribute=...`. ¿Qué tiene que meter OSPF? ¿Y RIP?"
+  - "Hace falta en los dos sentidos: OSPF tiene que anunciar lo aprendido por RIP (`redistribute=rip`) y RIP lo aprendido por OSPF (añade `ospf` a lo que ya tiene). Espera ~1 minuto: RIP es lento."
+flag_seed: l3-07-rip-ospf
+ram_mb: 1600

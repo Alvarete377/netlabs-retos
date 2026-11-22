@@ -49,3 +49,9 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|
 | Que se descubran solos | `l3-01-ospf-basico` | Montar | Fácil |
+| El camino más corto no siempre es el mejor | `l3-02-ospf-coste` | Montar | Media |
+| Divide y vencerás | `l3-03-ospf-areas` | Montar | Media |
+| Hola, vecino de otro AS | `l3-04-ebgp` | Montar | Media |
+| Vecinos que no se hablan | `l3-05-ospf-roto` | Troubleshooting | Media |
+| Corre la voz | `l3-06-rip-basico` | Montar | Fácil |
+| Dos idiomas, una red | `l3-07-rip-ospf` | Montar | Media |

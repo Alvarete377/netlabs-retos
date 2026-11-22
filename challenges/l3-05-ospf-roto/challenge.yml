@@ -1,0 +1,17 @@
+id: l3-05-ospf-roto
+title: Vecinos que no se hablan
+level: 3
+type: troubleshoot
+difficulty: medium
+objectives:
+  - pc1 (192.168.1.10) y pc2 (192.168.4.10) se hacen ping en los dos sentidos a través de r1, r2, r3 y r4
+  - Todos los enlaces entre routers forman vecindad OSPF en estado Full dentro del área backbone (0.0.0.0)
+  - r1 y r4 aprenden la LAN remota por OSPF dentro del backbone, sin rutas estáticas
+  - Sin NAT en ningún router
+hints:
+  - "Empieza comprobando qué enlaces tienen vecinos y cuáles no con `/routing ospf neighbor print` en cada router. Hay tres fallos, uno en cada uno de los tres enlaces entre routers (r4 está sano y te sirve de referencia)."
+  - "Para que dos routers formen vecindad OSPF en un enlace Ethernet deben coincidir en: misma red, misma área, mismos temporizadores (`hello-interval` y `dead-interval`), mismo tipo de red, y que ninguno tenga la interfaz en modo pasivo."
+  - "Compara ambos extremos de cada enlace con `/routing ospf interface-template print detail` y `/routing ospf interface print detail`: revisa `r1` vs `r2` en `172.16.12.0/30`, `r2` vs `r3` en `172.16.23.0/30`, y `r3` vs `r4` en `172.16.34.0/30`."
+  - "Los tres parámetros desalineados son distintos entre sí: en `r1` revisa los intervalos Hello/Dead; en `r2` revisa a qué área apunta la plantilla hacia `r3` (y las áreas definidas en `/routing ospf area print`); en `r3` revisa si el enlace hacia `r4` envía Hellos (`passive`, que en RouterOS 7 se quita con `set <n> !passive` o `unset <n> passive`, no `passive=no`)."
+flag_seed: l3-05-ospf-roto
+ram_mb: 2150

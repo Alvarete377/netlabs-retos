@@ -1,0 +1,17 @@
+id: l3-04-ebgp
+title: Hola, vecino de otro AS
+level: 3
+type: build
+difficulty: medium
+objectives:
+  - pc1 (192.168.1.10) y pc2 (192.168.2.10) se hacen ping en los dos sentidos a través de r1 y r2
+  - "r1 (AS 65001) y r2 (AS 65002) establecen una sesión eBGP sobre el enlace 172.16.12.0/30"
+  - "Cada router anuncia su LAN por BGP: r1 aprende 192.168.2.0/24 desde el AS 65002 y r2 aprende 192.168.1.0/24 desde el AS 65001"
+  - Sin rutas estáticas y sin NAT en ningún router
+hints:
+  - "BGP conecta Sistemas Autónomos (AS) distintos y, a diferencia de OSPF, no descubre vecinos automáticamente por multicast: en cada router debes indicar a mano la IP del vecino (`remote.address`), su AS (`remote.as`), tu propio AS (`as`) y el rol (`local.role=ebgp`)."
+  - "En RouterOS 7 las redes que anuncia BGP se declaran con una lista de direcciones (`/ip firewall address-list add list=bgp-networks address=...`) y se enlazan en la conexión con `output.network=bgp-networks`. El prefijo debe existir exactamente como ruta activa en el router (aquí cada LAN es una ruta conectada)."
+  - "En r1 (AS 65001) crea `/ip firewall address-list add list=bgp-networks address=192.168.1.0/24` y `/routing bgp connection add name=to-r2 as=65001 router-id=10.255.255.1 local.role=ebgp remote.address=172.16.12.2 remote.as=65002 output.network=bgp-networks`. Haz lo simétrico en r2 con AS 65002, `router-id=10.255.255.2`, `192.168.2.0/24` y vecino `172.16.12.1` (AS 65001)."
+  - "Comprueba `/routing bgp session print` (flag `E` = established y `ebgp`), `/routing bgp advertisements print`, `/ip route print where bgp` (flag `DAb`, distancia 20) y `/routing route print detail where bgp` (campo `bgp.as-path`)."
+flag_seed: l3-04-ebgp
+ram_mb: 1100

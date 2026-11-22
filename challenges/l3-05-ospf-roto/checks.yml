@@ -1,0 +1,22 @@
+- ping: {from: pc1, to: 192.168.4.10, expect: ok}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok}
+- routeros: {node: r1, cmd: "/routing ospf neighbor print count-only where state=Full and dr!=0.0.0.0 and address=172.16.12.2", expect: "1", desc: "r1 y r2 son vecinos OSPF en estado Full (visto desde r1)"}
+- routeros: {node: r2, cmd: "/routing ospf neighbor print count-only where state=Full and dr!=0.0.0.0 and address=172.16.12.1", expect: "1", desc: "r1 y r2 son vecinos OSPF en estado Full (visto desde r2)"}
+- routeros: {node: r2, cmd: "/routing ospf neighbor print count-only where state=Full and dr!=0.0.0.0 and address=172.16.23.2", expect: "1", desc: "r2 y r3 son vecinos OSPF en estado Full (visto desde r2)"}
+- routeros: {node: r3, cmd: "/routing ospf neighbor print count-only where state=Full and dr!=0.0.0.0 and address=172.16.23.1", expect: "1", desc: "r2 y r3 son vecinos OSPF en estado Full (visto desde r3)"}
+- routeros: {node: r3, cmd: "/routing ospf neighbor print count-only where state=Full and dr!=0.0.0.0 and address=172.16.34.2", expect: "1", desc: "r3 y r4 son vecinos OSPF en estado Full (visto desde r3)"}
+- routeros: {node: r4, cmd: "/routing ospf neighbor print count-only where state=Full and dr!=0.0.0.0 and address=172.16.34.1", expect: "1", desc: "r3 y r4 son vecinos OSPF en estado Full (visto desde r4)"}
+- routeros: {node: r1, cmd: "/routing route print count-only where ospf and active and dst-address=192.168.4.0/24 and ospf.type=intra", expect: "1", desc: "r1 aprende la LAN de pc2 (192.168.4.0/24) por OSPF dentro del backbone"}
+- routeros: {node: r4, cmd: "/routing route print count-only where ospf and active and dst-address=192.168.1.0/24 and ospf.type=intra", expect: "1", desc: "r4 aprende la LAN de pc1 (192.168.1.0/24) por OSPF dentro del backbone"}
+- routeros: {node: r1, cmd: "/routing ospf area print count-only where area-id=0.0.0.0 and !disabled", expect: "1", desc: "r1 tiene activa el área backbone (0.0.0.0)"}
+- routeros: {node: r1, cmd: "/routing ospf area print count-only where area-id!=0.0.0.0 and !disabled", expect: "0", desc: "r1 solo usa el área backbone (0.0.0.0)"}
+- routeros: {node: r4, cmd: "/routing ospf area print count-only where area-id=0.0.0.0 and !disabled", expect: "1", desc: "r4 tiene activa el área backbone (0.0.0.0)"}
+- routeros: {node: r4, cmd: "/routing ospf area print count-only where area-id!=0.0.0.0 and !disabled", expect: "0", desc: "r4 solo usa el área backbone (0.0.0.0)"}
+- routeros: {node: r1, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "r1 no tiene rutas estáticas"}
+- routeros: {node: r2, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "r2 no tiene rutas estáticas"}
+- routeros: {node: r3, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "r3 no tiene rutas estáticas"}
+- routeros: {node: r4, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "r4 no tiene rutas estáticas"}
+- routeros: {node: r1, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r1 no usa NAT (enruta, no enmascara)"}
+- routeros: {node: r2, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r2 no usa NAT (enruta, no enmascara)"}
+- routeros: {node: r3, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r3 no usa NAT (enruta, no enmascara)"}
+- routeros: {node: r4, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r4 no usa NAT (enruta, no enmascara)"}

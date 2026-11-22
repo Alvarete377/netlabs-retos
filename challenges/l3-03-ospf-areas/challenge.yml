@@ -1,0 +1,19 @@
+id: l3-03-ospf-areas
+title: Divide y vencerás
+level: 3
+type: build
+difficulty: medium
+objectives:
+  - pc1 (192.168.1.10) y pc2 (192.168.3.10) se hacen ping en los dos sentidos
+  - "r2 actúa como ABR (Area Border Router): conecta el área backbone (0.0.0.0) hacia r1 con el área 1 (0.0.0.1) hacia r3 en la misma instancia OSPF, con vecinos en estado Full en ambas áreas"
+  - "r3 habla OSPF únicamente en el área 1 (0.0.0.1), cubriendo el enlace r2–r3 (172.16.23.0/30) y la LAN de pc2 (192.168.3.0/24)"
+  - "r1 aprende la LAN de pc2 (192.168.3.0/24) como ruta OSPF inter-área (LSA tipo 3), y r3 aprende la LAN de pc1 (192.168.1.0/24) como ruta OSPF inter-área"
+  - Sin rutas estáticas y sin NAT en ningún router
+hints:
+  - "En OSPF multiárea, el router que une el área backbone (0.0.0.0) con otra área se llama ABR (Area Border Router). Aquí r1 y el enlace r1–r2 ya están en 0.0.0.0: falta crear el área 1 (area-id=0.0.0.1) en r3 y en r2."
+  - "En r3 crea la instancia OSPF (`router-id=10.255.255.3`), el área 1 (`area-id=0.0.0.1`) y las plantillas `interface-template` para `172.16.23.0/30` y `192.168.3.0/24` (mejor con `passive`). No crees área backbone en r3. Empieza por r3: así r2 ya tiene vecino cuando le añadas el área 1."
+  - "En r2 NO crees una segunda instancia OSPF: añade el área 1 a la instancia `default` existente (`/routing ospf area add name=area1 area-id=0.0.0.1 instance=default`) y mete el enlace `172.16.23.0/30` en esa área con `/routing ospf interface-template add area=area1 networks=172.16.23.0/30`."
+  - "Si tras configurar el área 1 ves que r2 tiene dos vecinos Full y r3 aprende 192.168.1.0/24, pero r1 sigue sin ruta a 192.168.3.0/24 (pasa en RouterOS 7.16 si configuraste r2 antes que r3): hay que reiniciar la instancia OSPF en r2 (`/routing ospf instance disable default` y luego `enable default`) para que r2 actualice su Router LSA del backbone con el bit ABR (`bits=B`)."
+  - "Comprueba `/routing ospf neighbor print` en r2, `/routing ospf lsa print` en r1 (verás LSAs `type=\"inter-area-prefix\"`) y `/routing route print detail where ospf` en r1 y r3 (campo `ospf.type=inter`)."
+flag_seed: l3-03-ospf-areas
+ram_mb: 1600

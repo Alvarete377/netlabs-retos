@@ -1,0 +1,17 @@
+id: l3-06-rip-basico
+title: Corre la voz
+level: 3
+type: build
+difficulty: easy
+objectives:
+  - pc1 (192.168.1.10) y pc2 (192.168.3.10) se hacen ping en los dos sentidos a través de r1, r2 y r3
+  - Los tres routers hablan RIP y se cuentan sus redes
+  - Las rutas hacia las LANs remotas las aprende RIP; sin rutas estáticas, sin OSPF ni BGP
+  - Sin NAT en ningún router
+hints:
+  - "RIP es el protocolo de enrutamiento dinámico más sencillo: cada router le cuenta a sus vecinos qué redes conoce y a cuántos saltos están, y ellos se lo cuentan a los suyos. Hay que activarlo en los tres routers."
+  - "En cada router, primero la instancia: `/routing rip instance add name=default redistribute=connected,rip`. `connected` anuncia las redes del propio router y `rip` reenvía las que ha aprendido de otros (en RouterOS 7 no lo hace si no se lo pides)."
+  - "Luego dile a RIP por qué interfaces hablar: `/routing rip interface-template add instance=default interfaces=...` con los puertos que van hacia otros routers (ether2/ether3 según el router)."
+  - "Comprueba en cada router `/routing rip neighbor print` y `/ip route print where rip`. RIP es lento: los anuncios salen cada 30 s, dale medio minuto antes de dar nada por roto."
+flag_seed: l3-06-rip-basico
+ram_mb: 1600
