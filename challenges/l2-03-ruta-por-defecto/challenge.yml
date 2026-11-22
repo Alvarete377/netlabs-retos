@@ -2,7 +2,7 @@ id: l2-03-ruta-por-defecto
 title: Todo hacia el núcleo
 level: 2
 type: build
-difficulty: medium
+difficulty: easy
 objectives:
   - pc1 (sucursal) llega a pc2 (192.168.2.10) y al servidor (192.168.99.10), y el servidor responde a pc1
   - r1 (sucursal) llega a todo con una única ruta por defecto, sin rutas específicas

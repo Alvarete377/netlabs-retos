@@ -30,22 +30,22 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 
 ## Retos
 
-### Nivel 1 — Capa 2
+### Switching y VLANs
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|
 | Tu primer switch | `l1-01-bridge-basico` | Montar | Fácil |
 | Separa a los de contabilidad | `l1-02-vlans-basicas` | Montar | Fácil |
-| El trunk que no troncaba | `l1-03-trunk-roto` | Troubleshooting | Media |
+| El trunk que no troncaba | `l1-03-trunk-roto` | Troubleshooting | Fácil |
 | El bucle maldito | `l1-04-stp-bucle` | Montar | Media |
-| El switch misterioso | `l1-05-switch-misterioso` | Troubleshooting | Difícil |
-### Nivel 2 — Rutas estáticas
+| El switch misterioso | `l1-05-switch-misterioso` | Troubleshooting | Media |
+### Rutas estáticas
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|
 | Tu primer router | `l2-01-primer-router` | Montar | Fácil |
 | Dos sedes | `l2-02-dos-sedes` | Montar | Fácil |
-| Todo hacia el núcleo | `l2-03-ruta-por-defecto` | Montar | Media |
+| Todo hacia el núcleo | `l2-03-ruta-por-defecto` | Montar | Fácil |
 | No hay vuelta | `l2-04-no-hay-vuelta` | Troubleshooting | Media |
-### Nivel 3 — Enrutamiento dinámico
+### Enrutamiento dinámico
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|
 | Que se descubran solos | `l3-01-ospf-basico` | Montar | Fácil |

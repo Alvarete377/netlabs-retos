@@ -2,7 +2,7 @@ id: l1-03-trunk-roto
 title: El trunk que no troncaba
 level: 1
 type: troubleshoot
-difficulty: medium
+difficulty: easy
 objectives:
   - pc1 ↔ pc2 (VLAN 10) funciona
   - pc3 ↔ pc4 (VLAN 20) funciona

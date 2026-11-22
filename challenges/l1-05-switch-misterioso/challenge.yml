@@ -2,7 +2,7 @@ id: l1-05-switch-misterioso
 title: El switch misterioso
 level: 1
 type: troubleshoot
-difficulty: hard
+difficulty: medium
 objectives:
   - pc1 ↔ pc2 (VLAN 10) funciona a través de los tres switches
   - pc3 ↔ pc4 (VLAN 20) funciona a través de los tres switches
