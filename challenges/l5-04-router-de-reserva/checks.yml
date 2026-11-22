@@ -1,0 +1,9 @@
+- http: {from: pc1, url: "http://203.0.113.10/", contains: "servidor de Internet", desc: "pc1 sale a Internet por su puerta de enlace 192.168.1.1"}
+- ping: {from: pc1, to: 192.168.1.1, expect: ok, desc: "La puerta de enlace 192.168.1.1 responde"}
+- routeros: {node: r1, cmd: "/interface vrrp print count-only where master", expect: "1", desc: "r1 es el router activo (maestro VRRP)"}
+- routeros: {node: r2, cmd: "/interface vrrp print count-only where backup", expect: "1", desc: "r2 está en reserva (respaldo VRRP), listo para tomar el relevo"}
+- routeros: {node: r1, cmd: ":local v [/interface vrrp get ([find]->0) name]; /ip address print count-only where interface=$v and address~\"^192\\\\.168\\\\.1\\\\.1/\"", expect: "1", desc: "En r1, la puerta de enlace es una dirección virtual compartida"}
+- routeros: {node: r2, cmd: ":local v [/interface vrrp get ([find]->0) name]; /ip address print count-only where interface=$v and address~\"^192\\\\.168\\\\.1\\\\.1/\"", expect: "1", desc: "En r2, la puerta de enlace también está preparada como dirección virtual"}
+- routeros: {node: r1, cmd: "/ip address print count-only where interface=\"ether2\" and address~\"^192\\\\.168\\\\.1\\\\.1/\"", expect: "0", desc: "r1 no se queda la puerta de enlace en su interfaz física"}
+- routeros: {node: r2, cmd: "/ip address print count-only where interface=\"ether2\" and address~\"^192\\\\.168\\\\.1\\\\.1/\"", expect: "0", desc: "r2 no se queda la puerta de enlace en su interfaz física"}
+- routeros: {node: r2, cmd: "/ping 203.0.113.10 count=3", expect: "re:received=[1-9]", desc: "r2 tiene salida propia a Internet (para cuando le toque)"}

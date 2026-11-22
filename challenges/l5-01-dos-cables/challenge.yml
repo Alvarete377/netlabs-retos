@@ -1,0 +1,16 @@
+id: l5-01-dos-cables
+title: Dos cables mejor que uno
+level: 5
+type: build
+difficulty: easy
+objectives:
+  - pc1 y pc2 se comunican a través de sw1 y sw2
+  - "Los dos cables entre sw1 y sw2 trabajan a la vez, agrupados con LACP (802.3ad)"
+  - Ningún cable entre los switches queda bloqueado por STP, y RSTP sigue activado
+hints:
+  - "Mira `/interface bridge port print` en sw2: uno de los dos cables entre los switches está bloqueado por STP (rol alternate o backup). Tienes redundancia, pero sólo usas la mitad del ancho de banda."
+  - "LACP (802.3ad) junta varios cables en una sola interfaz lógica: STP ve un único enlace y no bloquea nada. En RouterOS se hace con `/interface bonding`."
+  - "En cada switch: quita ether2 y ether3 del bridge (los cables pasan a ser del bond), crea el bond con `mode=802.3ad slaves=ether2,ether3` y mete el bond en el bridge."
+  - "`/interface bonding add name=bond1 mode=802.3ad slaves=ether2,ether3 lacp-rate=1sec` y `/interface bridge port add bridge=br1 interface=bond1`, en los dos switches. Comprueba con `/interface bonding monitor bond1 once` que `active-ports` muestra los dos."
+flag_seed: l5-01-dos-cables
+ram_mb: 1100

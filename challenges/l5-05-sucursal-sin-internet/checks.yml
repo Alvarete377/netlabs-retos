@@ -1,0 +1,9 @@
+- routeros: {node: r1, cmd: "/interface pppoe-client print count-only where running", expect: "1", desc: "La sesión con el proveedor está establecida"}
+- routeros: {node: r1, cmd: "/ip route print count-only where dst-address=0.0.0.0/0 and active", expect: "1", desc: "r1 sabe salir a Internet"}
+- routeros: {node: r1, cmd: "/ip dhcp-server lease print count-only where status=\"bound\"", expect: "2", desc: "Los dos PCs tienen dirección"}
+- ping: {from: pc1, to: 192.168.1.1, expect: ok, desc: "pc1 llega al router"}
+- ping: {from: pc2, to: 192.168.1.1, expect: ok, desc: "pc2 llega al router"}
+- http: {from: pc1, url: "http://203.0.113.10/", contains: "cliente=100.64.0.", desc: "pc1 navega por Internet con la IP de la sucursal"}
+- http: {from: pc2, url: "http://203.0.113.10/", contains: "cliente=100.64.0.", desc: "pc2 navega por Internet con la IP de la sucursal"}
+- routeros: {node: isp, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "El proveedor no tiene rutas estáticas hacia la sucursal"}
+- routeros: {node: isp, cmd: "/ip firewall nat print count-only", expect: "0", desc: "El proveedor no hace NAT"}

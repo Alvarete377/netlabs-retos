@@ -1,0 +1,10 @@
+- ping: {from: pc1, to: 192.168.10.2, expect: ok, desc: "pc1 alcanza a pc2"}
+- ping: {from: pc2, to: 192.168.10.1, expect: ok, desc: "pc2 alcanza a pc1"}
+- routeros: {node: sw1, cmd: "/interface bonding print count-only where mode=802.3ad", expect: "1", desc: "sw1 agrupa los enlaces con LACP (802.3ad)"}
+- routeros: {node: sw2, cmd: "/interface bonding print count-only where mode=802.3ad", expect: "1", desc: "sw2 agrupa los enlaces con LACP (802.3ad)"}
+- routeros: {node: sw1, cmd: "/interface bonding monitor [find] once", expect: 're:active-ports:\s*ether2,ether3', desc: "En sw1 los dos cables están activos a la vez en el grupo"}
+- routeros: {node: sw2, cmd: "/interface bonding monitor [find] once", expect: 're:active-ports:\s*ether2,ether3', desc: "En sw2 los dos cables están activos a la vez en el grupo"}
+- routeros: {node: sw1, cmd: "/interface bridge port print count-only where role=alternate-port or role=backup-port", expect: "0", desc: "En sw1 ningún cable hacia sw2 queda bloqueado por STP"}
+- routeros: {node: sw2, cmd: "/interface bridge port print count-only where role=alternate-port or role=backup-port", expect: "0", desc: "En sw2 ningún cable hacia sw1 queda bloqueado por STP"}
+- routeros: {node: sw1, cmd: "/interface bridge print count-only where protocol-mode=rstp", expect: "1", desc: "sw1 mantiene RSTP activado"}
+- routeros: {node: sw2, cmd: "/interface bridge print count-only where protocol-mode=rstp", expect: "1", desc: "sw2 mantiene RSTP activado"}

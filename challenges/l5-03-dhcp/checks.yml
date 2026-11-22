@@ -1,0 +1,8 @@
+- routeros: {node: r1, cmd: "/ip dhcp-server lease print count-only where status=\"bound\"", expect: "2", desc: "Los dos PCs han recibido su dirección por DHCP"}
+- routeros: {node: r1, cmd: "/ip pool print count-only where ranges=\"192.168.1.100-192.168.1.199\"", expect: "1", desc: "Se reparte el rango acordado (192.168.1.100-199)"}
+- ping: {from: pc1, to: 192.168.1.1, expect: ok, desc: "pc1 llega a su puerta de enlace"}
+- ping: {from: pc2, to: 192.168.1.1, expect: ok, desc: "pc2 llega a su puerta de enlace"}
+- http: {from: pc1, url: "http://203.0.113.10/", contains: "servidor de Internet", desc: "pc1 sale a Internet (el DHCP le dio la puerta de enlace)"}
+- http: {from: pc2, url: "http://203.0.113.10/", contains: "servidor de Internet", desc: "pc2 sale a Internet (el DHCP le dio la puerta de enlace)"}
+- routeros: {node: r1, cmd: "/ip dhcp-server network print count-only where dns-server=\"192.168.1.1\"", expect: "1", desc: "El DHCP anuncia el router como servidor DNS"}
+- routeros: {node: r1, cmd: "/ip dns print", expect: "re:allow-remote-requests: yes", desc: "El router responde consultas DNS de la LAN"}

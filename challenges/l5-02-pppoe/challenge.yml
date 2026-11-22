@@ -1,0 +1,17 @@
+id: l5-02-pppoe
+title: Conectando con el proveedor
+level: 5
+type: build
+difficulty: easy
+objectives:
+  - "r1 establece la sesión PPPoE con el proveedor (usuario oficina, contraseña N3tL4bs)"
+  - r1 sale a Internet por esa sesión (ruta por defecto)
+  - "pc1 navega por la web del servidor de Internet, saliendo con la IP que el proveedor asignó a la oficina"
+  - El router del proveedor no se toca
+hints:
+  - "El enlace con el proveedor (ether3 de r1) no lleva IP: los proveedores de fibra y ADSL suelen dar el acceso con PPPoE, una sesión con usuario y contraseña que entrega la IP, la puerta de enlace y el DNS."
+  - "El cliente PPPoE es una interfaz más: `/interface pppoe-client add` sobre la interfaz física que va al proveedor, con `user` y `password`. Activa `add-default-route=yes` para que la sesión cree la ruta por defecto."
+  - "Comprueba con `/interface pppoe-client monitor pppoe-out1 once`: tiene que decir `status: connected` y mostrar la IP local. Después, la LAN sigue sin salir: le falta el NAT, y la interfaz de salida ya no es ether3 sino el propio túnel PPPoE."
+  - "`/interface pppoe-client add name=pppoe-out1 interface=ether3 user=oficina password=N3tL4bs add-default-route=yes disabled=no` y `/ip firewall nat add chain=srcnat out-interface=pppoe-out1 action=masquerade`."
+flag_seed: l5-02-pppoe
+ram_mb: 1100

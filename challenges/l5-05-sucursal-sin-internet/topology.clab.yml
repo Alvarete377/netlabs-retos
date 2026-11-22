@@ -1,0 +1,20 @@
+name: netlabs
+topology:
+  kinds:
+    mikrotik_ros:
+      image: netlabs/chr:7.16.2
+    linux:
+      image: netlabs/client:0.1
+  nodes:
+    r1: {kind: mikrotik_ros}
+    isp: {kind: mikrotik_ros}
+    pc1: {kind: linux}
+    pc2: {kind: linux}
+    srv:
+      kind: linux
+      exec: ["ip addr add 203.0.113.10/24 dev eth1", "ip route replace default via 203.0.113.1 dev eth1"]
+  links:
+    - endpoints: ["r1:eth1", "pc1:eth1"]
+    - endpoints: ["r1:eth2", "pc2:eth1"]
+    - endpoints: ["r1:eth3", "isp:eth1"]
+    - endpoints: ["isp:eth2", "srv:eth1"]

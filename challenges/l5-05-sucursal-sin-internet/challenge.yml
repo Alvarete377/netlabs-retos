@@ -1,0 +1,16 @@
+id: l5-05-sucursal-sin-internet
+title: La sucursal sin Internet
+level: 5
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "La sucursal se conecta al proveedor por PPPoE (usuario sucursal, contraseña Fibra2026) y sale a Internet por esa conexión"
+  - Los PCs reciben su configuración por DHCP y navegan por Internet sin tocar nada en ellos
+  - El router del proveedor no se toca
+hints:
+  - "Ve por capas y desde el router hacia fuera: ¿está la sesión PPPoE arriba (`/interface pppoe-client monitor pppoe-out1 once`)? ¿Tiene r1 ruta por defecto? ¿Llega r1 a 203.0.113.10 con `/ping`? Luego mira desde los PCs."
+  - "Si la sesión no sube, el registro del router lo explica: `/log print`. Y lee con lupa lo que hay configurado, carácter a carácter."
+  - "Cuando r1 ya salga a Internet, mira qué configuración tienen los PCs (`ip route` en pc1) y compárala con lo que debería darles el DHCP. Y revisa el NAT: ¿por qué interfaz sale ahora el tráfico hacia Internet?"
+  - "Hay cuatro fallos: la contraseña PPPoE, la sesión no crea la ruta por defecto, el NAT está sobre la interfaz física en vez de sobre el túnel PPPoE, y el DHCP entrega una puerta de enlace que no existe."
+flag_seed: l5-05-sucursal-sin-internet
+ram_mb: 1150

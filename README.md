@@ -64,3 +64,11 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Publica el servidor | `l4-03-publica-el-servidor` | Montar | Media |
 | Lo justo y necesario | `l4-04-lo-justo` | Montar | Media |
 | El firewall que no deja pasar | `l4-05-no-deja-pasar` | Troubleshooting | Media |
+### Acceso y enlace
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| Dos cables mejor que uno | `l5-01-dos-cables` | Montar | Fácil |
+| Conectando con el proveedor | `l5-02-pppoe` | Montar | Fácil |
+| Reparto automático | `l5-03-dhcp` | Montar | Fácil |
+| El router de reserva | `l5-04-router-de-reserva` | Montar | Media |
+| La sucursal sin Internet | `l5-05-sucursal-sin-internet` | Troubleshooting | Media |

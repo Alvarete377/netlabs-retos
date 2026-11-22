@@ -1,0 +1,8 @@
+- routeros: {node: r1, cmd: "/interface pppoe-client print count-only where running", expect: "1", desc: "r1 tiene la sesión PPPoE con el proveedor establecida"}
+- routeros: {node: r1, cmd: "/ip route print count-only where dst-address=0.0.0.0/0 and active", expect: "1", desc: "r1 tiene ruta por defecto hacia el proveedor"}
+- http: {from: pc1, url: "http://203.0.113.10/", contains: "servidor de Internet", desc: "pc1 abre la web del servidor de Internet"}
+- http: {from: pc1, url: "http://203.0.113.10/", contains: "cliente=100.64.0.", desc: "El servidor ve llegar a pc1 con la IP que el proveedor asignó a la oficina"}
+- ping: {from: pc1, to: 203.0.113.10, expect: ok, desc: "pc1 hace ping al servidor de Internet"}
+- routeros: {node: isp, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "El proveedor no tiene rutas estáticas hacia la oficina"}
+- routeros: {node: isp, cmd: "/ip firewall nat print count-only", expect: "0", desc: "El proveedor no hace NAT por ti"}
+- routeros: {node: isp, cmd: "/ip address print count-only where interface=\"ether2\"", expect: "0", desc: "El enlace con el proveedor no lleva IP fija: todo va por PPPoE"}

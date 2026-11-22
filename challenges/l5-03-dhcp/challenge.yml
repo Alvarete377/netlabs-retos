@@ -1,0 +1,16 @@
+id: l5-03-dhcp
+title: Reparto automático
+level: 5
+type: build
+difficulty: easy
+objectives:
+  - "Los PCs de la oficina reciben su configuración por DHCP: dirección del rango 192.168.1.100-199, puerta de enlace 192.168.1.1 y DNS 192.168.1.1"
+  - Con esa configuración, los PCs salen a Internet sin tocar nada en ellos
+  - El router responde a las consultas DNS de la LAN
+hints:
+  - "Los PCs están pidiendo dirección (DHCP Discover) pero nadie contesta. El router puede ser el servidor DHCP de la LAN: `/ip dhcp-server`."
+  - "Un servidor DHCP necesita tres cosas: un **pool** de direcciones a repartir (`/ip pool`), el **servidor** escuchando en la interfaz de la LAN (`/ip dhcp-server`, aquí el bridge `lan`) y la **red** con los datos que entrega (`/ip dhcp-server network`: gateway y DNS)."
+  - "Si das DNS = el router, el router tiene que contestar consultas DNS: `/ip dns set allow-remote-requests=yes`. Y ojo: el servidor va en el bridge `lan`, no en ether2 ni ether3 (son puertos del bridge)."
+  - "`/ip pool add name=lan ranges=192.168.1.100-192.168.1.199`, `/ip dhcp-server add name=dhcp-lan interface=lan address-pool=lan disabled=no`, `/ip dhcp-server network add address=192.168.1.0/24 gateway=192.168.1.1 dns-server=192.168.1.1`. Los PCs lo reintentan solos cada pocos segundos."
+flag_seed: l5-03-dhcp
+ram_mb: 650
