@@ -18,7 +18,7 @@ OK, KO, ERR = "✔", "✘", "!"
 
 # Nombres de los módulos (igual que en la web). Los ids de los retos no cambian.
 MODULES = {
-    0: "Protocolos",
+    0: "Fundamentos",
     1: "Switching y VLANs",
     2: "Rutas estáticas",
     3: "Enrutamiento dinámico",
