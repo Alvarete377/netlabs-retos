@@ -1,0 +1,16 @@
+id: l6-01-tunel-gre
+title: Un túnel entre sedes
+level: 6
+type: build
+difficulty: easy
+objectives:
+  - "pc1 (sede 1, 192.168.1.0/24) y pc2 (sede 2, 192.168.2.0/24) se hacen ping en los dos sentidos"
+  - "El tráfico entre sedes viaja por un túnel GRE entre las IPs públicas de r1 (198.51.100.2) y r2 (203.0.113.2)"
+  - El proveedor (isp) no se toca
+hints:
+  - "Las dos sedes salen a Internet, pero sus LANs son privadas: Internet no sabe llegar de una a otra. Hace falta un túnel: meter los paquetes entre LANs dentro de otros paquetes que viajan entre las IPs públicas."
+  - "GRE es el túnel más sencillo: una interfaz virtual en cada router, `/interface gre add`, con `local-address` (tu IP pública) y `remote-address` (la del otro)."
+  - "El túnel es un cable virtual: dale una red pequeña a sus dos extremos (por ejemplo 10.255.0.0/30, .1 en r1 y .2 en r2) y añade en cada router una ruta a la LAN del otro por la IP del otro extremo del túnel."
+  - "r1: `/interface gre add name=gre-sede2 local-address=198.51.100.2 remote-address=203.0.113.2`, `/ip address add address=10.255.0.1/30 interface=gre-sede2`, `/ip route add dst-address=192.168.2.0/24 gateway=10.255.0.2`. En r2, lo simétrico."
+flag_seed: l6-01-tunel-gre
+ram_mb: 1600

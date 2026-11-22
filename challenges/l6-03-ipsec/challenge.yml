@@ -1,0 +1,17 @@
+id: l6-03-ipsec
+title: IPsec y el NAT traicionero
+level: 6
+type: build
+difficulty: medium
+objectives:
+  - pc1 (sede 1) y pc2 (sede 2) se hacen ping en los dos sentidos
+  - "El tráfico entre las LANs va cifrado con IPsec (IKEv2, clave compartida Sedes-Unidas-2026)"
+  - Las dos sedes siguen saliendo a Internet con su IP pública
+  - El proveedor (isp) no se toca
+hints:
+  - "IPsec en RouterOS se monta en `/ip ipsec` con tres piezas: el **peer** (con quién: su IP pública), la **identity** (cómo nos autenticamos: aquí, clave compartida) y la **policy** (qué tráfico se cifra: de mi LAN a la suya)."
+  - "Monta las tres piezas en los dos routers (`exchange-mode=ike2`, `tunnel=yes` en la policy). Comprueba `/ip ipsec active-peers print`: si dice `established`, el túnel está arriba. ¿Pasan ya los pings?"
+  - "Si el túnel está arriba pero los pings no pasan, mira `/ip firewall nat print stats` mientras haces ping. ¿Qué le pasa a la IP de origen de los paquetes que van a la otra sede ANTES de que IPsec decida si los cifra?"
+  - "El masquerade cambia el origen 192.168.1.10 por 198.51.100.2 y el paquete ya no encaja en la policy (192.168.1.0/24 -> 192.168.2.0/24): sale sin cifrar. Añade ENCIMA del masquerade `chain=srcnat src-address=192.168.1.0/24 dst-address=192.168.2.0/24 action=accept` (y la simétrica en r2)."
+flag_seed: l6-03-ipsec
+ram_mb: 1650

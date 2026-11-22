@@ -1,0 +1,6 @@
+- ping: {from: pc1, to: 192.168.2.10, expect: ok, desc: "pc1 (sede 1) llega a pc2 (sede 2)"}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok, desc: "pc2 (sede 2) llega a pc1 (sede 1)"}
+- routeros: {node: r1, cmd: "/interface gre print count-only where running", expect: "1", desc: "r1 tiene un túnel GRE levantado"}
+- routeros: {node: r2, cmd: "/interface gre print count-only where running", expect: "1", desc: "r2 tiene un túnel GRE levantado"}
+- routeros: {node: isp, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "Internet no sabe nada de las redes privadas de las sedes (y no va a saberlo)"}
+- routeros: {node: isp, cmd: "/ip firewall nat print count-only", expect: "0", desc: "El proveedor no hace NAT por ti"}

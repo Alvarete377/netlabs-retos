@@ -1,0 +1,16 @@
+id: l6-02-wireguard
+title: WireGuard entre sedes
+level: 6
+type: build
+difficulty: medium
+objectives:
+  - pc1 (sede 1) y pc2 (sede 2) se hacen ping en los dos sentidos
+  - "El tráfico entre sedes viaja cifrado por WireGuard (las interfaces wg-sedes ya existen en r1 y r2, con sus claves)"
+  - El proveedor (isp) no se toca
+hints:
+  - "Cada router tiene ya su interfaz `wg-sedes` con su par de claves. Mira `/interface wireguard print`: verás la CLAVE PÚBLICA de cada uno. La privada no sale nunca del router; la pública es la que le das al otro."
+  - "WireGuard no tiene usuario ni contraseña: cada lado conoce la clave pública del otro. En cada router añade un **peer** (`/interface wireguard peers add`) con la clave pública del OTRO router, su IP pública como `endpoint-address` y el puerto 51820."
+  - "`allowed-address` hace dos cosas: qué IPs de origen se aceptan del peer y qué destinos se mandan por él. Debe incluir la IP del otro extremo del túnel y su LAN. Luego, como en GRE: una IP en cada extremo (p. ej. 10.255.1.0/30) y una ruta a la LAN remota."
+  - "r1: peer con `public-key=` la de r2, `endpoint-address=203.0.113.2 endpoint-port=51820 allowed-address=10.255.1.2/32,192.168.2.0/24 persistent-keepalive=25s`; `/ip address add address=10.255.1.1/30 interface=wg-sedes`; ruta a 192.168.2.0/24 por 10.255.1.2. En r2, lo simétrico."
+flag_seed: l6-02-wireguard
+ram_mb: 1600

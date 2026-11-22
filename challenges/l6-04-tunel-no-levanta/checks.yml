@@ -1,0 +1,9 @@
+- ping: {from: pc1, to: 192.168.2.10, expect: ok, desc: "pc1 (central) llega a pc2 (sede 2)"}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok, desc: "pc2 (sede 2) llega a pc1 (central)"}
+- routeros: {node: r1, cmd: "/interface wireguard peers print count-only where last-handshake", expect: "1", desc: "La central ha completado el saludo cifrado con la sede"}
+- routeros: {node: r2, cmd: "/interface wireguard peers print count-only where last-handshake", expect: "1", desc: "La sede ha completado el saludo cifrado con la central"}
+- routeros: {node: r1, cmd: "/interface wireguard peers print count-only where endpoint-address=\"\"", expect: "1", desc: "La central sigue esperando a que la sede la llame (sin endpoint fijo)"}
+- routeros: {node: r1, cmd: ":put [/ip firewall filter get ([find chain=input]->0) in-interface]", expect: "ether1", desc: "La regla de gestión del laboratorio sigue siendo la primera de input"}
+- routeros: {node: r1, cmd: "/ip firewall filter print count-only where chain=input and action=drop and !disabled", expect: "re:^[1-9][0-9]*$", desc: "La central sigue protegida (input termina descartando)"}
+- tcp: {from: pc2, host: 198.51.100.2, port: 22, expect: closed, desc: "Desde Internet no se llega a la administración de la central"}
+- routeros: {node: isp, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "Internet no sabe nada de las redes privadas de las sedes"}

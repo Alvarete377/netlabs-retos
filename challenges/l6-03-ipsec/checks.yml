@@ -1,0 +1,11 @@
+- ping: {from: pc1, to: 192.168.2.10, expect: ok, desc: "pc1 (sede 1) llega a pc2 (sede 2)"}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok, desc: "pc2 (sede 2) llega a pc1 (sede 1)"}
+- routeros: {node: r1, cmd: "/ip ipsec active-peers print count-only where state=established", expect: "1", desc: "r1 tiene la sesión IPsec con la sede 2 establecida"}
+- routeros: {node: r2, cmd: "/ip ipsec active-peers print count-only where state=established", expect: "1", desc: "r2 tiene la sesión IPsec con la sede 1 establecida"}
+- routeros: {node: r1, cmd: "/ip ipsec policy print count-only where ph2-state=established", expect: "1", desc: "La política de r1 (LAN sede 1 - LAN sede 2) cifra el tráfico"}
+- routeros: {node: r1, cmd: "/interface gre print count-only", expect: "0", desc: "Sin túneles GRE (sin cifrar)"}
+- routeros: {node: r1, cmd: "/interface wireguard print count-only", expect: "0", desc: "El reto se resuelve con IPsec"}
+- http: {from: pc1, url: "http://192.0.2.10/", contains: "cliente=198.51.100.2", desc: "La sede 1 sigue saliendo a Internet con su IP pública"}
+- http: {from: pc2, url: "http://192.0.2.10/", contains: "cliente=203.0.113.2", desc: "La sede 2 sigue saliendo a Internet con su IP pública"}
+- routeros: {node: isp, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "Internet no sabe nada de las redes privadas de las sedes (y no va a saberlo)"}
+- routeros: {node: isp, cmd: "/ip firewall nat print count-only", expect: "0", desc: "El proveedor no hace NAT por ti"}

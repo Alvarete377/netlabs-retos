@@ -1,0 +1,16 @@
+id: l6-04-tunel-no-levanta
+title: El túnel que no levanta
+level: 6
+type: troubleshoot
+difficulty: medium
+objectives:
+  - pc1 (central) y pc2 (sede 2) se hacen ping en los dos sentidos por el túnel WireGuard
+  - "La central espera las conexiones de las sedes (no tiene endpoint fijo) y sigue protegida por su firewall"
+  - El proveedor (isp) no se toca
+hints:
+  - "Empieza por el túnel, no por las LANs: `/interface wireguard peers print detail` en los dos. ¿Hay `last-handshake`? Si no hay saludo, no hay túnel, y nada de lo demás importa todavía."
+  - "Para que haya saludo, el paquete de la sede tiene que LLEGAR a la central y la central tiene que RECONOCER la clave. Mira los contadores del firewall de la central mientras esperas (`/ip firewall filter print stats`) y compara las claves públicas de cada lado con lo que tiene configurado el otro."
+  - "Con el saludo hecho, sigue el ping de pc2 a pc1 y su vuelta: ¿sabe cada router mandar la LAN del otro por el túnel? ¿Y WireGuard deja pasar esas direcciones (`allowed-address`)?"
+  - "Hay cuatro fallos: la sede usa como clave del peer su propia clave pública, la central no deja entrar el UDP 51820, a la sede le falta la LAN de la central en `allowed-address` y a la central le falta la ruta a la LAN de la sede."
+flag_seed: l6-04-tunel-no-levanta
+ram_mb: 1600

@@ -72,3 +72,10 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Reparto automático | `l5-03-dhcp` | Montar | Fácil |
 | El router de reserva | `l5-04-router-de-reserva` | Montar | Media |
 | La sucursal sin Internet | `l5-05-sucursal-sin-internet` | Troubleshooting | Media |
+### VPNs
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| Un túnel entre sedes | `l6-01-tunel-gre` | Montar | Fácil |
+| WireGuard entre sedes | `l6-02-wireguard` | Montar | Media |
+| IPsec y el NAT traicionero | `l6-03-ipsec` | Montar | Media |
+| El túnel que no levanta | `l6-04-tunel-no-levanta` | Troubleshooting | Media |
