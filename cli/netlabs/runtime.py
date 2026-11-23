@@ -3,6 +3,8 @@ import subprocess
 import time
 from pathlib import Path
 
+import yaml
+
 from netlabs.challenge import LAB_NAME, Challenge
 from netlabs.routeros import RouterOS
 
@@ -39,15 +41,31 @@ def parse_meminfo(text: str) -> int:
     raise LabError("No se pudo leer la memoria disponible")
 
 
+def required_images(ch: Challenge) -> list[str]:
+    """Imágenes Docker que usa la topología del reto (por kind y por nodo)."""
+    topo = (yaml.safe_load((ch.path / "topology.clab.yml").read_text(encoding="utf-8")) or {}).get("topology", {})
+    kinds = topo.get("kinds") or {}
+    images = []
+    for node in (topo.get("nodes") or {}).values():
+        node = node or {}
+        img = node.get("image") or (kinds.get(node.get("kind")) or {}).get("image")
+        if img and img not in images:
+            images.append(img)
+    return images
+
+
 def preflight(ch: Challenge) -> None:
     if not Path("/dev/kvm").exists():
         raise LabError("No hay /dev/kvm. En Windows añade nestedVirtualization=true en "
                        "%UserProfile%\\.wslconfig y ejecuta `wsl --shutdown`.")
-    if any(k == VYOS_KIND for k in ch.nodes.values()):
-        r = subprocess.run(["docker", "image", "inspect", "netlabs/vyos:rolling"], capture_output=True)
-        if r.returncode != 0:
-            raise LabError("Este reto usa routers VyOS y falta su imagen. Constrúyela una vez con: "
-                           "bash images/build-vyos.sh (descarga ~650 MB).")
+    missing = [img for img in required_images(ch)
+               if subprocess.run(["docker", "image", "inspect", img], capture_output=True).returncode != 0]
+    if any(img.startswith("netlabs/vyos") for img in missing):
+        raise LabError("Este reto usa routers VyOS y falta su imagen. Constrúyela una vez con: "
+                       "bash images/build-vyos.sh (descarga ~650 MB).")
+    if missing:
+        raise LabError(f"Faltan las imágenes base de NetLabs ({', '.join(missing)}). Constrúyelas una vez "
+                       "desde la carpeta de NetLabs con: bash images/build.sh")
     avail = parse_meminfo(Path("/proc/meminfo").read_text())
     if avail < ch.ram_mb:
         raise LabError(f"El reto necesita ~{ch.ram_mb} MB de RAM y hay {avail} MB libres. Cierra programas o apaga otros labs.")

@@ -52,7 +52,8 @@ install -m 440 "$SUDOERS_TMP" /etc/sudoers.d/netlabs
 rm -f "$SUDOERS_TMP"
 
 echo "[6/7] Imágenes"
-if [ -x "$REPO/images/build.sh" ]; then "$REPO/images/build.sh"; else echo "(images/build.sh aún no existe, se omite)"; fi
+# Con bash: un clon de git no siempre conserva el permiso de ejecución.
+if [ -f "$REPO/images/build.sh" ]; then bash "$REPO/images/build.sh"; else echo "ERROR: falta images/build.sh"; exit 1; fi
 
 echo "[7/7] CLI lab"
 if [ -f "$REPO/cli/pyproject.toml" ]; then
