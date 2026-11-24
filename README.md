@@ -155,3 +155,11 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Red en Linux | `s1-03-red-en-linux` | Troubleshooting | Media |
 | Puerto ocupado | `s1-04-puerto-ocupado` | Troubleshooting | Fácil |
 | El heredado | `s1-05-el-heredado` | Troubleshooting | Difícil |
+### Sistemas · Usuarios y permisos
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| Altas y bajas | `s4-01-altas-y-bajas` | Montar | Fácil |
+| La carpeta del departamento | `s4-02-carpeta-compartida` | Montar | Media |
+| sudo a medida | `s4-03-sudo-a-medida` | Montar | Media |
+| Permisos rotos | `s4-04-permisos-rotos` | Troubleshooting | Difícil |
+| El dominio | `s4-05-el-dominio` | Montar | Media |

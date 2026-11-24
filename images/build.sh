@@ -14,6 +14,10 @@ $DOCKER build -q -t netlabs/client:0.2 -t netlabs/client:0.1 "$HERE/client"
 echo "== netlabs/debian:0.2"
 $DOCKER build -q -t netlabs/debian:0.2 -t netlabs/debian:0.1 "$HERE/debian"
 
+# Samba AD (directorio activo) sobre la Debian anterior.
+echo "== netlabs/samba:0.1"
+$DOCKER build -q -t netlabs/samba:0.1 "$HERE/samba"
+
 echo "== netlabs/chr:$CHR_VERSION"
 if $DOCKER image inspect "netlabs/chr:$CHR_VERSION" >/dev/null 2>&1; then
   echo "ya existe"; exit 0

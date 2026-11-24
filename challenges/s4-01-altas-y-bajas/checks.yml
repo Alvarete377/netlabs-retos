@@ -1,0 +1,8 @@
+- shell: {node: srv, cmd: 'getent passwd ana | cut -d: -f6,7', expect: "/home/ana:/bin/bash", desc: "ana: home y shell bash"}
+- shell: {node: srv, cmd: 'getent passwd luis | cut -d: -f6,7', expect: "/home/luis:/bin/bash", desc: "luis: home y shell bash"}
+- shell: {node: srv, cmd: 'stat -c %U /home/ana /home/luis 2>&1 | tr "\n" " "', expect: "ana luis", desc: "Cada uno es dueño de su carpeta"}
+- shell: {node: srv, cmd: 'passwd -S ana 2>&1 | cut -d" " -f2; passwd -S luis 2>&1 | cut -d" " -f2', expect: "P\nP", desc: "ana y luis tienen contraseña"}
+- shell: {node: srv, cmd: 'id -nG ana 2>&1 | tr " " "\n" | grep -cx -e ventas -e sudo', expect: "2", desc: "ana está en ventas y en sudo"}
+- shell: {node: srv, cmd: 'id -nG luis 2>&1 | tr " " "\n" | grep -cx ventas; id -nG luis 2>&1 | tr " " "\n" | grep -cx sudo', expect: "1\n0", desc: "luis está en ventas y no en sudo"}
+- shell: {node: srv, cmd: 'passwd -S marta | cut -d" " -f2', expect: "L", desc: "La cuenta de marta está bloqueada"}
+- shell: {node: srv, cmd: 'cat /home/marta/informes/q3.txt', expect: "Informe del tercer trimestre", desc: "Los ficheros de marta siguen ahí"}

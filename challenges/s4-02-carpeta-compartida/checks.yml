@@ -1,0 +1,8 @@
+- shell: {node: srv, cmd: "runuser -u ana -- sh -c 'echo hola > /srv/compartido/ventas/ana-$$.txt && rm /srv/compartido/ventas/ana-$$.txt' >/dev/null 2>&1 && echo si || echo no", expect: "si", desc: "ana crea ficheros"}
+- shell: {node: srv, cmd: "f=/srv/compartido/ventas/.prueba-$(date +%s%N); runuser -u ana -- sh -c \"echo hola > $f\" 2>/dev/null && runuser -u luis -- sh -c \"echo adios >> $f\" 2>/dev/null && echo si || echo no; rm -f $f", expect: "si", desc: "luis modifica lo que crea ana"}
+- shell: {node: srv, cmd: "runuser -u luis -- sh -c 'cat /srv/compartido/ventas/tarifas.txt' >/dev/null 2>&1 && echo si || echo no", expect: "si", desc: "luis lee los ficheros que ya había"}
+- shell: {node: srv, cmd: "runuser -u pedro -- sh -c 'cat /srv/compartido/ventas/tarifas.txt && ls /srv/compartido/ventas' >/dev/null 2>&1 && echo si || echo no", expect: "si", desc: "pedro (marketing) lee"}
+- shell: {node: srv, cmd: "runuser -u pedro -- sh -c 'echo x > /srv/compartido/ventas/pedro.txt' >/dev/null 2>&1 && echo si || echo no; rm -f /srv/compartido/ventas/pedro.txt", expect: "no", desc: "pedro no escribe"}
+- shell: {node: srv, cmd: "runuser -u eva -- sh -c 'ls /srv/compartido/ventas' >/dev/null 2>&1 && echo si || echo no", expect: "no", desc: "eva no entra"}
+- shell: {node: srv, cmd: 'stat -c %a /srv/compartido/ventas', expect: 're:[0-9]0$', desc: "Sin permisos para otros en la carpeta"}
+- shell: {node: srv, cmd: 'stat -c %G /srv/compartido/ventas', expect: "ventas", desc: "La carpeta es del grupo ventas"}

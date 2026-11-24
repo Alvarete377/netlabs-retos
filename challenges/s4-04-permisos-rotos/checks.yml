@@ -1,0 +1,8 @@
+- shell: {node: srv, cmd: "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1/", expect: "200", desc: "La web carga"}
+- shell: {node: srv, cmd: 'n=prueba-$(date +%s%N).txt; c=$(curl -s -o /dev/null -w %{http_code} -X PUT --data-binary netlabs-$n http://127.0.0.1/subir/$n); g=$(curl -s http://127.0.0.1/subidas/$n); rm -f /srv/web/publico/subidas/$n; echo $c', expect: "201", desc: "Una subida se guarda"}
+- shell: {node: srv, cmd: 'n=prueba-$(date +%s%N).txt; c=$(curl -s -o /dev/null -w %{http_code} -X PUT --data-binary netlabs-$n http://127.0.0.1/subir/$n); g=$(curl -s http://127.0.0.1/subidas/$n); rm -f /srv/web/publico/subidas/$n; echo $g', expect: "re:^netlabs-prueba-", desc: "Lo subido se descarga"}
+- shell: {node: srv, cmd: "ps -eo user:20,args | grep '[s]ubidas.py' | awk '{print $1}' | sort -u", expect: "subidas", desc: "La aplicación corre como subidas"}
+- shell: {node: srv, cmd: "runuser -u www-data -- sh -c 'touch /srv/web/publico/x' >/dev/null 2>&1 && echo si || echo no; rm -f /srv/web/publico/x", expect: "no", desc: "nginx no puede escribir en la web"}
+- shell: {node: srv, cmd: "runuser -u www-data -- sh -c 'touch /srv/web/publico/subidas/x' >/dev/null 2>&1 && echo si || echo no; rm -f /srv/web/publico/subidas/x", expect: "no", desc: "nginx no puede escribir en las subidas"}
+- shell: {node: srv, cmd: 'find /srv/web -perm -o+w | wc -l', expect: "0", desc: "Nada en /srv/web es escribible por otros"}
+- shell: {node: srv, cmd: 'find /usr/local -perm -4000 -type f | wc -l', expect: "0", desc: "Ningún programa con SUID en /usr/local"}

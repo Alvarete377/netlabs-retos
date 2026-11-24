@@ -1,0 +1,18 @@
+id: s4-05-el-dominio
+title: El dominio
+level: 104
+type: build
+difficulty: medium
+objectives:
+  - "En el dominio EMPRESA.LAB (Samba AD en dc1): una unidad organizativa `Ventas` con las cuentas `ana` y `luis` dentro"
+  - "Contraseñas: `ana` → `Ventas.Ana2025`, `luis` → `Ventas.Luis2025`. Las dos inician sesión (Kerberos) desde pc1"
+  - "Un grupo `Ventas-Comercial` con ana y luis"
+  - "La política de contraseñas del dominio exige al menos 10 caracteres"
+  - "La cuenta de `marta` queda deshabilitada (no borrada)"
+hints:
+  - "Todo se gestiona en dc1 con `samba-tool` (`samba-tool --help`, `samba-tool user --help`...). Las OUs: `samba-tool ou create OU=Ventas`."
+  - "`samba-tool user create ana 'Ventas.Ana2025' --userou=OU=Ventas` la crea ya dentro de la OU. Si la creaste fuera, `samba-tool user move ana OU=Ventas`."
+  - "Grupos: `samba-tool group add` y `addmembers`. Política: `samba-tool domain passwordsettings show` y `set --min-pwd-length=`."
+  - "`samba-tool user disable marta`. Para probar desde pc1: `kinit ana` y `klist`."
+flag_seed: s4-05-el-dominio
+ram_mb: 300

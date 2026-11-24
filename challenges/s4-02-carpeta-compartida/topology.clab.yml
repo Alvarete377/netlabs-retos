@@ -1,0 +1,6 @@
+name: netlabs
+topology:
+  nodes:
+    srv:
+      kind: linux
+      image: netlabs/debian:0.2

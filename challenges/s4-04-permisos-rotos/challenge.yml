@@ -1,0 +1,16 @@
+id: s4-04-permisos-rotos
+title: Permisos rotos
+level: 104
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "La web (http://127.0.0.1/ en srv) carga, y los ficheros que se suben con `curl -X PUT --data-binary @fichero http://127.0.0.1/subir/<nombre>` se guardan y se pueden descargar en /subidas/<nombre>"
+  - "Mínimo privilegio: la aplicación sigue corriendo como `subidas`, nginx (`www-data`) no puede escribir en la web y nada en /srv/web es escribible por «otros»"
+  - "Además, alguien dejó en el sistema un programa con SUID que permite a cualquiera hacerse root: quítale ese permiso"
+hints:
+  - "`curl -i http://127.0.0.1/` y `tail /var/log/nginx/error.log`: un 403 de nginx casi siempre es un permiso. Recuerda que para llegar a un fichero hace falta `x` en **todas** las carpetas del camino: `namei -l /srv/web/publico/index.html`."
+  - "Prueba una subida y lee la respuesta: el error de la aplicación dice qué no puede hacer. ¿Como quién corre? `systemctl show -p User,UMask subidas`. Y ese usuario, ¿puede llegar hasta la carpeta? `runuser -u subidas -- namei -l /srv/web/publico/subidas`."
+  - "Lo subido tiene que poder leerlo nginx: fíjate en el grupo y los permisos con que nace cada fichero (la umask del servicio y el grupo de la carpeta)."
+  - "Los programas con SUID se buscan con `find / -xdev -perm -4000 -type f`. Compara con los normales de Debian (`passwd`, `su`, `sudo`, `mount`...): ¿cuál sobra? Mira qué hace en GTFOBins."
+flag_seed: s4-04-permisos-rotos
+ram_mb: 150

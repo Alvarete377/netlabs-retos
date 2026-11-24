@@ -1,0 +1,8 @@
+- shell: {node: dc1, cmd: "samba-tool ou list 2>&1 | grep -cx \"OU=Ventas\"", expect: "1", desc: "Existe la OU Ventas"}
+- shell: {node: dc1, cmd: "for u in ana luis; do samba-tool user show $u --attributes=distinguishedName 2>&1 | grep -c \"^distinguishedName: CN=$u,OU=Ventas,DC=empresa,DC=lab$\"; done | tr \"\\n\" \" \"", expect: "1 1", desc: "ana y luis están en la OU Ventas"}
+- shell: {node: pc1, cmd: "kdestroy -q 2>/dev/null; echo 'Ventas.Ana2025' | kinit ana@EMPRESA.LAB >/dev/null 2>&1 && echo entra || echo no; kdestroy -q 2>/dev/null", expect: "entra", desc: "ana inicia sesión desde pc1"}
+- shell: {node: pc1, cmd: "kdestroy -q 2>/dev/null; echo 'Ventas.Luis2025' | kinit luis@EMPRESA.LAB >/dev/null 2>&1 && echo entra || echo no; kdestroy -q 2>/dev/null", expect: "entra", desc: "luis inicia sesión desde pc1"}
+- shell: {node: dc1, cmd: "samba-tool group listmembers Ventas-Comercial 2>&1 | sort | tr \"\\n\" \" \"", expect: "ana luis", desc: "Ventas-Comercial tiene a ana y luis"}
+- shell: {node: dc1, cmd: "samba-tool domain passwordsettings show 2>&1 | awk -F': ' '/Minimum password length/{print ($2 >= 10) ? \"ok\" : \"corta\"}'", expect: "ok", desc: "Contraseñas de al menos 10 caracteres"}
+- shell: {node: dc1, cmd: "v=$(samba-tool user show marta --attributes=userAccountControl 2>/dev/null | awk '/^userAccountControl/{print $2}'); [ -n \"$v\" ] && [ $((v & 2)) -ne 0 ] && echo deshabilitada || echo activa", expect: "deshabilitada", desc: "La cuenta de marta está deshabilitada"}
+- shell: {node: pc1, cmd: "kdestroy -q 2>/dev/null; echo 'Verano.2023X' | kinit marta@EMPRESA.LAB >/dev/null 2>&1 && echo entra || echo no; kdestroy -q 2>/dev/null", expect: "no", desc: "marta ya no inicia sesión"}

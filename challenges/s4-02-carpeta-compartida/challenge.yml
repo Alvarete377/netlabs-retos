@@ -1,0 +1,17 @@
+id: s4-02-carpeta-compartida
+title: La carpeta del departamento
+level: 104
+type: build
+difficulty: medium
+objectives:
+  - "`ana` y `luis` (grupo ventas) crean y modifican ficheros en /srv/compartido/ventas, también los que creó el otro"
+  - "`pedro` (marketing) puede leer la carpeta pero no escribir en ella"
+  - "`eva` (de otro departamento) no puede ni entrar"
+  - "Sin permisos para «otros» en la carpeta: nada de 777"
+hints:
+  - "Prueba como cada uno: `runuser -u ana -- touch /srv/compartido/ventas/x`. Mira dueño, grupo y permisos con `ls -ld /srv/compartido/ventas`."
+  - "Grupo dueño `ventas` y `chmod 2770`: el `2` (setgid) hace que lo que se cree dentro herede el grupo `ventas`."
+  - "Aun así, un fichero nuevo nace con `rw-r--r--` (umask 022): el compañero no puede modificarlo. Una ACL por defecto lo arregla: `setfacl -d -m g::rwx` en la carpeta."
+  - "Para marketing sin abrir a todos, otra ACL: `setfacl -m g:marketing:rx /srv/compartido/ventas` y su versión por defecto (`-d`). `getfacl /srv/compartido/ventas` lo enseña todo."
+flag_seed: s4-02-carpeta-compartida
+ram_mb: 150

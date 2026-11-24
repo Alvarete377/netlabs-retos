@@ -1,0 +1,8 @@
+- shell: {node: srv, cmd: "runuser -u soporte -- sh -c 'sudo -n systemctl restart nginx' >/dev/null 2>&1 && echo si || echo no", expect: "si", desc: "soporte reinicia nginx sin contraseña"}
+- shell: {node: srv, cmd: "runuser -u soporte -- journalctl -u nginx --no-pager -n 20 2>&1 | grep -c 'nginx.service'", expect: 're:^[1-9]', desc: "soporte lee el log de nginx"}
+- shell: {node: srv, cmd: "runuser -u soporte -- sh -c 'sudo -n systemctl restart ssh' >/dev/null 2>&1 && echo si || echo no", expect: "no", desc: "soporte no reinicia otros servicios"}
+- shell: {node: srv, cmd: "runuser -u soporte -- sh -c 'sudo -n /bin/bash -c id' >/dev/null 2>&1 && echo si || echo no", expect: "no", desc: "soporte no abre una shell de root"}
+- shell: {node: srv, cmd: "runuser -u soporte -- sh -c 'sudo -n id' >/dev/null 2>&1 && echo si || echo no", expect: "no", desc: "soporte no ejecuta otros comandos como root"}
+- shell: {node: srv, cmd: "runuser -u soporte -- sh -c 'sudo -n journalctl -n 1' >/dev/null 2>&1 && echo si || echo no", expect: "no", desc: "soporte no usa journalctl con sudo"}
+- shell: {node: srv, cmd: "sudo -l -U ana | grep -c '(ALL : ALL) ALL'", expect: 're:^[1-9]', desc: "ana conserva su sudo completo"}
+- shell: {node: srv, cmd: 'visudo -c >/dev/null 2>&1 && echo valida', expect: "valida", desc: "La configuración de sudo es válida"}

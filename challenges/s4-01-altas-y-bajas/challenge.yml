@@ -1,0 +1,16 @@
+id: s4-01-altas-y-bajas
+title: Altas y bajas
+level: 104
+type: build
+difficulty: easy
+objectives:
+  - "Da de alta a `ana` y `luis`: con su carpeta en /home, shell bash, contraseña puesta y en el grupo `ventas`"
+  - "`ana` es la responsable: puede usar sudo. `luis` no"
+  - "`marta` se ha ido de la empresa: su cuenta queda bloqueada, pero sus ficheros se conservan"
+hints:
+  - "`useradd -m -s /bin/bash -G ventas ana` crea el usuario con su home, su shell y el grupo extra. ¿Existe ya el grupo `ventas`? `getent group ventas`."
+  - "La contraseña se pone con `passwd ana`. `passwd -S ana` dice el estado: `P` con contraseña, `L` bloqueada, `NP` sin contraseña."
+  - "En Debian, sudo se concede con el grupo `sudo`: `usermod -aG sudo ana`. Sin la `-a`, `-G` sustituye todos los grupos extra."
+  - "No borres a marta (`userdel -r` se llevaría sus ficheros): `usermod -L marta` (o `passwd -l marta`) bloquea la contraseña."
+flag_seed: s4-01-altas-y-bajas
+ram_mb: 150

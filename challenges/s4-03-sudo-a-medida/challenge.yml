@@ -1,0 +1,17 @@
+id: s4-03-sudo-a-medida
+title: sudo a medida
+level: 104
+type: build
+difficulty: medium
+objectives:
+  - "`soporte` puede reiniciar nginx con `sudo systemctl restart nginx` sin que le pida contraseña"
+  - "`soporte` puede leer el log de nginx con `journalctl -u nginx`, sin sudo"
+  - "Nada más: ni otros servicios, ni una shell de root, ni sudo general"
+  - "`ana` (administradora) mantiene su sudo completo, y la configuración de sudo es válida"
+hints:
+  - "`sudo -l -U soporte` dice qué puede hacer cada uno. ¿Por qué puede hacerlo todo? `id soporte`."
+  - "Reglas propias en un fichero de `/etc/sudoers.d/`, editado con `visudo -f /etc/sudoers.d/soporte` (comprueba la sintaxis al guardar). Rutas completas: `which systemctl`."
+  - "Formato: `soporte ALL=(root) NOPASSWD: /usr/bin/systemctl restart nginx`. Si pones sólo `/usr/bin/systemctl`, vale cualquier subcomando y cualquier servicio."
+  - "Para el journal no hace falta sudo: los miembros del grupo `systemd-journal` lo leen entero. Y mejor así: `sudo journalctl` abre un paginador (`less`) desde el que se puede lanzar una shell de root con `!sh`."
+flag_seed: s4-03-sudo-a-medida
+ram_mb: 150
