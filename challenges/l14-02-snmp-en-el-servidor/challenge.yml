@@ -1,0 +1,17 @@
+id: l14-02-snmp-en-el-servidor
+title: SNMP en el servidor
+level: 14
+type: build
+difficulty: easy
+objectives:
+  - "mon lee por SNMP v2c (community `netlabs-ro`) el nombre, los discos y la carga de srv"
+  - "Sólo desde mon: pc1 no obtiene respuesta"
+  - "La community `public` de srv ya no responde (ni siquiera en local)"
+  - "snmpd arranca con el sistema"
+hints:
+  - "Desde mon: `snmpget -v2c -c netlabs-ro 10.0.1.10 SNMPv2-MIB::sysName.0`. En srv: `ss -lunp | grep 161`: ¿en qué dirección escucha snmpd?"
+  - "La configuración está en `/etc/snmp/snmpd.conf` (y lo que pongas en `/etc/snmp/snmpd.conf.d/`). Mira `agentaddress`, `rocommunity` y `view`."
+  - "Cambia la línea `agentaddress` que ya hay: si añades otra con `udp:161` además de la de 127.0.0.1, snmpd no arranca (las dos piden el puerto 161). `journalctl -u snmpd` lo cuenta."
+  - "`rocommunity netlabs-ro 10.0.0.10/32` sin `-V` da la vista completa (discos: `HOST-RESOURCES-MIB::hrStorageDescr`; carga: `UCD-SNMP-MIB::laLoad.1`). Comenta las líneas de `public` y `systemctl restart snmpd`."
+flag_seed: l14-02-snmp-en-el-servidor
+ram_mb: 800

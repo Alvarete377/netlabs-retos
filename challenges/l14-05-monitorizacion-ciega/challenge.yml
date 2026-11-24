@@ -1,0 +1,16 @@
+id: l14-05-monitorizacion-ciega
+title: Monitorización ciega
+level: 14
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "mon lee por SNMP v2c (`netlabs-ro`) r1, r2 y srv"
+  - "Los logs de r1 y r2 llegan a /var/log/remoto/ de mon (los routers mandan a UDP 514)"
+  - "Sin abrir de más: r2 sigue terminando su input en drop, la community de r2 sólo vale para mon y srv no responde a public"
+hints:
+  - "Haz una lista: qué equipo no responde a qué (`snmpget` a cada uno, `ss -lunp` en mon). Cada fallo está en un sitio distinto."
+  - "srv: `systemctl status snmpd`. ¿Por qué no arranca? `journalctl -u snmpd`."
+  - "r2: mira el firewall de input con `/ip firewall filter print stats`: ¿qué regla cuenta los paquetes de mon? Y luego `/snmp community print`: ¿desde qué dirección se acepta?"
+  - "mon: los routers mandan a 514, ¿en qué puerto escucha rsyslog? `ss -lunp | grep rsyslog` y `/etc/rsyslog.d/`."
+flag_seed: l14-05-monitorizacion-ciega
+ram_mb: 1100

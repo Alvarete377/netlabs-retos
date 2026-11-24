@@ -139,6 +139,14 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Dos operadores mejor que uno | `l13-01-dos-operadores` | Montar | Media |
 | Por la puerta barata | `l13-02-preferencias` | Montar | Media |
 | Somos el tránsito de nadie | `l13-03-somos-transito` | Troubleshooting | Difícil |
+### Monitorización
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| SNMP en el router | `l14-01-snmp-en-el-router` | Montar | Fácil |
+| SNMP en el servidor | `l14-02-snmp-en-el-servidor` | Montar | Fácil |
+| Logs al centro | `l14-03-logs-al-centro` | Montar | Media |
+| SNMPv3 | `l14-04-snmpv3` | Montar | Media |
+| Monitorización ciega | `l14-05-monitorizacion-ciega` | Troubleshooting | Difícil |
 ### Sistemas · Linux a fondo
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|

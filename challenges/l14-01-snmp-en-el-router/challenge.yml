@@ -1,0 +1,16 @@
+id: l14-01-snmp-en-el-router
+title: SNMP en el router
+level: 14
+type: build
+difficulty: easy
+objectives:
+  - "mon (10.0.0.10) lee por SNMP v2c el nombre y las interfaces de r1 con la community `netlabs-ro`"
+  - "Sólo lectura y sólo desde mon: pc1 no obtiene respuesta"
+  - "La community `public` de fábrica ya no responde"
+hints:
+  - "Prueba desde mon: `snmpget -v2c -c netlabs-ro 10.0.0.1 SNMPv2-MIB::sysName.0`. ¿Timeout? En r1 mira `/snmp print`: ¿está activado?"
+  - "`/snmp set enabled=yes` y una community nueva: `/snmp community add name=netlabs-ro addresses=10.0.0.10/32`. `read-access` ya viene a `yes` y `write-access` a `no`."
+  - "`public` es la community por defecto (flag `*`): no se puede borrar, pero sí desactivar: `/snmp community set [find default=yes] disabled=yes`."
+  - "`snmpwalk -v2c -c netlabs-ro 10.0.0.1 IF-MIB::ifName` lista las interfaces."
+flag_seed: l14-01-snmp-en-el-router
+ram_mb: 700

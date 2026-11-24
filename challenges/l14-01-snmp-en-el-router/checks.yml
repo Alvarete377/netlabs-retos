@@ -1,0 +1,5 @@
+- shell: {node: mon, cmd: "snmpget -v2c -c netlabs-ro -t1 -r1 -Oqv 10.0.0.1 SNMPv2-MIB::sysName.0 2>&1; true", expect: "r1", desc: "mon lee el nombre de r1 con netlabs-ro"}
+- shell: {node: mon, cmd: "snmpwalk -v2c -c netlabs-ro -t1 -r1 -Oqv 10.0.0.1 IF-MIB::ifName 2>&1 | grep -c ether", expect: 're:^[2-9]$', desc: "mon lista las interfaces de r1"}
+- shell: {node: pc1, cmd: "snmpget -v2c -c netlabs-ro -t1 -r1 -Oqv 192.168.50.1 SNMPv2-MIB::sysName.0 2>&1; true", expect: 're:Timeout', desc: "pc1 no obtiene respuesta con netlabs-ro"}
+- shell: {node: mon, cmd: "snmpget -v2c -c public -t1 -r1 -Oqv 10.0.0.1 SNMPv2-MIB::sysName.0 2>&1; true", expect: 're:Timeout', desc: "public ya no responde"}
+- routeros: {node: r1, cmd: '/snmp community print count-only where write-access and !disabled', expect: "0", desc: "Ninguna community con escritura"}

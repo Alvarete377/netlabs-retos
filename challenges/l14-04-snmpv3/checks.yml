@@ -1,0 +1,7 @@
+- shell: {node: mon, cmd: "snmpget -v3 -l authPriv -u monitor -a SHA -A Autentica.2024 -x AES -X Cifrado.2024 -t1 -r1 -Oqv 10.0.0.1 SNMPv2-MIB::sysName.0 2>&1; true", expect: "r1", desc: "mon lee r1 con SNMPv3"}
+- shell: {node: mon, cmd: "snmpget -v3 -l authPriv -u monitor -a SHA -A Autentica.2024 -x AES -X Cifrado.2024 -t1 -r1 -Oqv 10.0.1.10 SNMPv2-MIB::sysName.0 2>&1; true", expect: "srv", desc: "mon lee srv con SNMPv3"}
+- shell: {node: mon, cmd: "snmpget -v2c -c netlabs-ro -t1 -r1 -Oqv 10.0.0.1 SNMPv2-MIB::sysName.0 2>&1; true", expect: 're:Timeout', desc: "r1 ya no responde a v2c"}
+- shell: {node: mon, cmd: "snmpget -v2c -c netlabs-ro -t1 -r1 -Oqv 10.0.1.10 SNMPv2-MIB::sysName.0 2>&1; true", expect: 're:Timeout', desc: "srv ya no responde a v2c"}
+- routeros: {node: r1, cmd: '/snmp community print count-only where security="none" and !disabled', expect: "0", desc: "r1: ninguna community v1/v2c activa"}
+- shell: {node: srv, cmd: "grep -hs '^ *rocommunity' /etc/snmp/snmpd.conf /etc/snmp/snmpd.conf.d/*.conf | wc -l", expect: "0", desc: "srv: sin rocommunity en la configuración"}
+- shell: {node: pc1, cmd: "snmpget -v3 -l authPriv -u monitor -a SHA -A Autentica.2024 -x AES -X Cifrado.2024 -t1 -r1 -Oqv 192.168.50.1 SNMPv2-MIB::sysName.0 2>&1; true", expect: 're:Timeout', desc: "r1: monitor no funciona desde pc1"}

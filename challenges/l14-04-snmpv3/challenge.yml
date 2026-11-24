@@ -1,0 +1,16 @@
+id: l14-04-snmpv3
+title: SNMPv3
+level: 14
+type: build
+difficulty: medium
+objectives:
+  - "mon lee r1 y srv con SNMPv3: usuario `monitor`, autenticación SHA (`Autentica.2024`) y cifrado AES (`Cifrado.2024`)"
+  - "SNMP v1/v2c queda desactivado del todo en r1 y en srv"
+  - "En r1, el usuario `monitor` sólo funciona desde mon"
+hints:
+  - "La prueba desde mon: `snmpget -v3 -l authPriv -u monitor -a SHA -A Autentica.2024 -x AES -X Cifrado.2024 10.0.0.1 SNMPv2-MIB::sysName.0`."
+  - "En RouterOS un usuario v3 es una community con `security=private`: `/snmp community add name=monitor security=private authentication-protocol=SHA1 authentication-password=... encryption-protocol=AES encryption-password=... addresses=10.0.0.10/32`. Las de `security=none` son v1/v2c."
+  - "En snmpd: `createUser monitor SHA \"Autentica.2024\" AES \"Cifrado.2024\"` y `rouser monitor authpriv` en un fichero de `/etc/snmp/snmpd.conf.d/`. Quita (o comenta) todas las `rocommunity`."
+  - "Si snmpd no arranca, `journalctl -u snmpd`. Si arranca pero v3 no responde, comprueba que escucha fuera de 127.0.0.1."
+flag_seed: l14-04-snmpv3
+ram_mb: 800

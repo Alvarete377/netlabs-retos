@@ -1,0 +1,7 @@
+- routeros: {node: r1, cmd: ':for i from=1 to=5 do={:log info "netlabs-prueba-r1"; :delay 4s}', expect: "", desc: "r1 genera un log de prueba"}
+- shell: {node: srv, cmd: 'logger -t prueba netlabs-prueba-srv', expect: "", desc: "srv genera un log de prueba"}
+- shell: {node: mon, cmd: 'for i in $(seq 15); do grep -rqs netlabs-prueba-r1 /var/log/remoto && break; sleep 1; done; grep -rl netlabs-prueba-r1 /var/log/remoto 2>/dev/null | wc -l', expect: 're:^[1-9]', desc: "El log de r1 llega a /var/log/remoto en mon"}
+- shell: {node: mon, cmd: 'for i in $(seq 15); do grep -rqs netlabs-prueba-srv /var/log/remoto && break; sleep 1; done; grep -rl netlabs-prueba-srv /var/log/remoto 2>/dev/null | wc -l', expect: 're:^[1-9]', desc: "El log de srv llega a /var/log/remoto en mon"}
+- shell: {node: mon, cmd: "f1=$(grep -rl netlabs-prueba-r1 /var/log/remoto 2>/dev/null | head -1); f2=$(grep -rl netlabs-prueba-srv /var/log/remoto 2>/dev/null | head -1); [ -n \"$f1\" ] && [ -n \"$f2\" ] && [ \"$f1\" != \"$f2\" ] && echo separados", expect: "separados", desc: "Un fichero por equipo"}
+- shell: {node: mon, cmd: 'grep -rl netlabs-prueba /var/log --exclude-dir=remoto 2>/dev/null | wc -l', expect: "0", desc: "Los logs remotos no se mezclan con los de mon"}
+- shell: {node: mon, cmd: 'systemctl is-enabled rsyslog', expect: "enabled", desc: "rsyslog arranca con el sistema"}

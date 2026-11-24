@@ -14,5 +14,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
          systemd-remount-fs.service getty.target console-getty.service systemd-logind.service \
     && echo 'PS1="\[\e[1;32m\]\u@\h\[\e[0m\]:\[\e[1;34m\]\w\[\e[0m\]\$ "' >> /root/.bashrc \
     && echo "NetLabs · Sistemas. Estás dentro de un servidor Debian del laboratorio." > /etc/motd
+# 0.2: MIBs estándar de SNMP (SNMPv2-MIB, IF-MIB, HOST-RESOURCES-MIB...), en non-free porque su licencia
+# no es DFSG; el paquete las descarga al instalarse. Sin ellas habría que usar OIDs numéricos.
+RUN sed -i 's/^Components: main$/Components: main non-free/' /etc/apt/sources.list.d/debian.sources \
+    && apt-get update && apt-get install -y --no-install-recommends snmp-mibs-downloader \
+    && sed -i 's/^mibs :/# mibs :/' /etc/snmp/snmp.conf \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 STOPSIGNAL SIGRTMIN+3
 CMD ["/sbin/init"]

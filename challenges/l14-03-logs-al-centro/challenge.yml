@@ -1,0 +1,16 @@
+id: l14-03-logs-al-centro
+title: Logs al centro
+level: 14
+type: build
+difficulty: medium
+objectives:
+  - "mon recibe por syslog (UDP 514) los logs de r1 (al menos los de tipo info) y todos los de srv"
+  - "En mon se guardan en /var/log/remoto/, un fichero por equipo"
+  - "Los logs que llegan de fuera no se mezclan con los de mon (no aparecen en el resto de /var/log)"
+hints:
+  - "Empieza por mon: ¿escucha alguien en UDP 514? `ss -lunp`. rsyslog trae el módulo `imudp` comentado en `/etc/rsyslog.conf`."
+  - "En r1: `/system logging action` ya tiene una acción `remote`; dale `remote=10.0.0.10` y crea una regla `/system logging add topics=info action=remote`."
+  - "En srv, un fichero en `/etc/rsyslog.d/` con `*.* @10.0.0.10:514` (una `@` = UDP) y `systemctl restart rsyslog`. Prueba con `logger hola`."
+  - "Para separar por equipo, en mon una plantilla con `%FROMHOST-IP%` en `/etc/rsyslog.d/`: `template(name=\"PorEquipo\" type=\"string\" string=\"/var/log/remoto/%FROMHOST-IP%.log\")` y una regla `if $fromhost-ip != \"127.0.0.1\" then { action(type=\"omfile\" dynaFile=\"PorEquipo\") stop }`. El `stop` evita que sigan a /var/log/syslog."
+flag_seed: l14-03-logs-al-centro
+ram_mb: 700

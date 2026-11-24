@@ -1,0 +1,11 @@
+- shell: {node: mon, cmd: "snmpget -v2c -c netlabs-ro -t1 -r1 -Oqv 10.0.0.1 SNMPv2-MIB::sysName.0 2>&1; true", expect: "r1", desc: "mon lee r1"}
+- shell: {node: mon, cmd: "snmpget -v2c -c netlabs-ro -t1 -r1 -Oqv 172.16.12.2 SNMPv2-MIB::sysName.0 2>&1; true", expect: "r2", desc: "mon lee r2"}
+- shell: {node: mon, cmd: "snmpget -v2c -c netlabs-ro -t1 -r1 -Oqv 10.0.1.10 SNMPv2-MIB::sysName.0 2>&1; true", expect: "srv", desc: "mon lee srv"}
+- routeros: {node: r1, cmd: ':for i from=1 to=5 do={:log info "netlabs-ciega-r1"; :delay 4s}', expect: "", desc: "r1 genera un log de prueba"}
+- routeros: {node: r2, cmd: ':for i from=1 to=5 do={:log info "netlabs-ciega-r2"; :delay 4s}', expect: "", desc: "r2 genera un log de prueba"}
+- shell: {node: mon, cmd: 'for i in $(seq 15); do grep -rqs netlabs-ciega-r1 /var/log/remoto && break; sleep 1; done; grep -rl netlabs-ciega-r1 /var/log/remoto 2>/dev/null | wc -l', expect: 're:^[1-9]', desc: "Los logs de r1 llegan a mon"}
+- shell: {node: mon, cmd: 'for i in $(seq 15); do grep -rqs netlabs-ciega-r2 /var/log/remoto && break; sleep 1; done; grep -rl netlabs-ciega-r2 /var/log/remoto 2>/dev/null | wc -l', expect: 're:^[1-9]', desc: "Los logs de r2 llegan a mon"}
+- routeros: {node: r2, cmd: ':put [/ip firewall filter get ([find chain=input]->0) in-interface]', expect: "ether1", desc: "r2: la regla de gestión del laboratorio sigue la primera"}
+- routeros: {node: r2, cmd: ':local l [/ip firewall filter find chain=input]; :put [/ip firewall filter get ($l->([:len $l]-1)) action]', expect: "drop", desc: "r2: el input sigue terminando en drop"}
+- routeros: {node: r2, cmd: '/snmp community print count-only where !disabled and !(addresses="10.0.0.10/32")', expect: "0", desc: "r2: las communities activas sólo valen para mon"}
+- shell: {node: srv, cmd: "snmpget -v2c -c public -t1 -r1 -Oqv 127.0.0.1 SNMPv2-MIB::sysName.0 2>&1; true", expect: 're:Timeout', desc: "srv no responde a public"}

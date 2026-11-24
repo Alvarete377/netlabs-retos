@@ -1,0 +1,6 @@
+- shell: {node: mon, cmd: "snmpget -v2c -c netlabs-ro -t1 -r1 -Oqv 10.0.1.10 SNMPv2-MIB::sysName.0 2>&1; true", expect: "srv", desc: "mon lee el nombre de srv"}
+- shell: {node: mon, cmd: "snmpwalk -v2c -c netlabs-ro -t1 -r1 -Oqv 10.0.1.10 HOST-RESOURCES-MIB::hrStorageDescr 2>&1 | grep -c '^/'", expect: 're:^[1-9]', desc: "mon ve los sistemas de ficheros de srv"}
+- shell: {node: mon, cmd: "snmpget -v2c -c netlabs-ro -t1 -r1 -Oqv 10.0.1.10 UCD-SNMP-MIB::laLoad.1 2>&1; true", expect: 're:^[0-9]+\.[0-9]+$', desc: "mon lee la carga de srv"}
+- shell: {node: pc1, cmd: "snmpget -v2c -c netlabs-ro -t1 -r1 -Oqv 10.0.1.10 SNMPv2-MIB::sysName.0 2>&1; true", expect: 're:Timeout', desc: "pc1 no obtiene respuesta"}
+- shell: {node: srv, cmd: "snmpget -v2c -c public -t1 -r1 -Oqv 127.0.0.1 SNMPv2-MIB::sysName.0 2>&1; true", expect: 're:Timeout', desc: "public ya no responde en srv"}
+- shell: {node: srv, cmd: 'systemctl is-enabled snmpd', expect: "enabled", desc: "snmpd arranca con el sistema"}
