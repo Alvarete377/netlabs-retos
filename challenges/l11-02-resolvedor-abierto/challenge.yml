@@ -1,0 +1,16 @@
+id: l11-02-resolvedor-abierto
+title: El resolvedor abierto
+level: 11
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "Desde Internet nadie puede usar r1 como DNS, ni por UDP ni por TCP"
+  - "La oficina sigue resolviendo nombres con r1"
+  - "Desde Internet r1 sólo responde al ping; la cadena input sigue terminando en drop"
+hints:
+  - "Haz de atacante: desde inet, `dig intranet.empresa.lab @203.0.113.1` y `dig +tcp ... @203.0.113.1`. Un DNS que contesta a cualquiera sirve para **ataques de amplificación**."
+  - "Lee el input de r1 de arriba abajo con `/ip firewall filter print stats` mientras haces las pruebas. ¿Qué regla deja pasar cada consulta? ¿Qué pasa con lo que no es UDP?"
+  - "El DNS hay que aceptarlo sólo desde la LAN (`in-interface=ether3`), y el final de input debe tirar todo lo demás, sea UDP o TCP."
+  - "Dos fallos: la regla 'DNS' no limita la interfaz, y el bloqueo de Internet sólo cubre UDP. Pon `in-interface=ether3` en la de DNS y cambia la de bloqueo por un `drop` sin protocolo ni interfaz al final."
+flag_seed: l11-02-resolvedor-abierto
+ram_mb: 560

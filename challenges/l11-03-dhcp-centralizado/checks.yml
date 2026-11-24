@@ -1,0 +1,5 @@
+- shell: {node: pc1, cmd: 'ip -4 addr show dev eth1', expect: 're:inet 192\.168\.1\.1[0-9]{2}/24', desc: "pc1 tiene una IP del rango de la sede"}
+- shell: {node: pc1, cmd: 'ip route show default', expect: 're:via 192\.168\.1\.1 ', desc: "pc1 usa r1 como puerta de enlace"}
+- ping: {from: pc1, to: 192.168.20.10, expect: ok, desc: "pc1 llega a la red de servidores"}
+- routeros: {node: r2, cmd: '/ip dhcp-server lease print count-only where status=bound and address~"^192.168.1."', expect: 're:^[1-9]', desc: "La concesión la da el servidor central"}
+- routeros: {node: r1, cmd: '/ip dhcp-server print count-only', expect: "0", desc: "r1 no reparte direcciones por su cuenta"}

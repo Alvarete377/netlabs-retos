@@ -1,0 +1,15 @@
+id: l11-05-logs-centralizados
+title: Los logs que nadie lee
+level: 11
+type: build
+difficulty: medium
+objectives:
+  - "r1 y r2 mandan sus avisos (warning) y errores (error) al servidor de logs 192.168.20.10 por syslog"
+  - "Los mensajes informativos NO se mandan (llenarían el servidor)"
+  - "Los routers siguen guardando sus logs en memoria"
+hints:
+  - "En RouterOS el registro tiene dos piezas: **acciones** (dónde se escribe: memoria, disco, remoto...) y **reglas** (qué temas van a qué acción): `/system logging action print` y `/system logging print`."
+  - "Crea en cada router una acción `target=remote remote=192.168.20.10` y reglas que manden a ella los temas `warning` y `error`. No toques las reglas que ya van a `memory`."
+  - "`/system logging action add name=central target=remote remote=192.168.20.10` y `/system logging add topics=warning action=central` + `/system logging add topics=error action=central` (en r1 y en r2). En srv: `tail -f /var/log/remoto.log`."
+flag_seed: l11-05-logs-centralizados
+ram_mb: 1100

@@ -1,0 +1,14 @@
+id: l11-04-la-hora
+title: ¿Qué hora es?
+level: 11
+type: build
+difficulty: easy
+objectives:
+  - "r1 sincroniza su reloj por NTP con el del centro de datos (r2)"
+  - "r1 da la hora a los equipos de la sede: pc1 recibe respuestas NTP de 192.168.1.1"
+hints:
+  - "El reloj importa más de lo que parece: certificados TLS que \"aún no son válidos\", logs imposibles de cruzar, Kerberos que rechaza a todo el mundo... r2 ya es servidor NTP (`/system ntp server print`)."
+  - "En RouterOS 7 el cliente y el servidor NTP vienen de serie: `/system ntp client` y `/system ntp server`."
+  - "`/system ntp client set enabled=yes servers=172.16.12.2` y `/system ntp server set enabled=yes`. Comprueba con `/system ntp client print` (status: synchronized) y desde pc1 con `ntpd -n -w -p 192.168.1.1`."
+flag_seed: l11-04-la-hora
+ram_mb: 1060

@@ -1,0 +1,4 @@
+- shell: {node: pc1, cmd: 'dig +short +time=2 +tries=1 intranet.empresa.lab', expect: "192.168.20.10", desc: "pc1 resuelve intranet.empresa.lab"}
+- shell: {node: pc1, cmd: 'dig +short +time=2 +tries=1 www.netlabs.lab @192.168.1.1', expect: "198.51.100.80", desc: "r1 resuelve también otros nombres"}
+- routeros: {node: r1, cmd: '/ip dns cache print count-only where name="intranet.empresa.lab"', expect: 're:^[1-9]', desc: "La respuesta queda en la caché de r1"}
+- routeros: {node: r1, cmd: '/ip dns static print count-only', expect: "0", desc: "r1 no tiene registros inventados a mano"}

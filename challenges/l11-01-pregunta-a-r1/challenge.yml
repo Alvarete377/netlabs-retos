@@ -1,0 +1,14 @@
+id: l11-01-pregunta-a-r1
+title: Pregúntale a r1
+level: 11
+type: build
+difficulty: easy
+objectives:
+  - "Los PCs de la sede resuelven nombres preguntando a r1 (192.168.1.1)"
+  - "r1 no se inventa las respuestas: se las pide al DNS del centro de datos (r2) y las guarda en caché"
+hints:
+  - "pc1 ya usa 192.168.1.1 como DNS (`cat /etc/resolv.conf`). Prueba `dig intranet.empresa.lab`: ¿responde alguien?"
+  - "RouterOS trae un DNS con caché. Para que conteste a otros equipos hace falta `allow-remote-requests=yes`, y para saber a quién preguntar, `servers=`."
+  - "`/ip dns set servers=172.16.12.2 allow-remote-requests=yes`. Comprueba con `/ip dns cache print`."
+flag_seed: l11-01-pregunta-a-r1
+ram_mb: 1060

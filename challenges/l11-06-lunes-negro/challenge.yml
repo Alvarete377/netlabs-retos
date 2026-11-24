@@ -1,0 +1,17 @@
+id: l11-06-lunes-negro
+title: Lunes negro en la sede
+level: 11
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "pc1 recibe su IP del DHCP central (r2), con r1 como puerta de enlace"
+  - "pc1 resuelve intranet.empresa.lab usando a r1 como DNS"
+  - "pc1 abre http://intranet.empresa.lab/"
+  - "r2 sigue protegido: su input termina en drop y la sede no llega a su SSH"
+hints:
+  - "Dos problemas independientes: direcciones (DHCP) y nombres (DNS). Empieza por el DHCP: ¿llegan a r2 las peticiones que retransmite r1? `/tool sniffer quick port=67` en r2, o mira los contadores de `/ip firewall filter print stats`."
+  - "En la cadena del DHCP con relay hay tres sitios donde fallar: adónde manda r1 las peticiones, si r2 las deja entrar (UDP 67) y si el servidor de r2 reconoce de qué relay vienen (`relay=` debe ser la IP de r1 en la LAN de la sede)."
+  - "Para el DNS: ¿a quién pregunta r1 lo que no sabe? `/ip dns print`. El DNS de la empresa está en r2."
+  - "Cuatro fallos: el relay de r1 apunta a 172.16.12.6, el input de r2 no acepta UDP 67 desde la sede, el servidor de r2 tiene `relay=192.168.10.1` y el DNS de r1 tiene `servers=172.16.12.6`."
+flag_seed: l11-06-lunes-negro
+ram_mb: 1100

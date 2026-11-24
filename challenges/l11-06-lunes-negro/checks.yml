@@ -1,0 +1,11 @@
+- shell: {node: pc1, cmd: 'ip -4 addr show dev eth1', expect: 're:inet 192\.168\.1\.1[0-9]{2}/24', desc: "pc1 tiene una IP del rango de la sede"}
+- shell: {node: pc1, cmd: 'ip route show default', expect: 're:via 192\.168\.1\.1 ', desc: "pc1 usa r1 como puerta de enlace"}
+- routeros: {node: r2, cmd: '/ip dhcp-server lease print count-only where status=bound and address~"^192.168.1."', expect: 're:^[1-9]', desc: "La concesión la da el servidor central"}
+- shell: {node: pc1, cmd: 'grep -c "nameserver 192.168.1.1" /etc/resolv.conf', expect: 're:^[1-9]', desc: "pc1 usa a r1 como DNS"}
+- shell: {node: pc1, cmd: 'dig +short +time=2 +tries=1 intranet.empresa.lab', expect: "192.168.20.10", desc: "pc1 resuelve intranet.empresa.lab"}
+- http: {from: pc1, url: "http://intranet.empresa.lab/", contains: "intranet", desc: "pc1 abre la intranet por su nombre"}
+- routeros: {node: r1, cmd: '/ip dhcp-server print count-only', expect: "0", desc: "r1 no reparte direcciones por su cuenta"}
+- routeros: {node: r1, cmd: '/ip dns static print count-only', expect: "0", desc: "r1 no tiene registros DNS a mano"}
+- tcp: {from: pc1, host: 172.16.12.2, port: 22, expect: closed, desc: "La sede no llega al SSH de r2"}
+- routeros: {node: r2, cmd: ':local l [/ip firewall filter find chain=input]; :put ([/ip firewall filter get ($l->([:len $l]-1)) action] . "/" . [/ip firewall filter get ($l->([:len $l]-1)) protocol])', expect: "drop/", desc: "El input de r2 termina en un drop general"}
+- routeros: {node: r2, cmd: ':put [/ip firewall filter get ([find chain=input]->0) in-interface]', expect: "ether1", desc: "La regla de gestión del laboratorio sigue la primera"}

@@ -1,0 +1,16 @@
+id: l11-03-dhcp-centralizado
+title: Un DHCP para todas las sedes
+level: 11
+type: build
+difficulty: medium
+objectives:
+  - "pc1 recibe IP por DHCP (rango 192.168.1.100-199) con r1 como puerta de enlace"
+  - "Las direcciones las reparte el servidor central (r2), no r1"
+  - "pc1 llega a la red de servidores (192.168.20.10)"
+hints:
+  - "El DHCP funciona por broadcast, y los broadcasts no cruzan routers: el DISCOVER de pc1 nunca llega a r2. Alguien en la LAN de pc1 tiene que recogerlo y mandárselo a r2 por unicast."
+  - "Eso es un **relay** (agente de retransmisión): en RouterOS, `/ip dhcp-relay`. Al reenviar, pone su propia IP de la LAN (`local-address`, el *giaddr*): así el servidor sabe de qué red es la petición."
+  - "En r2 ya están el pool `sede1` y la red. Falta el servidor: `/ip dhcp-server add name=central interface=ether2 relay=192.168.1.1 address-pool=sede1 disabled=no`."
+  - "En r1: `/ip dhcp-relay add name=sede interface=ether2 dhcp-server=172.16.12.2 local-address=192.168.1.1 disabled=no`."
+flag_seed: l11-03-dhcp-centralizado
+ram_mb: 1100

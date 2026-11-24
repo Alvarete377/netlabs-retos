@@ -115,3 +115,12 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | El ICMP que no debías tirar | `l10-03-icmpv6-roto` | Troubleshooting | Media |
 | Rutas que viajan solas (v6) | `l10-04-ospfv3` | Montar | Media |
 | El prefijo que no llega | `l10-05-prefijo-delegado` | Troubleshooting | Difícil |
+### Servicios de red
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| Pregúntale a r1 | `l11-01-pregunta-a-r1` | Montar | Fácil |
+| El resolvedor abierto | `l11-02-resolvedor-abierto` | Troubleshooting | Media |
+| Un DHCP para todas las sedes | `l11-03-dhcp-centralizado` | Montar | Media |
+| ¿Qué hora es? | `l11-04-la-hora` | Montar | Fácil |
+| Los logs que nadie lee | `l11-05-logs-centralizados` | Montar | Media |
+| Lunes negro en la sede | `l11-06-lunes-negro` | Troubleshooting | Difícil |

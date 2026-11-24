@@ -1,0 +1,7 @@
+- shell: {node: pc1, cmd: 'dig +short +time=2 +tries=1 intranet.empresa.lab @192.168.1.1', expect: "192.168.20.10", desc: "La oficina resuelve con r1"}
+- shell: {node: inet, cmd: 'dig +short +time=2 +tries=1 intranet.empresa.lab @203.0.113.1', expect: 're:(?s)^(?!.*192\.168\.20\.10)', desc: "Desde Internet no se resuelve con r1 (UDP)"}
+- shell: {node: inet, cmd: 'dig +tcp +short +time=2 +tries=1 intranet.empresa.lab @203.0.113.1', expect: 're:(?s)^(?!.*192\.168\.20\.10)', desc: "Desde Internet no se resuelve con r1 (TCP)"}
+- ping: {from: inet, to: 203.0.113.1, expect: ok, desc: "Desde Internet r1 responde al ping"}
+- tcp: {from: inet, host: 203.0.113.1, port: 22, expect: closed, desc: "Desde Internet no se llega al SSH de r1"}
+- routeros: {node: r1, cmd: ':local l [/ip firewall filter find chain=input]; :put ([/ip firewall filter get ($l->([:len $l]-1)) action] . "/" . [/ip firewall filter get ($l->([:len $l]-1)) protocol])', expect: "drop/", desc: "input termina en un drop general"}
+- routeros: {node: r1, cmd: ':put [/ip firewall filter get ([find chain=input]->0) in-interface]', expect: "ether1", desc: "La regla de gestión del laboratorio sigue la primera"}

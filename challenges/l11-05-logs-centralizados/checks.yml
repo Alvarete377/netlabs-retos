@@ -1,0 +1,11 @@
+- routeros: {node: r1, cmd: ':log warning "netlabs-r1-warning"', expect: "", desc: "r1 genera un aviso de prueba (warning)"}
+- shell: {node: srv, cmd: 'sleep 1; grep -c netlabs-r1-warning /var/log/remoto.log', expect: 're:^[1-9]', desc: "El warning de r1 llega al servidor de logs"}
+- routeros: {node: r1, cmd: ':log error "netlabs-r1-error"', expect: "", desc: "r1 genera un aviso de prueba (error)"}
+- shell: {node: srv, cmd: 'sleep 1; grep -c netlabs-r1-error /var/log/remoto.log', expect: 're:^[1-9]', desc: "El error de r1 llega al servidor de logs"}
+- routeros: {node: r2, cmd: ':log warning "netlabs-r2-warning"', expect: "", desc: "r2 genera un aviso de prueba (warning)"}
+- shell: {node: srv, cmd: 'sleep 1; grep -c netlabs-r2-warning /var/log/remoto.log', expect: 're:^[1-9]', desc: "El warning de r2 llega al servidor de logs"}
+- routeros: {node: r2, cmd: ':log error "netlabs-r2-error"', expect: "", desc: "r2 genera un aviso de prueba (error)"}
+- shell: {node: srv, cmd: 'sleep 1; grep -c netlabs-r2-error /var/log/remoto.log', expect: 're:^[1-9]', desc: "El error de r2 llega al servidor de logs"}
+- routeros: {node: r1, cmd: ':log info "netlabs-r1-info"', expect: "", desc: "r1 genera un mensaje informativo de prueba"}
+- shell: {node: srv, cmd: 'sleep 1; grep -c netlabs-r1-info /var/log/remoto.log', expect: "0", desc: "Los mensajes informativos no se mandan (sólo avisos y errores)"}
+- routeros: {node: r1, cmd: '/system logging print count-only where action=memory and !disabled', expect: 're:^[1-9]', desc: "r1 sigue guardando sus logs en memoria"}
