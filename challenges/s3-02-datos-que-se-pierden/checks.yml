@@ -1,0 +1,4 @@
+- shell: {node: srv, cmd: "podman inspect -f '{{range .Mounts}}{{.Source}}->{{.Destination}} {{end}}' registro 2>&1", expect: "re:/srv/registro->/datos", desc: "/datos del contenedor es /srv/registro del servidor"}
+- shell: {node: srv, cmd: "grep -c '^HISTORICO' /srv/registro/registro.txt 2>&1", expect: "2", desc: "El histórico sigue ahí"}
+- shell: {node: srv, cmd: "podman inspect -f '{{.State.Status}}' registro 2>&1", expect: "running", desc: "El contenedor registro está en marcha"}
+- shell: {node: srv, cmd: "f=/srv/registro/registro.txt; [ -f $f ] || { echo sin-fichero; exit; }; a=$(wc -l < $f); sleep 7; b=$(wc -l < $f); [ $b -gt $a ] && echo crece || echo parado", expect: "crece", desc: "El registro sigue creciendo en /srv/registro"}

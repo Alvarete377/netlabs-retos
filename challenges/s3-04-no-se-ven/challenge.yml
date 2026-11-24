@@ -1,0 +1,16 @@
+id: s3-04-no-se-ven
+title: No se ven
+level: 103
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "Desde pc1, http://10.0.0.10:8082/ (el contenedor `api`) dice `estado: OK`"
+  - "`api` encuentra a `datos` por su nombre, en una red de contenedores llamada `interna`, sin IPs escritas a mano"
+  - "`datos` no está publicado hacia fuera: sólo lo usa `api`"
+hints:
+  - "Desde dentro: `podman exec api wget -qO- http://datos/estado.txt`. ¿Qué error da? ¿Y con la IP de datos (`podman inspect datos`)?"
+  - "La red por defecto de Podman no tiene DNS entre contenedores. Una red creada con `podman network create` sí: cada contenedor se llama por su nombre."
+  - "`podman network create interna` y recrea los dos contenedores con `--network interna` (mismos -p y -v que tenían; míralo con `podman inspect`)."
+  - "`datos` publica un puerto (`podman port datos`) que nadie fuera necesita: al recrearlo, sin `-p`. No cambies el script de api para poner una IP."
+flag_seed: s3-04-no-se-ven
+ram_mb: 400

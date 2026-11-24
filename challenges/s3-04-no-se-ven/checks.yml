@@ -1,0 +1,7 @@
+- shell: {node: srv, cmd: "podman network exists interna && echo si || echo no", expect: "si", desc: "Existe la red interna"}
+- shell: {node: srv, cmd: "podman inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' api 2>&1", expect: "re:\\binterna\\b", desc: "api está en la red interna"}
+- shell: {node: srv, cmd: "podman inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' datos 2>&1", expect: "re:\\binterna\\b", desc: "datos está en la red interna"}
+- shell: {node: srv, cmd: "podman exec api wget -qO- -T3 http://datos/estado.txt 2>&1", expect: "estado: OK", desc: "api llega a datos por su nombre"}
+- shell: {node: pc1, cmd: "for i in 1 2 3 4 5 6; do r=$(curl -s -m2 http://10.0.0.10:8082/); echo \"$r\" | grep -q OK && break; sleep 1; done; echo \"$r\"", expect: "estado: OK", desc: "pc1 ve estado: OK en 10.0.0.10:8082"}
+- shell: {node: srv, cmd: "podman port datos 2>&1 | wc -l", expect: "0", desc: "datos no publica ningún puerto"}
+- shell: {node: srv, cmd: "grep -c 'http://datos/' /srv/api/arranque.sh", expect: "1", desc: "api sigue usando el nombre datos, no una IP"}

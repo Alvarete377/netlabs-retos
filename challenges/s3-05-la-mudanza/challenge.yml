@@ -1,0 +1,17 @@
+id: s3-05-la-mudanza
+title: La mudanza
+level: 103
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "Desde pc1, http://10.0.0.10:8080/ carga la tienda nueva (la de /srv/tienda/html), servida por el contenedor `tienda`"
+  - "La unidad `container-tienda` arranca con el sistema y, si el contenedor muere, systemd lo vuelve a levantar"
+  - "La tienda antigua (servicio `antigua-tienda`) queda parada y no vuelve al reiniciar"
+  - "Sin bajar la seguridad: el contenedor sigue con la raíz de sólo lectura (`--read-only`) y la web montada en sólo lectura"
+hints:
+  - "Empieza por `systemctl status container-tienda` y `journalctl -u container-tienda -b`. Como siempre, el **primer** error manda; cuando lo arregles saldrá el siguiente."
+  - "Revisa cada línea del `ExecStart=`: ¿existen las carpetas que monta? ¿Está libre el puerto que publica (`ss -ltnp`)? Tras editar la unidad: `systemctl daemon-reload`."
+  - "Si el contenedor arranca y se para al momento, mira qué dice nginx: `journalctl -u container-tienda` o lanza el mismo `podman run` a mano sin `-d`. Con `--read-only`, nginx necesita una carpeta escribible: `--tmpfs` sobre ella."
+  - "Para que vuelva si muere, mira la línea `Restart=`. La tienda antigua: `systemctl disable --now antigua-tienda`."
+flag_seed: s3-05-la-mudanza
+ram_mb: 450

@@ -22,6 +22,15 @@ $DOCKER build -q -t netlabs/samba:0.1 "$HERE/samba"
 echo "== netlabs/ansible:0.1"
 $DOCKER build -q -t netlabs/ansible:0.1 "$HERE/ansible"
 
+# Servidor con Podman (módulo Virtualización), con las imágenes de los retos precargadas.
+echo "== netlabs/podman:0.1"
+for i in docker.io/library/alpine:3.20 docker.io/library/nginx:1.27-alpine; do
+  $DOCKER image inspect "$i" >/dev/null 2>&1 || $DOCKER pull -q "$i" >/dev/null
+done
+$DOCKER save -o "$HERE/podman/imagenes.tar" docker.io/library/alpine:3.20 docker.io/library/nginx:1.27-alpine
+$DOCKER build -q -t netlabs/podman:0.1 "$HERE/podman"
+rm -f "$HERE/podman/imagenes.tar"
+
 echo "== netlabs/chr:$CHR_VERSION"
 if $DOCKER image inspect "netlabs/chr:$CHR_VERSION" >/dev/null 2>&1; then
   echo "ya existe"; exit 0

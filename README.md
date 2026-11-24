@@ -155,6 +155,14 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Red en Linux | `s1-03-red-en-linux` | Troubleshooting | Media |
 | Puerto ocupado | `s1-04-puerto-ocupado` | Troubleshooting | Fácil |
 | El heredado | `s1-05-el-heredado` | Troubleshooting | Difícil |
+### Sistemas · Virtualización
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| El puerto que no sale | `s3-01-el-puerto-que-no-sale` | Troubleshooting | Fácil |
+| Datos que se pierden | `s3-02-datos-que-se-pierden` | Montar | Fácil |
+| Sin memoria | `s3-03-sin-memoria` | Troubleshooting | Media |
+| No se ven | `s3-04-no-se-ven` | Troubleshooting | Media |
+| La mudanza | `s3-05-la-mudanza` | Troubleshooting | Difícil |
 ### Sistemas · Usuarios y permisos
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|

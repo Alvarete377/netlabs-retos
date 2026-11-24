@@ -1,0 +1,11 @@
+[Unit]
+Description=Carga las imágenes de contenedor de NetLabs
+Before=multi-user.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/netlabs-imagenes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,16 @@
+id: s3-02-datos-que-se-pierden
+title: Datos que se pierden
+level: 103
+type: build
+difficulty: easy
+objectives:
+  - "El registro de pedidos del contenedor `registro` se guarda en /srv/registro del servidor (montado en /datos)"
+  - "No se pierde el histórico que ya tiene (las líneas HISTORICO)"
+  - "El contenedor sigue en marcha, añadiendo pedidos al registro"
+hints:
+  - "`podman inspect registro`: mira `Mounts` (¿hay algo montado en /datos?) y `Cmd` (qué ejecuta). Lo que escribe en /datos vive en la capa del contenedor y desaparece con `podman rm`."
+  - "Antes de borrar nada, saca los datos: `podman cp registro:/datos/registro.txt /srv/registro/` (crea la carpeta antes)."
+  - "Recrea el contenedor con el mismo comando y `-v /srv/registro:/datos`. El script sólo escribe el histórico si el fichero está vacío, así que respetará lo que copiaste."
+  - "Comprueba que el fichero de /srv/registro crece cada 5 segundos y que sigue empezando por las líneas HISTORICO."
+flag_seed: s3-02-datos-que-se-pierden
+ram_mb: 400

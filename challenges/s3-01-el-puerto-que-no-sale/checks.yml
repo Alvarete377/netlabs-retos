@@ -1,0 +1,5 @@
+- shell: {node: pc1, cmd: "for i in 1 2 3 4 5 6; do r=$(curl -s -m2 http://10.0.0.10:8080/); [ -n \"$r\" ] && break; sleep 1; done; echo \"$r\"", expect: "<h1>Intranet de la empresa</h1>", desc: "pc1 carga la intranet en 10.0.0.10:8080"}
+- shell: {node: srv, cmd: "podman inspect -f '{{.State.Status}}' web 2>&1", expect: "running", desc: "El contenedor web está en marcha"}
+- shell: {node: srv, cmd: "podman inspect -f '{{.ImageName}}' web 2>&1", expect: "docker.io/library/nginx:1.27-alpine", desc: "web es el nginx de siempre"}
+- shell: {node: srv, cmd: "podman port web 2>&1", expect: "re:80/tcp -> 0\\.0\\.0\\.0:8080", desc: "El 8080 del servidor está publicado hacia el 80 de web"}
+- shell: {node: srv, cmd: "podman inspect -f '{{range .Mounts}}{{.Source}}->{{.Destination}} {{end}}' web 2>&1", expect: "re:/srv/intranet->/usr/share/nginx/html", desc: "La página sale de /srv/intranet"}

@@ -1,0 +1,16 @@
+id: s3-03-sin-memoria
+title: Sin memoria
+level: 103
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "El contenedor `informes` está en marcha y pc1 ve el informe en http://10.0.0.10:8081/"
+  - "Sigue teniendo un límite de memoria, entre 128 y 512 MB"
+  - "Lo gestiona systemd (unidad `container-informes`): arranca con el servidor y, si el contenedor muere, vuelve solo"
+hints:
+  - "`podman ps -a`: ¿en qué estado está `informes` y con qué código salió? `podman logs informes` enseña hasta dónde llegó."
+  - "Código 137 = 128 + 9: lo mató un SIGKILL. Sin que nadie lo pidiera, eso suele ser el límite de memoria. `podman inspect -f '{{.HostConfig.Memory}}' informes` (en bytes)."
+  - "Recréalo igual (mismos -p y -v, `podman inspect`) con un límite que le dé para la caché, p. ej. `--memory 256m`. Quitar el límite no vale."
+  - "Para systemd: `cd /etc/systemd/system && podman generate systemd --new --name informes --files`, luego `podman rm -f informes`, `systemctl daemon-reload` y `systemctl enable --now container-informes`. Con `--new`, systemd crea y borra el contenedor él mismo."
+flag_seed: s3-03-sin-memoria
+ram_mb: 400
