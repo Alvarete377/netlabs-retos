@@ -1,0 +1,16 @@
+id: s5-05-en-bucle
+title: En bucle
+level: 105
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "El catálogo de la tienda (servicio `catalogo`) arranca y responde en http://127.0.0.1:8080/ con los 5 productos"
+  - "Su caché (`cache`) también está en marcha, y los dos arrancan con el sistema"
+  - "Sin quitar las protecciones: el catálogo sigue corriendo como `tienda`, con `Restart=on-failure` y con un límite de memoria de 512 MB como mucho (sin swap)"
+hints:
+  - "`systemctl status catalogo` y, sobre todo, `journalctl -u catalogo -b`: lee el **primer** error, no el último. `systemctl list-dependencies catalogo` enseña de qué depende."
+  - "Un `Dependency failed` dice que el problema está en otra unidad: `systemctl status cache`. Rutas de `ExecStart=`: ¿existe ese fichero?"
+  - "`EnvironmentFile=` carga variables desde un fichero: ¿existe el que dice la unidad? (Un `-` delante lo haría opcional, pero entonces faltaría la variable.)"
+  - "`Failed with result 'oom-kill'`: el kernel lo mató por pasarse de `MemoryMax=`. Y si ves `Start request repeated too quickly`, systemd ha dejado de intentarlo: `systemctl reset-failed catalogo` antes de volver a arrancarlo."
+flag_seed: s5-05-en-bucle
+ram_mb: 300

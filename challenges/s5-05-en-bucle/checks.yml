@@ -1,0 +1,7 @@
+- shell: {node: srv, cmd: "curl -s -m3 http://127.0.0.1:8080/", expect: "Tienda: 5 productos", desc: "El catálogo responde con los 5 productos"}
+- shell: {node: srv, cmd: "systemctl is-active catalogo cache 2>&1 | tr '\\n' ' '", expect: "active active", desc: "catalogo y cache están en marcha"}
+- shell: {node: srv, cmd: "systemctl is-enabled catalogo cache 2>&1 | tr '\\n' ' '", expect: "enabled enabled", desc: "Los dos arrancan con el sistema"}
+- shell: {node: srv, cmd: "ps -eo user:20,args | grep '[c]atalogo.py' | awk '{print $1}' | sort -u", expect: "tienda", desc: "El catálogo corre como tienda"}
+- shell: {node: srv, cmd: "systemctl show -p Restart --value catalogo", expect: "on-failure", desc: "Mantiene Restart=on-failure"}
+- shell: {node: srv, cmd: "m=$(systemctl show -p MemoryMax --value catalogo); case $m in infinity|'') echo sin-limite;; *) [ $m -le 536870912 ] && echo con-limite || echo demasiado;; esac", expect: "con-limite", desc: "Con límite de memoria de 512 MB como mucho"}
+- shell: {node: srv, cmd: "systemctl show -p MemorySwapMax --value catalogo", expect: "0", desc: "Sin swap para el catálogo"}

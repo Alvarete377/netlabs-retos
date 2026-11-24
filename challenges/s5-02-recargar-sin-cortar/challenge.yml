@@ -1,0 +1,15 @@
+id: s5-02-recargar-sin-cortar
+title: Recargar sin cortar
+level: 105
+type: build
+difficulty: easy
+objectives:
+  - "El tablón muestra el aviso `Cerrado por inventario el lunes`"
+  - "Sin reiniciar el servicio: el proceso tiene que ser el mismo (mismo PID) que al levantar el laboratorio"
+  - "Y para la próxima: que `systemctl reload tablon` funcione"
+hints:
+  - "El aviso sale de `/etc/tablon.conf`. Lee `/opt/tablon/tablon.py`: ¿cuándo vuelve a leer la configuración?"
+  - "Las señales se mandan con `kill -SEÑAL PID` (`kill -l` las lista). El PID principal: `systemctl show -p MainPID tablon`. `systemctl kill -s HUP tablon` también vale."
+  - "`systemctl reload` usa la orden `ExecReload=` de la unidad, que ahora no existe. La habitual: `ExecReload=/bin/kill -HUP $MAINPID`. Con `systemctl edit tablon` lo añades sin tocar el fichero original (luego, `daemon-reload` no hace falta: lo hace `edit`)."
+flag_seed: s5-02-recargar-sin-cortar
+ram_mb: 150

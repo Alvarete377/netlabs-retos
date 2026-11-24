@@ -1,0 +1,7 @@
+- shell: {node: srv, cmd: "systemctl is-enabled copia-web.timer 2>&1", expect: "enabled", desc: "El timer está habilitado"}
+- shell: {node: srv, cmd: "systemctl is-active copia-web.timer 2>&1", expect: "active", desc: "El timer está en marcha"}
+- shell: {node: srv, cmd: "systemctl show -p TimersCalendar --value copia-web.timer", expect: "re:OnCalendar=\\*-\\*-\\* 02:30:00", desc: "Se lanza todos los días a las 02:30"}
+- shell: {node: srv, cmd: "systemctl show -p Persistent --value copia-web.timer", expect: "yes", desc: "Recupera la copia si el servidor estaba apagado"}
+- shell: {node: srv, cmd: "rm -rf /var/backups/web; systemctl start copia-web.service 2>&1; ls /var/backups/web 2>/dev/null | grep -c 'web-.*tar.gz'", expect: "1", desc: "copia-web.service hace la copia"}
+- shell: {node: srv, cmd: "systemctl show -p Type --value copia-web.service", expect: "oneshot", desc: "El servicio es de tipo oneshot"}
+- shell: {node: srv, cmd: "grep -rs copia-web /etc/crontab /etc/cron.d /var/spool/cron | grep -v ':#' | wc -l", expect: "0", desc: "Cron ya no la lanza"}

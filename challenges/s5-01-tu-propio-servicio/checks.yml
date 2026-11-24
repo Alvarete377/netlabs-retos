@@ -1,0 +1,5 @@
+- shell: {node: srv, cmd: "systemctl is-active informes 2>&1", expect: "active", desc: "El servicio informes está en marcha"}
+- shell: {node: srv, cmd: "curl -s -m3 http://127.0.0.1:8080/", expect: "Panel de informes (usuario informes)", desc: "Responde en 8080 como el usuario informes"}
+- shell: {node: srv, cmd: "systemctl is-enabled informes 2>&1", expect: "enabled", desc: "Arranca con el sistema"}
+- shell: {node: srv, cmd: "p=$(systemctl show -p MainPID --value informes); [ \"$p\" -gt 0 ] 2>/dev/null || { echo sin-proceso; exit; }; kill -9 $p; for i in $(seq 15); do sleep 1; q=$(systemctl show -p MainPID --value informes); [ \"$q\" -gt 0 ] && [ \"$q\" != \"$p\" ] && curl -sf -m2 http://127.0.0.1:8080/ >/dev/null && { echo vuelve; exit; }; done; echo no-vuelve", expect: "vuelve", desc: "Tras un kill -9, systemd lo levanta solo"}
+- shell: {node: srv, cmd: "ps -eo user:20,args | grep '[p]anel.py' | awk '{print $1}' | sort -u", expect: "informes", desc: "Ningún panel corre como otro usuario"}

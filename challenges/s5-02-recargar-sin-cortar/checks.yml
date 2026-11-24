@@ -1,0 +1,4 @@
+- shell: {node: srv, cmd: "curl -s -m3 http://127.0.0.1:8080/", expect: "Aviso: Cerrado por inventario el lunes", desc: "El tablón muestra el aviso nuevo"}
+- shell: {node: srv, cmd: "[ \"$(systemctl show -p MainPID --value tablon)\" = \"$(cat /var/lib/netlabs/pid-inicial)\" ] && echo mismo || echo distinto", expect: "mismo", desc: "El proceso es el mismo de siempre (no se ha reiniciado)"}
+- shell: {node: srv, cmd: "systemctl show -p ExecReload --value tablon", expect: "re:HUP", desc: "La unidad tiene ExecReload con SIGHUP"}
+- shell: {node: srv, cmd: "p=$(systemctl show -p MainPID --value tablon); systemctl reload tablon 2>&1 && [ \"$(systemctl show -p MainPID --value tablon)\" = \"$p\" ] && echo recarga || echo no", expect: "recarga", desc: "systemctl reload funciona y no cambia el proceso"}

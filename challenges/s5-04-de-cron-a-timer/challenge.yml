@@ -1,0 +1,17 @@
+id: s5-04-de-cron-a-timer
+title: De cron a timer
+level: 105
+type: build
+difficulty: medium
+objectives:
+  - "La copia (/usr/local/bin/copia-web) la lanza un timer de systemd `copia-web.timer` todos los días a las 02:30"
+  - "Si el servidor estaba apagado a esa hora, la copia se hace al arrancar"
+  - "El servicio `copia-web.service` funciona al lanzarlo a mano"
+  - "Cron ya no la lanza (que no se haga dos veces)"
+hints:
+  - "Hoy está en `/etc/cron.d/copia-web`. Un timer necesita dos unidades con el mismo nombre: `copia-web.service` (qué se ejecuta) y `copia-web.timer` (cuándo)."
+  - "Para una tarea que hace algo y termina: `Type=oneshot` en el `.service`. El `.service` no lleva `[Install]`: el que se habilita es el timer."
+  - "En el timer: `OnCalendar=*-*-* 02:30:00` (compruébalo con `systemd-analyze calendar '*-*-* 02:30'`), `Persistent=true` para recuperar las que se perdieron, y `[Install] WantedBy=timers.target`."
+  - "`systemctl enable --now copia-web.timer`, `systemctl list-timers` y `systemctl start copia-web.service` para probarla. Los mensajes, en `journalctl -u copia-web`."
+flag_seed: s5-04-de-cron-a-timer
+ram_mb: 150

@@ -1,0 +1,16 @@
+id: s5-01-tu-propio-servicio
+title: Tu propio servicio
+level: 105
+type: build
+difficulty: easy
+objectives:
+  - "El panel (/opt/informes/panel.py) funciona como servicio de systemd llamado `informes` y responde en el puerto 8080"
+  - "Corre como el usuario `informes`, no como root"
+  - "Arranca con el sistema y, si el proceso muere, systemd lo levanta solo"
+hints:
+  - "Hoy se arranca a mano con `python3 /opt/informes/panel.py &` y se cae cada dos por tres. Las unidades propias van en `/etc/systemd/system/<nombre>.service`."
+  - "Tres secciones: `[Unit]` (Description, After=network.target), `[Service]` (ExecStart= con ruta completa, User=, Restart=) y `[Install]` (WantedBy=multi-user.target, para `enable`)."
+  - "Tras crear o cambiar una unidad: `systemctl daemon-reload`. Luego `systemctl enable --now informes` y `systemctl status informes`."
+  - "Para que vuelva cuando muere: `Restart=on-failure` (o `always`). Pruébalo con `kill -9` al PID principal."
+flag_seed: s5-01-tu-propio-servicio
+ram_mb: 150

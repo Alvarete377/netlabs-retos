@@ -1,0 +1,16 @@
+id: s5-03-cpu-por-las-nubes
+title: La CPU por las nubes
+level: 105
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "Encuentra el proceso que se come la CPU y páralo"
+  - "Que no vuelva: quita todo lo que lo vuelve a lanzar"
+  - "El usuario que lo dejó ahí (`pedro`, ya no trabaja aquí) queda bloqueado"
+hints:
+  - "`top` (pulsa `P` para ordenar por CPU) o `ps -eo pid,user,%cpu,args --sort=-%cpu | head`. Un nombre entre corchetes suele ser un hilo del kernel... pero los hilos del kernel no tienen usuario normal ni consumen así."
+  - "El nombre se puede falsear; lo que ejecuta de verdad, no: `ls -l /proc/<PID>/exe`, `/proc/<PID>/cwd`, `cat /proc/<PID>/cmdline`. Y quién lo lanzó: `ps -o ppid= -p <PID>`, `systemctl status <PID>`."
+  - "Si lo matas y vuelve al minuto, algo lo relanza. Mira el cron de los usuarios (`crontab -l -u <usuario>`, `/var/spool/cron/crontabs/`) y los timers de systemd (`systemctl list-timers --all`)."
+  - "Bloquear: `usermod -L pedro` (y, para cortar también sus tareas, que no quede nada suyo en cron ni en systemd)."
+flag_seed: s5-03-cpu-por-las-nubes
+ram_mb: 150

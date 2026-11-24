@@ -1,0 +1,5 @@
+- shell: {node: srv, cmd: "pgrep -u pedro | wc -l", expect: "0", desc: "No queda ningún proceso de pedro"}
+- shell: {node: srv, cmd: "crontab -l -u pedro 2>/dev/null | grep -v '^#' | grep -c actualizar", expect: "0", desc: "El cron de pedro ya no lo lanza"}
+- shell: {node: srv, cmd: "systemctl is-enabled actualizador-sistema.timer 2>/dev/null; true", expect: "re:^(disabled|masked)?$", desc: "El timer actualizador-sistema no arranca solo"}
+- shell: {node: srv, cmd: "systemctl is-active actualizador-sistema.timer 2>/dev/null; true", expect: "re:^(inactive|failed)?$", desc: "El timer actualizador-sistema está parado"}
+- shell: {node: srv, cmd: "passwd -S pedro | cut -d' ' -f2", expect: "L", desc: "La cuenta de pedro está bloqueada"}

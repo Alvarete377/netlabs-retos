@@ -163,3 +163,11 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | sudo a medida | `s4-03-sudo-a-medida` | Montar | Media |
 | Permisos rotos | `s4-04-permisos-rotos` | Troubleshooting | Difícil |
 | El dominio | `s4-05-el-dominio` | Montar | Media |
+### Sistemas · Servicios y procesos
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| Tu propio servicio | `s5-01-tu-propio-servicio` | Montar | Fácil |
+| Recargar sin cortar | `s5-02-recargar-sin-cortar` | Montar | Fácil |
+| La CPU por las nubes | `s5-03-cpu-por-las-nubes` | Troubleshooting | Media |
+| De cron a timer | `s5-04-de-cron-a-timer` | Montar | Media |
+| En bucle | `s5-05-en-bucle` | Troubleshooting | Difícil |
