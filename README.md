@@ -16,7 +16,8 @@ Web, guía de instalación paso a paso, ranking y writeups: **https://net-labs.v
 
    Si pide reiniciar por systemd: `wsl --shutdown` y repite el último comando.
 
-Para tener los retos nuevos: `git pull` dentro de la carpeta.
+Para tener los retos nuevos: `git pull && bash images/build.sh` dentro de la carpeta (reconstruye
+las imágenes si han cambiado; los retos de TLS necesitan el cliente 0.2).
 
 ## Uso
     lab list                 # retos
