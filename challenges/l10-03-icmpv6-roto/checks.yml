@@ -1,0 +1,6 @@
+- http: {from: pc1, url: "http://[2001:db8:20::10]/", contains: "IPv6", desc: "pc1 abre la web de srv"}
+- ping: {from: pc1, to: "2001:db8:20::10", expect: ok, desc: "pc1 hace ping a srv"}
+- tcp: {from: srv, host: "2001:db8:1::10", port: 22, expect: closed, desc: "Desde los servidores no se abren conexiones a la oficina"}
+- tcp: {from: srv, host: "2001:db8:20::1", port: 22, expect: closed, desc: "Desde los servidores no se llega al SSH de r1"}
+- routeros: {node: r1, cmd: ':local l [/ipv6 firewall filter find chain=input]; :put ([/ipv6 firewall filter get ($l->([:len $l]-1)) action] . "/" . [/ipv6 firewall filter get ($l->([:len $l]-1)) protocol])', expect: "drop/", desc: "input sigue terminando en drop"}
+- routeros: {node: r1, cmd: ':local l [/ipv6 firewall filter find chain=forward]; :put ([/ipv6 firewall filter get ($l->([:len $l]-1)) action] . "/" . [/ipv6 firewall filter get ($l->([:len $l]-1)) protocol])', expect: "drop/", desc: "forward sigue terminando en drop"}

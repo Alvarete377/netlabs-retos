@@ -107,3 +107,11 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Por el nombre | `l9-03-por-el-nombre` | Montar | Media |
 | ¿Quién eres? | `l9-04-quien-eres` | Montar | Media |
 | La tienda que nadie ve | `l9-05-la-tienda` | Troubleshooting | Difícil |
+### IPv6
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| Hola, IPv6 | `l10-01-hola-ipv6` | Montar | Fácil |
+| Dos sedes, cero NAT | `l10-02-rutas-v6` | Montar | Fácil |
+| El ICMP que no debías tirar | `l10-03-icmpv6-roto` | Troubleshooting | Media |
+| Rutas que viajan solas (v6) | `l10-04-ospfv3` | Montar | Media |
+| El prefijo que no llega | `l10-05-prefijo-delegado` | Troubleshooting | Difícil |

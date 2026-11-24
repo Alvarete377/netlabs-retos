@@ -1,0 +1,14 @@
+id: l10-02-rutas-v6
+title: Dos sedes, cero NAT
+level: 10
+type: build
+difficulty: easy
+objectives:
+  - "pc1 (2001:db8:1::/64, detrás de r1) y pc2 (2001:db8:2::/64, detrás de r2) se hacen ping"
+  - "Con rutas estáticas IPv6 en los routers, una por sentido"
+hints:
+  - "Cada router sólo conoce sus redes conectadas: `/ipv6 route print`. Igual que en IPv4, a cada uno le falta la LAN del otro."
+  - "El enlace r1-r2 es 2001:db8:12::/64 (r1 ::1, r2 ::2). La puerta de enlace también puede ser la link-local del vecino (`fe80::...%ether2`), pero con la global es más fácil de leer."
+  - "`/ipv6 route add dst-address=2001:db8:2::/64 gateway=2001:db8:12::2` en r1, y la simétrica en r2."
+flag_seed: l10-02-rutas-v6
+ram_mb: 1060

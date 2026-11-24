@@ -1,0 +1,22 @@
+name: netlabs
+topology:
+  kinds:
+    mikrotik_ros:
+      image: netlabs/chr:7.16.2
+    linux:
+      image: netlabs/client:0.1
+  nodes:
+    r1: {kind: mikrotik_ros}
+    r2: {kind: mikrotik_ros}
+    r3: {kind: mikrotik_ros}
+    pc1:
+      kind: linux
+      exec: ["ip link set eth1 mtu 1500", "ip token set ::10 dev eth1", "ip -6 route del default dev eth0"]
+    pc3:
+      kind: linux
+      exec: ["ip link set eth1 mtu 1500", "ip token set ::30 dev eth1", "ip -6 route del default dev eth0"]
+  links:
+    - endpoints: ["r1:eth1", "r2:eth1"]
+    - endpoints: ["r2:eth2", "r3:eth1"]
+    - endpoints: ["r1:eth2", "pc1:eth1"]
+    - endpoints: ["r3:eth2", "pc3:eth1"]

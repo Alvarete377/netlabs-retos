@@ -1,0 +1,6 @@
+- routeros: {node: r1, cmd: '/ipv6 dhcp-client print count-only where status=bound', expect: "1", desc: "r1 tiene concesión DHCPv6 del operador"}
+- routeros: {node: r1, cmd: '/ipv6 pool print count-only where prefix~"^2001:db8:1"', expect: 're:^[1-9]', desc: "r1 tiene un pool con el prefijo delegado"}
+- shell: {node: pc1, cmd: 'ip -6 addr show dev eth1 scope global', expect: 're:inet6 2001:db8:1[0-9a-f]{2}:[0-9a-f:]*:10/64 .*dynamic', desc: "pc1 se configura solo con un /64 del prefijo delegado"}
+- http: {from: pc1, url: "http://[2001:db8:ff::10]/", contains: "IPv6", desc: "pc1 abre la web de Internet"}
+- tcp: {from: srv, host: "2001:db8:f::2", port: 22, expect: closed, desc: "Desde Internet no se llega al SSH de r1"}
+- routeros: {node: r1, cmd: ':local l [/ipv6 firewall filter find chain=input]; :put ([/ipv6 firewall filter get ($l->([:len $l]-1)) action] . "/" . [/ipv6 firewall filter get ($l->([:len $l]-1)) protocol])', expect: "drop/", desc: "input sigue terminando en drop"}

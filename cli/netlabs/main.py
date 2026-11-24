@@ -28,6 +28,7 @@ MODULES = {
     7: "Multifabricante",
     8: "Diagnóstico",
     9: "TLS y certificados",
+    10: "IPv6",
 }
 
 

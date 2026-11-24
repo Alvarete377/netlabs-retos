@@ -1,0 +1,18 @@
+name: netlabs
+topology:
+  kinds:
+    mikrotik_ros:
+      image: netlabs/chr:7.16.2
+    linux:
+      image: netlabs/client:0.1
+  nodes:
+    r1: {kind: mikrotik_ros}
+    pc1:
+      kind: linux
+      exec: ["ip link set eth1 mtu 1500", "ip token set ::10 dev eth1", "ip -6 route del default dev eth0"]
+    srv:
+      kind: linux
+      exec: ["ip link set eth1 mtu 1500", "ip -6 addr add 2001:db8:20::10/64 dev eth1", "ip -6 route del default dev eth0", "ip -6 route add default via 2001:db8:20::1 dev eth1"]
+  links:
+    - endpoints: ["r1:eth1", "pc1:eth1"]
+    - endpoints: ["r1:eth2", "srv:eth1"]

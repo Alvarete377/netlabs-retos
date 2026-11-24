@@ -1,0 +1,4 @@
+- shell: {node: pc1, cmd: 'ip -6 addr show dev eth1 scope global', expect: 're:2001:db8:1::10/64.*dynamic', desc: "pc1 se configura solo (SLAAC): 2001:db8:1::10"}
+- shell: {node: pc2, cmd: 'ip -6 addr show dev eth1 scope global', expect: 're:2001:db8:2::20/64.*dynamic', desc: "pc2 se configura solo (SLAAC): 2001:db8:2::20"}
+- ping: {from: pc1, to: "2001:db8:2::20", expect: ok, desc: "pc1 alcanza a pc2 por IPv6"}
+- ping: {from: pc2, to: "2001:db8:1::10", expect: ok, desc: "pc2 alcanza a pc1 por IPv6"}

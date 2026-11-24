@@ -1,0 +1,16 @@
+id: l10-03-icmpv6-roto
+title: El ICMP que no debías tirar
+level: 10
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "pc1 vuelve a abrir la web de srv (http://[2001:db8:20::10]/) y le hace ping"
+  - "El firewall sigue protegiendo: desde la red de servidores no se abren conexiones nuevas a la oficina ni al SSH de r1"
+  - "Las cadenas input y forward siguen terminando en drop"
+hints:
+  - "pc1 tiene dirección (SLAAC funciona, `ip -6 addr`), pero ¿conoce la MAC de su puerta de enlace? Mira `ip -6 neigh` en pc1 y `/ipv6 firewall filter print stats` en r1 mientras pc1 intenta salir."
+  - "En IPv6 no hay ARP: la resolución de direcciones (Neighbor Discovery) va **dentro de ICMPv6** (tipos 135 y 136). Tirar todo el ICMPv6 al router rompe la red entera, no sólo el ping."
+  - "Permite ICMPv6 en input y forward (el RFC 4890 recomienda dejar pasar al menos los mensajes de error, el eco y el ND). La forma sencilla: cambia las dos reglas de 'nada de ICMP' a `action=accept`. Las demás reglas siguen protegiendo lo que importa."
+  - "`/ipv6 firewall filter set [find comment~\"nada de ICMP\"] action=accept`"
+flag_seed: l10-03-icmpv6-roto
+ram_mb: 560

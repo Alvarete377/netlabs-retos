@@ -1,0 +1,8 @@
+- ping: {from: pc1, to: "2001:db8:3::30", expect: ok, desc: "pc1 alcanza a pc3"}
+- ping: {from: pc3, to: "2001:db8:1::10", expect: ok, desc: "pc3 alcanza a pc1"}
+- routeros: {node: r2, cmd: '/routing ospf neighbor print count-only where state=Full', expect: "2", desc: "r2 tiene dos vecinos OSPF en Full"}
+- routeros: {node: r1, cmd: '/ipv6 route print count-only where dst-address=2001:db8:3::/64 and ospf and active', expect: "1", desc: "r1 aprende la LAN de pc3 por OSPF"}
+- routeros: {node: r3, cmd: '/ipv6 route print count-only where dst-address=2001:db8:1::/64 and ospf and active', expect: "1", desc: "r3 aprende la LAN de pc1 por OSPF"}
+- routeros: {node: r1, cmd: '/ipv6 route print count-only where static and !disabled', expect: "0", desc: "r1 sin rutas estáticas IPv6"}
+- routeros: {node: r2, cmd: '/ipv6 route print count-only where static and !disabled', expect: "0", desc: "r2 sin rutas estáticas IPv6"}
+- routeros: {node: r3, cmd: '/ipv6 route print count-only where static and !disabled', expect: "0", desc: "r3 sin rutas estáticas IPv6"}

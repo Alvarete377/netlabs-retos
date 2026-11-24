@@ -1,0 +1,4 @@
+- ping: {from: pc1, to: "2001:db8:2::20", expect: ok, desc: "pc1 alcanza a pc2"}
+- ping: {from: pc2, to: "2001:db8:1::10", expect: ok, desc: "pc2 alcanza a pc1"}
+- routeros: {node: r1, cmd: '/ipv6 route print count-only where static and dst-address=2001:db8:2::/64 and !disabled and active', expect: "1", desc: "r1 tiene ruta a la LAN de pc2"}
+- routeros: {node: r2, cmd: '/ipv6 route print count-only where static and dst-address=2001:db8:1::/64 and !disabled and active', expect: "1", desc: "r2 tiene ruta a la LAN de pc1"}

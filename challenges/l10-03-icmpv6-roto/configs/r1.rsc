@@ -1,0 +1,13 @@
+/system identity set name=r1
+/ipv6 nd set [find interface=all] ra-interval=10s-20s comment="LABORATORIO: anuncios cada 10-20 s para no esperar minutos"
+/ipv6 address add address=2001:db8:1::1/64 interface=ether2 advertise=yes comment="oficina"
+/ipv6 address add address=2001:db8:20::1/64 interface=ether3 advertise=no comment="servidores"
+/ipv6 firewall filter add chain=input connection-state=established,related action=accept comment="respuestas"
+/ipv6 firewall filter add chain=input protocol=icmpv6 action=drop comment="SEGURIDAD: nada de ICMP, que es peligroso"
+/ipv6 firewall filter add chain=input in-interface=ether2 protocol=tcp dst-port=22 action=accept comment="SSH desde la oficina"
+/ipv6 firewall filter add chain=input action=drop comment="resto, fuera"
+/ipv6 firewall filter add chain=forward connection-state=established,related action=accept comment="respuestas"
+/ipv6 firewall filter add chain=forward connection-state=invalid action=drop comment="invalidos"
+/ipv6 firewall filter add chain=forward protocol=icmpv6 action=drop comment="SEGURIDAD: nada de ICMP, que es peligroso"
+/ipv6 firewall filter add chain=forward in-interface=ether2 action=accept comment="la oficina sale"
+/ipv6 firewall filter add chain=forward action=drop comment="resto, fuera"

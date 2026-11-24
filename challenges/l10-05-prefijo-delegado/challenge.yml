@@ -1,0 +1,17 @@
+id: l10-05-prefijo-delegado
+title: El prefijo que no llega
+level: 10
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "r1 recibe del operador (isp) un prefijo delegado por DHCPv6"
+  - "La LAN de la oficina usa un /64 de ese prefijo y pc1 se configura solo con él"
+  - "pc1 llega al servidor de Internet 2001:db8:ff::10 (web en el puerto 80)"
+  - "El firewall de r1 sigue cerrando la entrada desde Internet"
+hints:
+  - "Empieza por el principio de la cadena: ¿r1 tiene prefijo? `/ipv6 dhcp-client print detail` y `/ipv6 pool print`. Un cliente DHCPv6 puede pedir una dirección, un prefijo o las dos cosas."
+  - "Si el cliente se queda en 'searching', mira si las respuestas del operador llegan y quién se las come: `/ipv6 firewall filter print stats`. DHCPv6 responde al puerto UDP 546 del cliente, y no es una conexión 'established' para el firewall."
+  - "Con el pool creado, la LAN tiene que tomar su /64 de ese pool **con el nombre exacto** (`from-pool=`) y anunciarlo (`advertise=yes`) para que pc1 haga SLAAC."
+  - "Cuatro fallos en r1: el cliente pide `request=address` (hace falta `prefix`), el firewall de input tira UDP 546 desde la WAN, la dirección de la LAN usa `from-pool=pd` cuando el pool se llama `isp-pd`, y no se anuncia (`advertise=no`)."
+flag_seed: l10-05-prefijo-delegado
+ram_mb: 1100

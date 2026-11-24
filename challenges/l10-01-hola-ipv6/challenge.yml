@@ -1,0 +1,15 @@
+id: l10-01-hola-ipv6
+title: Hola, IPv6
+level: 10
+type: build
+difficulty: easy
+objectives:
+  - "La red de pc1 es 2001:db8:1::/64 y la de pc2 2001:db8:2::/64; r1 es ::1 en las dos"
+  - "pc1 y pc2 se configuran solos (SLAAC), sin poner nada a mano en los PCs"
+  - "pc1 y pc2 se hacen ping por IPv6"
+hints:
+  - "En IPv6 los PCs no necesitan DHCP para tener dirección: escuchan los **anuncios de router** (RA) y se montan la suya con el prefijo que anuncia. Mira qué tienen ahora: `ip -6 addr` y `ip -6 route` en pc1."
+  - "En RouterOS, una dirección IPv6 con `advertise=yes` hace que r1 anuncie su prefijo /64 por esa interfaz. pc1 está en ether2 y pc2 en ether3."
+  - "`/ipv6 address add address=2001:db8:1::1/64 interface=ether2 advertise=yes` (y la otra en ether3). En unos 20 s los PCs tendrán dirección: los suyos acaban en ::10 y ::20."
+flag_seed: l10-01-hola-ipv6
+ram_mb: 560

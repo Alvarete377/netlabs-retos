@@ -1,0 +1,15 @@
+id: l10-04-ospfv3
+title: Rutas que viajan solas (v6)
+level: 10
+type: build
+difficulty: medium
+objectives:
+  - "r1, r2 y r3 se cuentan las rutas IPv6 con OSPFv3 (vecinos en estado Full)"
+  - "pc1 (2001:db8:1::/64) y pc3 (2001:db8:3::/64) se hacen ping"
+  - "Sin rutas estáticas IPv6"
+hints:
+  - "En RouterOS 7, OSPF para IPv6 es la misma herramienta que para IPv4: una instancia con `version=3`, un área y plantillas de interfaz."
+  - "¿Vecinos en ExStart o rutas que no aparecen? Mira `/routing ospf neighbor print` y el router-id de cada instancia. OSPFv3 sigue usando un router-id de 32 bits con forma de IPv4, y los tres CHR tienen la misma IPv4 de gestión."
+  - "En cada router: `/routing ospf instance add name=v3 version=3 router-id=10.255.255.N`, `/routing ospf area add name=backbone-v3 area-id=0.0.0.0 instance=v3` y `/routing ospf interface-template add area=backbone-v3 interfaces=...` con sus interfaces del reto (no ether1)."
+flag_seed: l10-04-ospfv3
+ram_mb: 1600
