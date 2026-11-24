@@ -1,0 +1,6 @@
+- http: {from: pc1, url: "http://10.20.0.10/", expect_code: 200, contains: "Tienda Online", desc: "pc1 carga la tienda (HTTP 200)"}
+- shell: {node: pc1, cmd: "a=$(curl -s -m3 http://10.20.0.10/ | grep -o 'visitas: [0-9]*' | tr -dc 0-9); b=$(curl -s -m3 http://10.20.0.10/ | grep -o 'visitas: [0-9]*' | tr -dc 0-9); [ -n \"$a\" ] && [ \"$b\" -gt \"$a\" ] && echo sube", expect: "sube", desc: "El contador de visitas sube"}
+- shell: {node: srv, cmd: "ps -eo user:20,args | grep '[a]pp.py' | awk '{print $1}' | sort -u", expect: "tienda", desc: "La aplicación corre como tienda"}
+- tcp: {from: pc1, host: 10.20.0.10, port: 8000, expect: closed, desc: "El backend (8000) no se ve desde fuera"}
+- shell: {node: srv, cmd: 'stat -c %a /srv/tienda/datos', expect: 're:^7[0-5][0-5]$', desc: "/srv/tienda/datos sin permisos para todos"}
+- shell: {node: srv, cmd: 'systemctl is-enabled nginx tienda | tr "\n" " "', expect: "enabled enabled", desc: "nginx y tienda arrancan con el sistema"}

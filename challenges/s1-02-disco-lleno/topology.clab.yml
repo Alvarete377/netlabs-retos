@@ -1,0 +1,13 @@
+name: netlabs
+topology:
+  nodes:
+    srv:
+      kind: linux
+      image: netlabs/debian:0.1
+      exec: ["ip addr add 192.168.10.10/24 dev eth1"]
+    pc1:
+      kind: linux
+      image: netlabs/client:0.2
+      exec: ["ip addr add 192.168.10.20/24 dev eth1"]
+  links:
+    - endpoints: ["srv:eth1", "pc1:eth1"]

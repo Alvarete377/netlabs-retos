@@ -1,0 +1,15 @@
+id: s1-03-red-en-linux
+title: Red en Linux
+level: 101
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "Desde pc1, `curl http://intranet.lab/` carga la intranet de srv"
+  - "srv tiene su IP con la máscara de su red (10.20.0.0/24) y la ruta por defecto por gw (10.20.0.1)"
+hints:
+  - "Ve por partes desde pc1: ¿a qué IP resuelve `intranet.lab`? `cat /etc/hosts`. ¿Llega el ping a 10.20.0.10?"
+  - "En srv: `ip -br addr` y `ip route`. Con una máscara /32, ¿qué red cree srv que tiene conectada? ¿Sabe llegar a 10.20.0.1?"
+  - "Un paquete que llega a srv desde 192.168.10.20 necesita una ruta de vuelta. Sin ruta por defecto, srv no sabe responder a nadie de fuera de su red."
+  - "`ip addr del 10.20.0.10/32 dev eth1; ip addr add 10.20.0.10/24 dev eth1; ip route add default via 10.20.0.1`, y en pc1 corrige la línea de intranet.lab en /etc/hosts con `vi` (en el lab Docker monta ese fichero y `sed -i` no puede reemplazarlo)."
+flag_seed: s1-03-red-en-linux
+ram_mb: 300

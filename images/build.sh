@@ -9,6 +9,10 @@ DOCKER=docker; docker info >/dev/null 2>&1 || DOCKER="sudo docker"
 echo "== netlabs/client:0.2"
 $DOCKER build -q -t netlabs/client:0.2 -t netlabs/client:0.1 "$HERE/client"
 
+# Servidor Debian con systemd para los retos de Sistemas (y Monitorización).
+echo "== netlabs/debian:0.1"
+$DOCKER build -q -t netlabs/debian:0.1 "$HERE/debian"
+
 echo "== netlabs/chr:$CHR_VERSION"
 if $DOCKER image inspect "netlabs/chr:$CHR_VERSION" >/dev/null 2>&1; then
   echo "ya existe"; exit 0

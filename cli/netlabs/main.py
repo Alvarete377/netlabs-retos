@@ -32,6 +32,14 @@ MODULES = {
     11: "Servicios de red",
     12: "MPLS y operadores",
     13: "BGP en Internet",
+    14: "Monitorización",
+    100: "Sistemas · Sistemas operativos",
+    101: "Sistemas · Linux a fondo",
+    102: "Sistemas · Windows",
+    103: "Sistemas · Virtualización",
+    104: "Sistemas · Usuarios y permisos",
+    105: "Sistemas · Servicios y procesos",
+    106: "Sistemas · Scripting y automatización",
 }
 
 
@@ -125,7 +133,8 @@ def cmd_console(args, store):
         print("CLI de VyOS (configure / set ... / commit / exit; salir: exit)")
         argv = ["docker", "exec", "-it", name, "su", "-", "vyos"]
     else:
-        argv = ["docker", "exec", "-it", name, "bash"]
+        # Debian (Sistemas): shell de login de root; el cliente alpine también trae bash.
+        argv = ["docker", "exec", "-it", name, "bash", "-l"]
     os.execvp("docker", argv)
 
 

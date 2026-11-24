@@ -1,7 +1,7 @@
 # NetLabs
 
-Retos de redes y firewalls con routers MikroTik reales, para practicar en tu PC al estilo DockerLabs:
-levantas una topología con un comando, la resuelves y `lab check` te dice si está bien.
+Retos de redes y sistemas con routers MikroTik y servidores Linux reales, para practicar en tu PC al
+estilo DockerLabs: levantas el laboratorio con un comando, lo resuelves y `lab check` te dice si está bien.
 
 Web, guía de instalación paso a paso, ranking y writeups: **https://net-labs.vercel.app**
 
@@ -139,3 +139,11 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Dos operadores mejor que uno | `l13-01-dos-operadores` | Montar | Media |
 | Por la puerta barata | `l13-02-preferencias` | Montar | Media |
 | Somos el tránsito de nadie | `l13-03-somos-transito` | Troubleshooting | Difícil |
+### Sistemas · Linux a fondo
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| Reconocimiento | `s1-01-reconocimiento` | Captura | Fácil |
+| Disco lleno | `s1-02-disco-lleno` | Troubleshooting | Media |
+| Red en Linux | `s1-03-red-en-linux` | Troubleshooting | Media |
+| Puerto ocupado | `s1-04-puerto-ocupado` | Troubleshooting | Fácil |
+| El heredado | `s1-05-el-heredado` | Troubleshooting | Difícil |

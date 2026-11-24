@@ -1,0 +1,14 @@
+id: s1-04-puerto-ocupado
+title: Puerto ocupado
+level: 101
+type: troubleshoot
+difficulty: easy
+objectives:
+  - "nginx sirve la intranet en el puerto 80 de srv (pc1 la carga en http://192.168.10.10/)"
+  - "El panel antiguo deja de ocupar el puerto y no vuelve a arrancar solo"
+hints:
+  - "`systemctl status nginx` y `journalctl -u nginx -n 20`: ¿por qué no arranca?"
+  - "`ss -ltnp 'sport = :80'` dice qué proceso tiene el puerto. ¿Qué servicio lo lanzó? `systemctl status <PID>`."
+  - "Si matas el proceso, systemd lo vuelve a arrancar (`Restart=always`). Para el servicio y desactívalo: `systemctl disable --now panel-viejo`. Después, `systemctl restart nginx`."
+flag_seed: s1-04-puerto-ocupado
+ram_mb: 250

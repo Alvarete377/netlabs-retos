@@ -1,0 +1,8 @@
+- answer: {id: version, question: "¿Qué versión de Debian tiene el servidor? (sólo el número principal, p. ej. 11)", answer: "6b51d431df5d7f141cbececcf79edf3dd861c3b4069f0b11661a3eefacbba918"}
+- answer: {id: ssh, question: "¿En qué puerto TCP escucha el servidor SSH?", answer: "edee29f882543b956620b26d0ee0e7e950399b1c4222f5de05e06425b4c995e9"}
+- answer: {id: bash, question: "¿Qué usuario, además de root, tiene /bin/bash como shell?", answer: "24d4b96f58da6d4a8512313bbd02a28ebf0ca95dec6e4c86ef78ce7f01e788ac"}
+- answer: {id: backup, question: "¿Cómo se llama el fichero más grande de /var/backups? (sólo el nombre)", answer: "2ce7acba100ae73019de93b6b8ece3c27572e9ccb68f19c39749233ad84fa927"}
+- answer: {id: password, question: "Alguien dejó una contraseña DB_PASSWORD en algún fichero de /etc/app. ¿Cuál es?", answer: "6ef441c93f686204d0660e89637c3adee7d0639ff2f3f31817df7e2229185df0"}
+- shell: {node: srv, cmd: 'grep -rs DB_PASSWORD /etc/app | wc -l', expect: "0", desc: "La contraseña ya no está en /etc/app"}
+- shell: {node: srv, cmd: 'grep -rs "^DB_HOST=" /etc/app | wc -l', expect: "1", desc: "El resto del fichero sigue ahí (DB_HOST)"}
+- shell: {node: srv, cmd: 'ls /etc/app/conf.d | wc -l', expect: "2", desc: "No se ha borrado ninguna configuración"}

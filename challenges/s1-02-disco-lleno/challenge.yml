@@ -1,0 +1,17 @@
+id: s1-02-disco-lleno
+title: Disco lleno
+level: 101
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "El servicio `facturas` vuelve a funcionar y escribe en /srv/datos/facturas.log"
+  - "/srv/datos queda por debajo del 25 % de uso, sin agrandarlo ni desmontarlo"
+  - "No se pierde nada: ni clientes.db ni el histórico de facturas.log"
+  - "Lo que llenaba el disco no vuelve a llenarlo"
+hints:
+  - "`df -h /srv/datos` dice cuánto se usa; `du -sh /srv/datos/*` qué ocupa cada fichero. ¿Suman lo mismo?"
+  - "Si `df` dice mucho más que `du`, hay ficheros borrados que algún proceso todavía tiene abiertos: el espacio no se libera hasta que el proceso los cierra. `lsof +L1` los lista."
+  - "¿De qué servicio es ese proceso? `systemctl status <PID>` lo dice. Si sólo lo matas, systemd puede volver a arrancarlo: páralo y desactívalo."
+  - "La copia de 2023 ya está archivada (lo dice el README). Cuando haya sitio, `systemctl restart facturas`."
+flag_seed: s1-02-disco-lleno
+ram_mb: 250

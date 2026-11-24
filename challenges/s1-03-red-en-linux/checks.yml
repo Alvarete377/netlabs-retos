@@ -1,0 +1,4 @@
+- http: {from: pc1, url: "http://intranet.lab/", contains: "Intranet de Ferretería López", desc: "pc1 carga http://intranet.lab/"}
+- shell: {node: srv, cmd: "ip -4 -o addr show dev eth1 | awk '{print $4}'", expect: "10.20.0.10/24", desc: "srv: 10.20.0.10/24 en eth1"}
+- shell: {node: srv, cmd: 'ip route show default', expect: 're:^default via 10\.20\.0\.1 dev eth1', desc: "srv: ruta por defecto por gw"}
+- shell: {node: gw, cmd: 'sysctl -n net.ipv4.ip_forward', expect: "1", desc: "gw sigue enrutando"}

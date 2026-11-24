@@ -1,0 +1,17 @@
+id: s1-05-el-heredado
+title: El heredado
+level: 101
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "Desde pc1, http://10.20.0.10/ muestra la tienda y el contador de visitas sube en cada carga"
+  - "La aplicación sigue corriendo como el usuario `tienda` (nunca como root) y su puerto 8000 no se abre fuera de srv"
+  - "Sin permisos 777: el directorio de datos sólo lo puede escribir quien debe"
+  - "nginx y tienda arrancan solos con el sistema"
+hints:
+  - "Empieza por la red: ¿llega pc1 a srv? Compara la ruta por defecto de srv con la IP de gw."
+  - "Con la red bien, `curl -v http://10.20.0.10/` desde pc1. ¿Conecta? `ss -ltnp` en srv: ¿en qué dirección escucha nginx?"
+  - "Un 502 de nginx significa que el backend no contesta. `systemctl status tienda` y `journalctl -u tienda`."
+  - "Un 500 con `Permission denied`: ¿quién es el dueño de /srv/tienda/datos y como quién corre la aplicación? `ls -ld`, `systemctl show -p User tienda`."
+flag_seed: s1-05-el-heredado
+ram_mb: 400

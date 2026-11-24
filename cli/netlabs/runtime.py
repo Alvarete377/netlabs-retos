@@ -132,12 +132,14 @@ def is_running(node: str) -> bool:
 def wait_ready(ch: Challenge, timeout: int = 420, poll: int = 5, on_wait=None) -> None:
     routers = [n for n, k in ch.nodes.items() if k == ROS_KIND]
     vyos = [n for n, k in ch.nodes.items() if k == VYOS_KIND]
+    linux = [n for n, k in ch.nodes.items() if k not in (ROS_KIND, VYOS_KIND)]
     deadline = time.monotonic() + timeout
     while True:
         states = {n: health(n) for n in routers}
         if any(s == "missing" for s in states.values()) or not all(is_running(n) for n in routers + vyos):
             raise LabError("El lab no está en marcha (¿reiniciaste WSL?). Usa `lab reset`.")
-        pending = [n for n in routers if states[n] != "healthy"] + [n for n in vyos if not vyos_ready(n)]
+        pending = ([n for n in routers if states[n] != "healthy"] + [n for n in vyos if not vyos_ready(n)]
+                   + [n for n in linux if not systemd_ready(n)])
         if not pending:
             for n in vyos:
                 # Docker deja en VyOS una ruta por defecto por eth0 (gestión) que gana a la del reto:
@@ -150,6 +152,19 @@ def wait_ready(ch: Challenge, timeout: int = 420, poll: int = 5, on_wait=None) -
         if on_wait:
             on_wait(pending)
         time.sleep(poll)
+
+
+def systemd_ready(node: str) -> bool:
+    """Un servidor con systemd está listo cuando termina de arrancar (running o degraded).
+    Los nodos sin systemd (el PC cliente alpine) están listos siempre."""
+    try:
+        r = subprocess.run(["docker", "exec", container(node), "sh", "-c",
+                            "[ -d /run/systemd/system ] || { echo nosystemd; exit 0; }; "
+                            "systemctl is-system-running"],
+                           capture_output=True, text=True, timeout=20)
+    except subprocess.TimeoutExpired:
+        return False
+    return r.stdout.strip() in ("nosystemd", "running", "degraded")
 
 
 def vyos_ready(node: str) -> bool:

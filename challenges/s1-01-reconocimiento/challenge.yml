@@ -1,0 +1,16 @@
+id: s1-01-reconocimiento
+title: Reconocimiento
+level: 101
+type: capture
+difficulty: easy
+objectives:
+  - "Responde con `lab answer` las cinco preguntas sobre el servidor (`lab status` las lista)"
+  - "Quita la línea con la contraseña del fichero donde la dejaron, sin borrar el resto del fichero"
+hints:
+  - "Todo se averigua desde dentro: `lab console srv`. La versión está en `/etc/os-release` (o `/etc/debian_version`)."
+  - "El puerto de SSH: `ss -ltnp` enseña qué escucha y quién. También lo dice `/etc/ssh/sshd_config`."
+  - "Los usuarios y sus shells están en `/etc/passwd` (el último campo). `grep bash$ /etc/passwd`."
+  - "`ls -lS /var/backups` ordena por tamaño; `du -ah /var/backups | sort -h` también vale."
+  - "`grep -r DB_PASSWORD /etc/app` busca en todos los ficheros, también en los ocultos. Después edita ese fichero con `nano` (o `sed -i '/DB_PASSWORD/d' fichero`)."
+flag_seed: s1-01-reconocimiento
+ram_mb: 250

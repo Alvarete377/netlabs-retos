@@ -1,0 +1,8 @@
+- shell: {node: srv, cmd: 'systemctl is-active facturas', expect: "active", desc: "El servicio facturas está en marcha"}
+- shell: {node: srv, cmd: 'a=$(wc -l < /srv/datos/facturas.log); sleep 3; b=$(wc -l < /srv/datos/facturas.log); [ "$b" -gt "$a" ] && echo escribe', expect: "escribe", desc: "facturas sigue escribiendo en su log"}
+- shell: {node: srv, cmd: "df --output=pcent /srv/datos | tail -1 | tr -d ' '", expect: 're:^([0-9]|1[0-9]|2[0-4])%$', desc: "/srv/datos por debajo del 25 %"}
+- shell: {node: srv, cmd: 'findmnt -n -o FSTYPE,SIZE /srv/datos', expect: 're:^tmpfs\s+64M$', desc: "/srv/datos sigue montado y con su tamaño (64M)"}
+- shell: {node: srv, cmd: 'sha256sum /srv/datos/clientes.db | cut -c1-16', expect: "ea442dd8a25d677e", desc: "clientes.db intacto"}
+- shell: {node: srv, cmd: 'grep -c "^2024-" /srv/datos/facturas.log', expect: "500", desc: "El histórico de facturas.log sigue ahí"}
+- shell: {node: srv, cmd: 'systemctl is-enabled exportador 2>/dev/null; true', expect: 're:^(disabled|masked)?$', desc: "El exportador no vuelve a arrancar solo"}
+- shell: {node: srv, cmd: 'ls -l /proc/[0-9]*/fd 2>/dev/null | grep -c "/srv/datos/.*(deleted)"', expect: "0", desc: "Ningún proceso retiene ficheros borrados en /srv/datos"}

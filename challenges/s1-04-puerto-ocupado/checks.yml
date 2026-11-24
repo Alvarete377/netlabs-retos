@@ -1,0 +1,5 @@
+- http: {from: pc1, url: "http://192.168.10.10/", contains: "Intranet de Ferretería López", desc: "pc1 carga la intranet"}
+- shell: {node: pc1, cmd: "curl -sI -m3 http://192.168.10.10/ | grep -ci '^server: nginx'", expect: "1", desc: "La sirve nginx"}
+- shell: {node: srv, cmd: 'systemctl is-enabled nginx', expect: "enabled", desc: "nginx arranca con el sistema"}
+- shell: {node: srv, cmd: 'systemctl is-active panel-viejo 2>/dev/null; true', expect: 're:^(inactive|failed)$', desc: "El panel antiguo está parado"}
+- shell: {node: srv, cmd: 'systemctl is-enabled panel-viejo 2>/dev/null; true', expect: 're:^(disabled|masked)?$', desc: "El panel antiguo no arranca solo"}
