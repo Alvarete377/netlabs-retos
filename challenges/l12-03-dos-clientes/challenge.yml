@@ -1,0 +1,16 @@
+id: l12-03-dos-clientes
+title: Dos clientes, las mismas IPs
+level: 12
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "Las dos sedes del cliente A siguen comunicándose (pcA1 ↔ pcA2)"
+  - "Las dos sedes del cliente B se comunican (pcB1 ↔ pcB2)"
+  - "Ningún cliente llega a las máquinas del otro, aunque usen las mismas redes"
+hints:
+  - "A y B usan las mismas subredes (192.168.1.0/24 y 192.168.2.0/24); por eso cada uno va en su VRF. Compara la configuración de las dos VRF en los dos PE: `/routing bgp vpn print detail`."
+  - "Mira qué rutas tiene cada tabla: `/ip route print where routing-table=cliB` en pe1 y en pe2. ¿Falta alguna? ¿Sobra alguna que venga del otro cliente?"
+  - "Lo que se exporta lleva un RT; lo que una VRF importa depende de su `import.route-targets`. Y una VRF sólo anuncia sus redes conectadas si se lo pides (`export.redistribute=connected`)."
+  - "Tres fallos en cliB: en pe1 exporta con RT 65000:20 (debe ser 65000:2) y no redistribuye las conectadas; en pe2 importa 65000:1 (el RT de A) en vez de 65000:2."
+flag_seed: l12-03-dos-clientes
+ram_mb: 1720

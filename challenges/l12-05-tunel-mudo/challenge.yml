@@ -1,0 +1,17 @@
+id: l12-05-tunel-mudo
+title: El túnel mudo
+level: 12
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "Las dos sedes del cliente se comunican por su VPN de nivel 3 (pc1 ↔ pc2)"
+  - "Sesión BGP VPNv4 establecida entre las loopbacks de pe1 y pe2"
+  - "El núcleo reparte etiquetas de extremo a extremo (pe1 tiene etiqueta LDP hacia 10.255.0.3)"
+  - "El cliente sigue aislado del núcleo del operador"
+hints:
+  - "Ve de abajo arriba: ¿se ven las loopbacks (OSPF)? ¿Hay etiquetas LDP entre todos (`/mpls ldp neighbor print` en los tres)? ¿Está la sesión BGP establecida? ¿Entran las rutas en la VRF?"
+  - "Si la sesión BGP no sube, mira con qué dirección habla cada PE: pe1 espera a 10.255.0.3, ¿pe2 sale desde ahí? Y si LDP no sube en un tramo, compara la configuración LDP de los tres routers (`/mpls ldp interface print`)."
+  - "Con BGP arriba, que una ruta llegue no significa que entre en la VRF (compara los route targets), y una VRF sólo anuncia lo que se le pide (`export.redistribute`). Con todo en la tabla, si el ping sigue sin pasar, falta una etiqueta en algún tramo del núcleo."
+  - "Cuatro fallos: la conexión BGP de pe2 sale desde 10.0.23.2 (`local.address`) en vez de su loopback; pe1 importa el RT 65000:2 (el cliente exporta 65000:1); pe2 no anuncia la red de su sede (`export.redistribute`); p no tiene LDP en ether3."
+flag_seed: l12-05-tunel-mudo
+ram_mb: 1660

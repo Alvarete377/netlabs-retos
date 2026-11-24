@@ -30,6 +30,7 @@ MODULES = {
     9: "TLS y certificados",
     10: "IPv6",
     11: "Servicios de red",
+    12: "MPLS y operadores",
 }
 
 

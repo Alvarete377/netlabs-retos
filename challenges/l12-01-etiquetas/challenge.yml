@@ -1,0 +1,14 @@
+id: l12-01-etiquetas
+title: Etiquetas en el núcleo
+level: 12
+type: build
+difficulty: easy
+objectives:
+  - "Los tres routers del núcleo intercambian etiquetas con LDP (p tiene dos vecinos LDP operativos)"
+  - "pe1 tiene etiqueta para llegar a la loopback de pe2 (10.255.0.3) y pe2 a la de pe1"
+hints:
+  - "El enrutamiento ya funciona (OSPF). MPLS no lo sustituye: se apoya en él y pone una **etiqueta** a cada destino para conmutar sin mirar la IP. LDP es el protocolo que reparte esas etiquetas entre vecinos."
+  - "En RouterOS 7 hacen falta tres cosas en cada router: que las interfaces acepten MPLS (`/mpls interface`), una instancia LDP (`/mpls ldp add`) con su lsr-id y dirección de transporte (la loopback), y las interfaces por las que buscar vecinos (`/mpls ldp interface`)."
+  - "En pe1: `/mpls interface add interface=all`, `/mpls ldp add afi=ip lsr-id=10.255.0.1 transport-addresses=10.255.0.1` y `/mpls ldp interface add interface=ether2`. Igual en p (ether2 y ether3) y en pe2. Mira el resultado con `/mpls ldp neighbor print` y `/mpls forwarding-table print`."
+flag_seed: l12-01-etiquetas
+ram_mb: 1600

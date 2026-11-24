@@ -1,0 +1,8 @@
+- ping: {from: pc1, to: 192.168.2.10, expect: ok, desc: "La sede 1 llega a la sede 2"}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok, desc: "La sede 2 llega a la sede 1"}
+- routeros: {node: pe1, cmd: '/routing bgp session print count-only where established', expect: "1", desc: "Sesión BGP VPNv4 establecida"}
+- routeros: {node: pe1, cmd: '/mpls forwarding-table print count-only where ldp and prefix=10.255.0.3', expect: "1", desc: "pe1 tiene etiqueta LDP hacia pe2"}
+- routeros: {node: p, cmd: '/mpls ldp neighbor print count-only where operational', expect: "2", desc: "p tiene LDP con los dos PE"}
+- routeros: {node: pe1, cmd: '/ip route print count-only where routing-table=cliA and dst-address=192.168.2.0/24 and bgp-mpls-vpn and active', expect: "1", desc: "pe1 aprende la sede 2 por la VPN"}
+- routeros: {node: pe1, cmd: '/ip route print count-only where routing-table=main and dst-address~"^192.168."', expect: "0", desc: "El núcleo del operador no ve las redes del cliente"}
+- ping: {from: pc1, to: 10.255.0.2, expect: fail, desc: "El cliente no llega al núcleo del operador"}

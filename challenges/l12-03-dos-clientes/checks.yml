@@ -1,0 +1,11 @@
+- ping: {from: pcA1, to: 192.168.2.10, expect: ok, desc: "Cliente A: sede 1 → sede 2"}
+- ping: {from: pcA2, to: 192.168.1.10, expect: ok, desc: "Cliente A: sede 2 → sede 1"}
+- ping: {from: pcB1, to: 192.168.2.20, expect: ok, desc: "Cliente B: sede 1 → sede 2"}
+- ping: {from: pcB2, to: 192.168.1.20, expect: ok, desc: "Cliente B: sede 2 → sede 1"}
+- ping: {from: pcB2, to: 192.168.1.10, expect: fail, desc: "El cliente B no llega a máquinas de A"}
+- ping: {from: pcA2, to: 192.168.1.20, expect: fail, desc: "El cliente A no llega a máquinas de B"}
+- ping: {from: pcB1, to: 192.168.2.10, expect: fail, desc: "Ni en la otra sede"}
+- routeros: {node: pe1, cmd: '/routing bgp vpn print detail where vrf=cliA', expect: 're:import\.route-targets=65000:1(\s|$)', desc: "En pe1, cliA sólo importa las rutas de su cliente (65000:1)"}
+- routeros: {node: pe1, cmd: '/routing bgp vpn print detail where vrf=cliB', expect: 're:import\.route-targets=65000:2(\s|$)', desc: "En pe1, cliB sólo importa las rutas de su cliente (65000:2)"}
+- routeros: {node: pe2, cmd: '/routing bgp vpn print detail where vrf=cliA', expect: 're:import\.route-targets=65000:1(\s|$)', desc: "En pe2, cliA sólo importa las rutas de su cliente (65000:1)"}
+- routeros: {node: pe2, cmd: '/routing bgp vpn print detail where vrf=cliB', expect: 're:import\.route-targets=65000:2(\s|$)', desc: "En pe2, cliB sólo importa las rutas de su cliente (65000:2)"}

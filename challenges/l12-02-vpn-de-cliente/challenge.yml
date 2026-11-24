@@ -1,0 +1,16 @@
+id: l12-02-vpn-de-cliente
+title: Una VPN para el cliente
+level: 12
+type: build
+difficulty: medium
+objectives:
+  - "Las dos sedes del cliente (pc1 y pc2) se comunican a través del núcleo MPLS"
+  - "Con una VPN de nivel 3: VRF en cada PE y rutas del cliente intercambiadas por BGP (VPNv4) entre pe1 y pe2"
+  - "El cliente queda aislado: sus redes no están en la tabla principal del operador y no llega al núcleo"
+hints:
+  - "Una **VRF** es una tabla de rutas aparte dentro del router: mete en ella la interfaz del cliente (`/ip vrf add name=cliA interfaces=ether3`) y sus rutas desaparecen de la tabla principal."
+  - "Los PE se cuentan las rutas de las VRF con **BGP** (familia `vpnv4`) entre sus loopbacks. El núcleo ya tiene LDP: p ni siquiera necesita saber nada del cliente."
+  - "Cada VRF se exporta con un *route distinguisher* (RD) y *route targets* (RT): `/routing bgp vpn add vrf=cliA route-distinguisher=65000:1 import.route-targets=65000:1 export.route-targets=65000:1 export.redistribute=connected label-allocation-policy=per-vrf`."
+  - "Sesión iBGP en pe1: `/routing bgp connection add name=vpn as=65000 router-id=10.255.0.1 local.address=10.255.0.1 local.role=ibgp remote.address=10.255.0.3 remote.as=65000 address-families=vpnv4` (y la simétrica en pe2)."
+flag_seed: l12-02-vpn-de-cliente
+ram_mb: 1660

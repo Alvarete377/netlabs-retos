@@ -1,0 +1,3 @@
+- routeros: {node: p, cmd: '/mpls ldp neighbor print count-only where operational', expect: "2", desc: "p tiene dos vecinos LDP operativos"}
+- routeros: {node: pe1, cmd: '/mpls forwarding-table print count-only where ldp and prefix=10.255.0.3', expect: "1", desc: "pe1 tiene etiqueta hacia la loopback de pe2"}
+- routeros: {node: pe2, cmd: '/mpls forwarding-table print count-only where ldp and prefix=10.255.0.1', expect: "1", desc: "pe2 tiene etiqueta hacia la loopback de pe1"}

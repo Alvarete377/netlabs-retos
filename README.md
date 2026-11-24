@@ -125,3 +125,11 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | ¿Qué hora es? | `l11-04-la-hora` | Montar | Fácil |
 | Los logs que nadie lee | `l11-05-logs-centralizados` | Montar | Media |
 | Lunes negro en la sede | `l11-06-lunes-negro` | Troubleshooting | Difícil |
+### MPLS y operadores
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| Etiquetas en el núcleo | `l12-01-etiquetas` | Montar | Fácil |
+| Una VPN para el cliente | `l12-02-vpn-de-cliente` | Montar | Media |
+| Dos clientes, las mismas IPs | `l12-03-dos-clientes` | Troubleshooting | Media |
+| El cable más largo del mundo | `l12-04-vpls` | Montar | Media |
+| El túnel mudo | `l12-05-tunel-mudo` | Troubleshooting | Difícil |

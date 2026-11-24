@@ -1,0 +1,6 @@
+- ping: {from: pc1, to: 10.10.10.2, expect: ok, desc: "pc1 llega a pc2 por nivel 2"}
+- ping: {from: pc2, to: 10.10.10.1, expect: ok, desc: "pc2 llega a pc1 por nivel 2"}
+- routeros: {node: pe1, cmd: '/interface vpls print count-only where running', expect: "re:^[1-9]", desc: "pe1 tiene un pseudowire VPLS en marcha"}
+- routeros: {node: pe2, cmd: '/interface vpls print count-only where running', expect: "re:^[1-9]", desc: "pe2 tiene un pseudowire VPLS en marcha"}
+- routeros: {node: pe1, cmd: '/ip address print count-only where network~"^10.10.10."', expect: "0", desc: "pe1 no tiene IP en la red del cliente"}
+- routeros: {node: pe2, cmd: '/ip address print count-only where network~"^10.10.10."', expect: "0", desc: "pe2 no tiene IP en la red del cliente"}

@@ -1,0 +1,14 @@
+id: l12-04-vpls
+title: El cable más largo del mundo
+level: 12
+type: build
+difficulty: medium
+objectives:
+  - "pc1 y pc2 (10.10.10.1 y 10.10.10.2, misma subred y sin puerta de enlace) se hacen ping a través del operador"
+  - "Con VPLS: un servicio de nivel 2, sin IP del cliente en los PE"
+hints:
+  - "El cliente no quiere rutas: quiere que sus dos sedes estén en el mismo segmento Ethernet, como si un switch las uniera. Eso es **VPLS**: un *pseudowire* sobre MPLS entre los PE, unido a la interfaz del cliente con un bridge."
+  - "En cada PE: una interfaz `/interface vpls` hacia la loopback del otro PE (mismo `vpls-id` en los dos), y un bridge con ether3 y esa interfaz VPLS."
+  - "pe1: `/interface vpls add name=vpls-cliente peer=10.255.0.3 vpls-id=65000:100 disabled=no`, `/interface bridge add name=cliente-l2` y `/interface bridge port add bridge=cliente-l2 interface=ether3` (y otra con `interface=vpls-cliente`). En pe2, igual con `peer=10.255.0.1`."
+flag_seed: l12-04-vpls
+ram_mb: 1660

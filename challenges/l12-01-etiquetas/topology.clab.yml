@@ -1,0 +1,14 @@
+name: netlabs
+topology:
+  kinds:
+    mikrotik_ros:
+      image: netlabs/chr:7.16.2
+    linux:
+      image: netlabs/client:0.1
+  nodes:
+    pe1: {kind: mikrotik_ros}
+    p: {kind: mikrotik_ros}
+    pe2: {kind: mikrotik_ros}
+  links:
+    - endpoints: ["pe1:eth1", "p:eth1"]
+    - endpoints: ["p:eth2", "pe2:eth1"]
