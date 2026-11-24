@@ -10,6 +10,8 @@ KINDS = {
     "http": ("from", "url"),
     "routeros": ("node", "cmd", "expect"),
     "vyos": ("node", "cmd", "expect"),
+    # Orden de shell en un nodo Linux (PC o servidor); se compara su salida como en routeros.
+    "shell": ("node", "cmd", "expect"),
     "answer": ("id", "question", "answer"),
 }
 EXPECT_VALUES = {"ping": ("ok", "fail"), "tcp": ("open", "closed"), "udp": ("open", "closed")}
@@ -49,7 +51,7 @@ def _default_desc(kind: str, p: dict) -> str:
         return f"{p['from']} → {p['host']}:{p['port']}/{kind} {state}"
     if kind == "http":
         return f"{p['from']} → {p['url']}"
-    if kind in ("routeros", "vyos"):
+    if kind in ("routeros", "vyos", "shell"):
         return f"{p['node']}: {p['cmd']}"
     return p["question"]
 
@@ -74,11 +76,11 @@ def parse_checks(raw) -> list[Check]:
             raise CheckError(f"check #{i} ({kind}): faltan {missing}")
         if kind in EXPECT_VALUES and params["expect"] not in EXPECT_VALUES[kind]:
             raise CheckError(f"check #{i} ({kind}): expect debe ser uno de {EXPECT_VALUES[kind]}")
-        if kind == "routeros" and str(params["expect"]).startswith("re:"):
+        if kind in ("routeros", "vyos", "shell") and str(params["expect"]).startswith("re:"):
             try:
                 re.compile(str(params["expect"])[3:])
             except re.error as e:
-                raise CheckError(f"check #{i} (routeros): regex inválida: {e}")
+                raise CheckError(f"check #{i} ({kind}): regex inválida: {e}")
         desc = params.pop("desc", None) or _default_desc(kind, params)
         checks.append(Check(kind, params, desc))
     return checks
@@ -122,9 +124,12 @@ def _run(check: Check, ex: Executor, answered) -> CheckResult:
         if "contains" in p:
             ok = ok and str(p["contains"]) in body
         return CheckResult(check, ok, f"HTTP {code}" if code not in ("", "000") else "sin respuesta")
-    if check.kind in ("routeros", "vyos"):
-        run = ex.routeros if check.kind == "routeros" else ex.vyos
-        out = run(p["node"], p["cmd"]).strip()
+    if check.kind in ("routeros", "vyos", "shell"):
+        if check.kind == "shell":
+            out = ex.exec(p["node"], ["sh", "-c", str(p["cmd"])])[1].strip()
+        else:
+            run = ex.routeros if check.kind == "routeros" else ex.vyos
+            out = run(p["node"], p["cmd"]).strip()
         expect = str(p["expect"])
         ok = bool(re.search(expect[3:], out)) if expect.startswith("re:") else out == expect
         return CheckResult(check, ok, f"salida: {out[:80]!r}")

@@ -1,0 +1,9 @@
+- http: {from: inet, url: "https://tienda.lab/", contains: "tienda online", desc: "Desde Internet se abre https://tienda.lab"}
+- http: {from: pc1, url: "https://tienda.lab/", contains: "tienda online", desc: "Desde la oficina se abre https://tienda.lab"}
+- shell: {node: srv, cmd: 'openssl x509 -in /etc/web/servidor.crt -noout -checkend 86400', expect: 're:will not expire', desc: "El certificado del servidor está vigente"}
+- shell: {node: srv, cmd: 'echo | timeout 5 openssl s_client -connect 127.0.0.1:443 -servername tienda.lab -showcerts 2>/dev/null | grep -c "BEGIN CERTIFICATE"', expect: "2", desc: "El servidor manda su certificado y la intermedia"}
+- tcp: {from: inet, host: 203.0.113.1, port: 8080, expect: closed, desc: "Desde Internet no se ve el panel (IP pública)"}
+- tcp: {from: inet, host: 192.168.20.10, port: 8080, expect: closed, desc: "Desde Internet no se ve el panel (IP interna)"}
+- tcp: {from: inet, host: 192.168.20.10, port: 443, expect: closed, desc: "Desde Internet sólo se entra por la IP pública"}
+- tcp: {from: pc1, host: 192.168.20.10, port: 8080, expect: open, desc: "La oficina llega al panel"}
+- routeros: {node: r1, cmd: '/ip firewall filter print count-only where chain=forward and action=drop and !disabled and !protocol and !connection-state', expect: 're:^[1-9]', desc: "El reenvío sigue terminando en drop"}

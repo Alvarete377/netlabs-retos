@@ -1,0 +1,6 @@
+- http: {from: pc1, url: "https://web.lab/", contains: "intranet", desc: "pc1 abre https://web.lab"}
+- shell: {node: pc1, cmd: 'curl -s -o /dev/null -w "%{http_code}" --max-time 4 https://apuestas.lab/', expect: "000", desc: "pc1 NO abre https://apuestas.lab"}
+- shell: {node: pc1, cmd: 'curl -s -o /dev/null -w "%{http_code}" --max-time 4 --resolve apuestas.lab:443:192.168.20.10 https://apuestas.lab/', expect: "000", desc: "Tampoco yendo directo a la IP del servidor"}
+- shell: {node: pc1, cmd: 'curl -s -o /dev/null -w "%{http_code}" --max-time 4 --resolve www.apuestas.lab:443:192.168.20.10 https://www.apuestas.lab/', expect: "000", desc: "Tampoco sus subdominios"}
+- tcp: {from: pc1, host: 192.168.20.10, port: 443, expect: open, desc: "El puerto 443 del servidor sigue abierto para la oficina"}
+- routeros: {node: r1, cmd: '/ip firewall filter print count-only where tls-host~"apuestas" and !disabled', expect: 're:^[1-9]', desc: "r1 filtra por el nombre del saludo TLS"}

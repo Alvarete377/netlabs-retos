@@ -1,0 +1,16 @@
+id: l9-01-candado-verde
+title: Candado verde
+level: 9
+type: build
+difficulty: easy
+objectives:
+  - "pc1 abre https://web.lab sin avisos de seguridad"
+  - "El certificado lo firma la CA de la empresa (NetLabs CA Raiz) y es válido para web.lab"
+  - "El certificado dura como mínimo 30 días"
+hints:
+  - "En srv tienes la CA de la empresa en /root/ca (raiz.crt y raiz.key) y un script, `servidor-https`, que arranca la web con /etc/web/servidor.crt y /etc/web/servidor.key. pc1 ya confía en esa CA y r1 ya resuelve web.lab."
+  - "Tres pasos en srv: una clave y una petición (CSR) para web.lab, la CA firma la petición, y `servidor-https`. Comprueba desde pc1 con `curl -v https://web.lab/`."
+  - "Los navegadores (y curl) miran el nombre en la extensión subjectAltName, así que fírmalo con ella: `printf 'subjectAltName=DNS:web.lab\\n' > san.ext` y `openssl x509 -req -in web.csr -CA /root/ca/raiz.crt -CAkey /root/ca/raiz.key -CAcreateserial -days 365 -extfile san.ext -out /etc/web/servidor.crt`."
+  - "La clave y la CSR: `openssl req -newkey ec -pkeyopt ec_paramgen_curve:P-256 -nodes -keyout /etc/web/servidor.key -out web.csr -subj /CN=web.lab`. Después `servidor-https`."
+flag_seed: l9-01-candado-verde
+ram_mb: 560

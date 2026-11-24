@@ -1,0 +1,16 @@
+id: l9-04-quien-eres
+title: ¿Quién eres?
+level: 9
+type: build
+difficulty: medium
+objectives:
+  - "El panel https://admin.lab sólo deja entrar a quien presente un certificado de cliente de la empresa"
+  - "pc1 (el puesto del administrador) entra en el panel con su certificado"
+  - "pc2 llega al puerto 443, pero el servidor le cierra la puerta"
+hints:
+  - "Esto es **TLS mutuo** (mTLS): además de que el servidor demuestre quién es, el cliente presenta su propio certificado. El script `servidor-https` de srv lo activa si existe /etc/web/ca-clientes.crt (la CA en la que confía para los clientes)."
+  - "Pasos: (1) emitir un certificado de cliente para pc1 con la CA de /root/ca; (2) llevarlo a pc1 con su clave; (3) decirle a curl que lo use; (4) activar la verificación en srv y reiniciar `servidor-https`."
+  - "Un certificado de cliente es como el de servidor pero con `extendedKeyUsage=clientAuth` en el fichero de extensiones. Para pasarlo a pc1: `nc -l -p 9000 > /root/pc1.pem` en pc1 y `cat pc1.key pc1.crt | nc 192.168.1.10 9000` en srv (o copia y pega el texto)."
+  - "En pc1, curl lee `/root/.curlrc`: `printf 'cert = /root/pc1.pem\\n' > /root/.curlrc` (el .pem lleva la clave y el certificado). En srv: `cp /root/ca/raiz.crt /etc/web/ca-clientes.crt && servidor-https`."
+flag_seed: l9-04-quien-eres
+ram_mb: 600

@@ -92,3 +92,18 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Hola, VyOS | `l7-01-hola-vyos` | Montar | Fácil |
 | OSPF entre fabricantes | `l7-02-ospf-entre-fabricantes` | Montar | Media |
 | IPsec entre fabricantes | `l7-03-ipsec-entre-fabricantes` | Montar | Difícil |
+### Diagnóstico
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| ¿Dónde se pierde? | `l8-01-donde-se-pierde` | Troubleshooting | Fácil |
+| ¿Quién escucha? | `l8-02-quien-escucha` | Captura | Fácil |
+| Contraseñas en claro | `l8-03-contrasenas-en-claro` | Captura | Media |
+| El MTU traicionero | `l8-04-mtu-traicionero` | Troubleshooting | Media |
+### TLS y certificados
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| Candado verde | `l9-01-candado-verde` | Montar | Fácil |
+| La cadena rota | `l9-02-cadena-rota` | Troubleshooting | Media |
+| Por el nombre | `l9-03-por-el-nombre` | Montar | Media |
+| ¿Quién eres? | `l9-04-quien-eres` | Montar | Media |
+| La tienda que nadie ve | `l9-05-la-tienda` | Troubleshooting | Difícil |

@@ -26,6 +26,8 @@ MODULES = {
     5: "Acceso y enlace",
     6: "VPNs",
     7: "Multifabricante",
+    8: "Diagnóstico",
+    9: "TLS y certificados",
 }
 
 

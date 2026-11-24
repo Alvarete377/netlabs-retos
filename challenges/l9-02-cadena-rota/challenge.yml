@@ -1,0 +1,16 @@
+id: l9-02-cadena-rota
+title: La cadena rota
+level: 9
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "pc1 vuelve a abrir https://web.lab sin avisos"
+  - "El servidor presenta su certificado junto con la CA intermedia que lo firma"
+  - "El certificado lo firma la CA intermedia de la empresa"
+hints:
+  - "Ve por partes, de abajo arriba: ¿a qué IP va pc1 cuando pide web.lab? (`nslookup web.lab`, `ping web.lab`). ¿Y qué IP tiene srv?"
+  - "Cuando llegues al servidor, `curl -v https://web.lab/` y `openssl s_client -connect web.lab:443 -servername web.lab -showcerts` te dicen qué falla: cuenta los certificados que manda y lee el subjectAltName."
+  - "En srv tienes la CA intermedia (/root/ca/inter.crt y inter.key). Un servidor debe mandar su certificado seguido de la intermedia: `cat hoja.crt /root/ca/inter.crt > /etc/web/servidor.crt`. pc1 sólo confía en la raíz, no hace falta tocarlo."
+  - "Tres fallos: el registro DNS de web.lab en r1 apunta a 192.168.20.30, el certificado es para www.web.lab (hay que emitir otro para web.lab con la intermedia) y el servidor no manda la intermedia."
+flag_seed: l9-02-cadena-rota
+ram_mb: 560

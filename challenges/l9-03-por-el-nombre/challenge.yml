@@ -1,0 +1,16 @@
+id: l9-03-por-el-nombre
+title: Por el nombre
+level: 9
+type: build
+difficulty: medium
+objectives:
+  - "Desde la oficina no se puede abrir https://apuestas.lab ni ningún subdominio suyo, aunque se use la IP directamente"
+  - "https://web.lab, que está en el MISMO servidor, sigue funcionando"
+  - "Se filtra en r1, por el nombre que el cliente pide en el saludo TLS"
+hints:
+  - "Las dos webs comparten IP y puerto: bloquear 192.168.20.10:443 se lleva por delante web.lab. Quitar el registro DNS tampoco vale (con `curl --resolve` o editando /etc/hosts se salta)."
+  - "En HTTPS el contenido va cifrado, pero el primer mensaje del cliente (ClientHello) lleva el nombre del sitio en claro: es la extensión **SNI**. Míralo con `tcpdump -A -i eth1 port 443` en srv mientras pc1 hace curl."
+  - "RouterOS puede leer ese nombre: en el firewall existe `tls-host`, que admite comodines como `*apuestas.lab`."
+  - "`/ip firewall filter add chain=forward protocol=tcp dst-port=443 tls-host=*apuestas.lab action=reject reject-with=tcp-reset comment=\"sin apuestas\"`"
+flag_seed: l9-03-por-el-nombre
+ram_mb: 560

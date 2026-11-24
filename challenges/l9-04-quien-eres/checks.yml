@@ -1,0 +1,5 @@
+- http: {from: pc1, url: "https://admin.lab/", contains: "panel de administracion", desc: "pc1 entra en el panel"}
+- shell: {node: pc2, cmd: 'curl -s -o /dev/null -w "%{http_code}" --max-time 4 https://admin.lab/', expect: "000", desc: "pc2 no entra en el panel"}
+- tcp: {from: pc2, host: 192.168.20.10, port: 443, expect: open, desc: "pc2 llega al puerto 443 (no es cosa del firewall)"}
+- shell: {node: srv, cmd: 'curl -s -o /dev/null -w "%{http_code}" --max-time 4 -k https://127.0.0.1/', expect: "000", desc: "El servidor exige certificado de cliente"}
+- shell: {node: pc1, cmd: 'echo | timeout 5 openssl s_client -connect admin.lab:443 -servername admin.lab 2>/dev/null | openssl x509 -noout -subject 2>&1', expect: 're:CN ?= ?admin\.lab', desc: "El servidor sigue presentando su certificado de admin.lab"}

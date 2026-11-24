@@ -1,0 +1,6 @@
+- answer: {id: usuario, question: "¿Con qué usuario entra la aplicación contable en el servidor?", answer: "38cd88c523e691aa53962a84b6df308b95046102b7e9d67f660be4b86b891d11"}
+- answer: {id: clave, question: "¿Y con qué contraseña?", answer: "bcc1a9d07ca991381384f4baf6afd54f19eb98148b9c80ffcc74498bc334b6aa"}
+- tcp: {from: pc1, host: 192.168.20.10, port: 23, expect: closed, desc: "El acceso en claro (telnet, puerto 23) queda cortado en el router"}
+- tcp: {from: analista, host: 192.168.20.10, port: 23, expect: closed, desc: "Cortado también para el resto de la LAN"}
+- tcp: {from: pc1, host: 192.168.20.10, port: 22, expect: open, desc: "El acceso cifrado (SSH, puerto 22) sigue funcionando"}
+- routeros: {node: sw, cmd: "/interface bridge port print count-only where learn=no", expect: "0", desc: "Terminada la auditoría, el switch vuelve a aprender direcciones (fuera el modo espejo)"}

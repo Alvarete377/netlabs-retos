@@ -1,0 +1,5 @@
+- http: {from: pc1, url: "https://web.lab/", contains: "intranet", desc: "pc1 abre https://web.lab sin avisos"}
+- routeros: {node: r1, cmd: '/ip dns static print count-only where name="web.lab" and address=192.168.20.10 and !disabled', expect: "1", desc: "web.lab se resuelve a la IP del servidor"}
+- shell: {node: srv, cmd: 'echo | timeout 5 openssl s_client -connect 127.0.0.1:443 -servername web.lab -showcerts 2>/dev/null | grep -c "BEGIN CERTIFICATE"', expect: "2", desc: "El servidor manda su certificado y la intermedia"}
+- shell: {node: pc1, cmd: 'echo | timeout 5 openssl s_client -connect web.lab:443 -servername web.lab 2>/dev/null | openssl x509 -noout -issuer 2>&1', expect: 're:CN ?= ?NetLabs CA Intermedia', desc: "Lo firma la CA intermedia"}
+- shell: {node: pc1, cmd: 'echo | timeout 5 openssl s_client -connect web.lab:443 -servername web.lab 2>/dev/null | openssl x509 -noout -ext subjectAltName 2>&1', expect: 're:DNS:web\.lab(,|$|\s)', desc: "Es válido para web.lab"}

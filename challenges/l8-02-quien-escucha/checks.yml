@@ -1,0 +1,7 @@
+- answer: {id: postfix, question: "¿Qué versión de Postfix anuncia el servidor de correo de 192.168.20.10?", answer: "ecab88fd8f286f1bdd244d19851ff6d79f5db087fe1c2e7e48ce212c5dace6c7"}
+- answer: {id: panel, question: "¿En qué puerto TCP escucha el panel web de administración?", answer: "5af4c93ae18a5897300213c749b7c91d69be433e5e73ece1e1866ee57ff2167d"}
+- http: {from: pc1, url: "http://192.168.20.10:8181/", contains: "panel de administracion", desc: "Desde la LAN de administración se abre el panel"}
+- tcp: {from: pc1, host: 192.168.20.10, port: 3306, expect: closed, desc: "La base de datos sigue sin verse desde la LAN"}
+- tcp: {from: pc1, host: 192.168.20.10, port: 22, expect: open, desc: "El SSH del servidor sigue accesible"}
+- routeros: {node: r1, cmd: '/ip firewall filter print count-only where comment~"servicios internos" and action=drop and !disabled', expect: "1", desc: "La regla de servicios internos sigue en su sitio"}
+- routeros: {node: r1, cmd: "/ip firewall filter print count-only where chain=forward and action=drop and !disabled", expect: 're:^[2-9]$', desc: "El reenvío sigue terminando en drop"}

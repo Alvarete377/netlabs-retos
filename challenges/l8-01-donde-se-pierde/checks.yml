@@ -1,0 +1,7 @@
+- answer: {id: router, question: "¿En qué router está el fallo? (r1, r2, r3 o r4)", answer: "e49d63b2a8a78f048bafc4b4590029603a5a4165ee8bf98af15d62f24cd83479"}
+- ping: {from: pc1, to: 192.168.4.10, expect: ok, desc: "pc1 llega a pc2"}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok, desc: "pc2 llega a pc1"}
+- routeros: {node: r1, cmd: "/ip firewall nat print count-only", expect: "0", desc: "Sin NAT en r1"}
+- routeros: {node: r2, cmd: "/ip firewall nat print count-only", expect: "0", desc: "Sin NAT en r2"}
+- routeros: {node: r3, cmd: "/ip firewall nat print count-only", expect: "0", desc: "Sin NAT en r3"}
+- routeros: {node: r4, cmd: "/ip firewall nat print count-only", expect: "0", desc: "Sin NAT en r4"}

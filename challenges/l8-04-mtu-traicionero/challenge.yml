@@ -1,0 +1,16 @@
+id: l8-04-mtu-traicionero
+title: El MTU traicionero
+level: 8
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "Desde pc1, http://192.168.30.10/informe se descarga entero (ahora se queda colgado)"
+  - "Averigua el MTU del tramo más estrecho del camino y respóndelo con `lab answer`"
+  - "Sin tocar el enlace contratado (MTU 1400) y sin abrir los pings hacia los servidores"
+hints:
+  - "Lo pequeño pasa (`curl http://192.168.30.10/`) y lo grande no: huele a tamaño de paquete. Mide el camino desde pc1 con `ping -M do -s 1472 192.168.30.10`... aunque r3 no deja pasar pings, prueba desde los routers: `/ping 10.0.23.2 size=1500 do-not-fragment` desde r1, y ve bajando el tamaño."
+  - "Cuando un paquete con DF no cabe, el router que no puede reenviarlo avisa al emisor con un ICMP *fragmentation needed*. ¿Quién es el emisor de los paquetes grandes aquí? ¿Por qué router tiene que pasar ese aviso para llegarle?"
+  - "Mira el orden del firewall de r3 (`/ip firewall filter print stats` mientras descargas): ¿qué le pasa al ICMP antes de llegar a la regla de `established,related`?"
+  - "MTU 1400 (enlace r1–r2). La regla de r3 que tira todo el ICMP está encima de `established,related` y se come el *fragmentation needed*: limítala al ping (`icmp-options=8:0`). Otra solución válida: MSS clamping."
+flag_seed: l8-04-mtu-traicionero
+ram_mb: 1000

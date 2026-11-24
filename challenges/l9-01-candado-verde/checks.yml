@@ -1,0 +1,4 @@
+- http: {from: pc1, url: "https://web.lab/", contains: "intranet", desc: "pc1 abre https://web.lab sin avisos"}
+- shell: {node: pc1, cmd: 'echo | timeout 5 openssl s_client -connect web.lab:443 -servername web.lab 2>/dev/null | openssl x509 -noout -issuer 2>&1', expect: 're:CN ?= ?NetLabs CA Raiz', desc: "Lo firma la CA de la empresa"}
+- shell: {node: pc1, cmd: 'echo | timeout 5 openssl s_client -connect web.lab:443 -servername web.lab 2>/dev/null | openssl x509 -noout -ext subjectAltName 2>&1', expect: 're:DNS:web\.lab', desc: "Es válido para web.lab (subjectAltName)"}
+- shell: {node: pc1, cmd: 'echo | timeout 5 openssl s_client -connect web.lab:443 -servername web.lab 2>/dev/null | openssl x509 -noout -checkend 2592000 2>&1', expect: 're:will not expire', desc: "Dura al menos 30 días"}

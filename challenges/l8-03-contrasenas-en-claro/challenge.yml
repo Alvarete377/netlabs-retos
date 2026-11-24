@@ -1,0 +1,16 @@
+id: l8-03-contrasenas-en-claro
+title: Contraseñas en claro
+level: 8
+type: capture
+difficulty: medium
+objectives:
+  - "Desde el PC `analista`, captura el tráfico de la aplicación contable de pc1 y averigua con qué usuario y contraseña entra en el servidor (`lab answer`)"
+  - "Corta en r1 el acceso por telnet (puerto 23) desde la LAN hacia los servidores; el SSH (22) debe seguir funcionando"
+  - "Al terminar, quita el modo espejo: el switch de la oficina (`sw`) vuelve a aprender direcciones"
+hints:
+  - "Un PC sólo ve su propio tráfico... salvo que el switch inunde todo a todos los puertos. Mira cómo están los puertos del switch `sw`: `/interface bridge port print detail` (`learn`)."
+  - "En `analista`: `tcpdump -i eth1 -nn port 23`. ¿Ves conversaciones entre 192.168.1.10 y 192.168.20.10? Añade `-A` para ver el contenido en texto."
+  - "Para cortar el telnet, una regla `forward` en r1 que tire `protocol=tcp dst-port=23`. Y para quitar el modo espejo, `learn=auto` en los puertos del bridge de `sw`."
+  - "Usuario `contabilidad`, contraseña `Verano2026!`. Arreglo: `/ip firewall filter add chain=forward protocol=tcp dst-port=23 action=drop` en r1, y `/interface bridge port set [find bridge=br1] learn=auto` en sw."
+flag_seed: l8-03-contrasenas-en-claro
+ram_mb: 850

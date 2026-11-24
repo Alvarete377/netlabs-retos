@@ -1,0 +1,7 @@
+- answer: {id: mtu, question: "¿Cuál es el MTU (en bytes) del tramo más estrecho entre pc1 y el servidor?", answer: "55fdec963805de594b61b2c1692cadc2c1dfb844d6ac10c5bfed33c842087b2e"}
+- http: {from: pc1, url: "http://192.168.30.10/", contains: "servidor de informes", desc: "La página corta carga"}
+- http: {from: pc1, url: "http://192.168.30.10/informe", contains: "FIN-DEL-INFORME", desc: "El informe largo se descarga entero"}
+- ping: {from: pc1, to: 192.168.30.10, expect: fail, desc: "Los pings hacia los servidores siguen bloqueados (política de seguridad)"}
+- routeros: {node: r1, cmd: "/interface ethernet print count-only where mtu=1400", expect: "1", desc: "El enlace contratado sigue con MTU 1400 (no se puede cambiar)"}
+- routeros: {node: r2, cmd: "/interface ethernet print count-only where mtu=1400", expect: "1", desc: "El enlace contratado sigue con MTU 1400 en r2"}
+- routeros: {node: r3, cmd: "/ip firewall filter print count-only where chain=forward and action=drop and !disabled", expect: 're:^[2-9]$', desc: "El firewall de r3 sigue terminando en drop"}

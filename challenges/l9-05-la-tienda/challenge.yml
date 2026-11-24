@@ -1,0 +1,17 @@
+id: l9-05-la-tienda
+title: La tienda que nadie ve
+level: 9
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "Desde Internet (inet) se abre https://tienda.lab sin avisos"
+  - "Desde la oficina (pc1) también se abre https://tienda.lab sin avisos"
+  - "El servidor presenta un certificado vigente con su cadena"
+  - "Desde Internet no se ve nada más del servidor (ni su panel 8080), y la oficina sí llega al panel"
+hints:
+  - "Empieza desde fuera y ve capa a capa: ¿llega la conexión al 443 de 203.0.113.1? (`nc -zv`), ¿adónde la manda r1? (`/ip firewall nat print`), ¿la deja pasar el forward? (`/ip firewall filter print stats`). En srv, `tcpdump -n -i eth1 port 443` te dice si llega algo."
+  - "Cuando la conexión llegue, el problema ya es TLS: `curl -v` desde inet y `openssl x509 -noout -dates` del certificado que manda. En srv está la intermedia (/root/ca/inter.*) para emitir otro."
+  - "La oficina es otro problema: pc1 pregunta a r1 por tienda.lab y le da la IP pública, la del propio r1. O le das la IP interna (DNS partido) o haces *hairpin NAT*."
+  - "Cuatro fallos: el dst-nat manda al puerto 8443; una regla de 'mantenimiento' tira el 443 antes de aceptar lo publicado; el certificado caducó el 1 de enero de 2026; y la oficina resuelve tienda.lab a 203.0.113.1 sin hairpin."
+flag_seed: l9-05-la-tienda
+ram_mb: 600

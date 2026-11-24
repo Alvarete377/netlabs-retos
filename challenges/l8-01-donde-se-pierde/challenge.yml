@@ -1,0 +1,16 @@
+id: l8-01-donde-se-pierde
+title: ¿Dónde se pierde?
+level: 8
+type: troubleshoot
+difficulty: easy
+objectives:
+  - "Averigua en qué router está el fallo, sin tocar nada antes de saberlo, y respóndelo con `lab answer`"
+  - Arréglalo para que pc1 y pc2 se hagan ping en los dos sentidos
+  - Sin NAT
+hints:
+  - "Empieza en pc1: `traceroute -n 192.168.4.10`. ¿Hasta qué salto llegan respuestas? Los `* * *` son respuestas que no vuelven, no necesariamente paquetes que no llegan."
+  - "Divide el camino: desde cada router, `/ping 192.168.4.10` y `/ping 192.168.1.10`. Prueba también a cambiar el origen con `src-address=` (cada IP del router es una prueba distinta: ¿sabe el resto del camino volver a ella?). ¿Qué router llega a pc2 pero no sabe volver a pc1?"
+  - "Mira las rutas de ese router (`/ip route print`): ¿sabe cómo volver a 192.168.1.0/24?"
+  - "El fallo está en r3: sólo conoce la LAN de pc2. Le falta `/ip route add dst-address=192.168.1.0/24 gateway=10.0.23.1`."
+flag_seed: l8-01-donde-se-pierde
+ram_mb: 1300
