@@ -1,0 +1,15 @@
+id: s6-01-el-script-que-miente
+title: El script que miente
+level: 106
+type: troubleshoot
+difficulty: easy
+objectives:
+  - "`/usr/local/bin/limpiar-logs` borra los `.log` de más de 7 días de /srv/app/logs (también en subcarpetas), aunque tengan espacios en el nombre"
+  - "No toca los recientes, ni lo que no acaba en `.log`, ni nada fuera de /srv/app/logs"
+  - "Si /srv/app/logs no existe, termina con error (código distinto de 0) y no dice «limpieza hecha»"
+hints:
+  - "Pruébalo con un fichero de prueba: `touch -d '10 days ago' '/srv/app/logs/a b.log'` y ejecuta el script con `bash -x` para ver cada orden."
+  - "`for f in $(find ...)` parte los nombres por los espacios: `a b.log` se convierte en `a` y `b.log`. `find` puede borrar él solo (`-delete`) o pasar los nombres bien (`-exec rm -- {} +`). Y las variables, siempre entre comillas: `\"$DIR\"`."
+  - "`echo $?` tras ejecutarlo dice el código de salida. Con `set -e` el script se para en el primer error; también puedes comprobar la carpeta con `[ -d \"$DIR\" ] || exit 1`."
+flag_seed: s6-01-el-script-que-miente
+ram_mb: 150

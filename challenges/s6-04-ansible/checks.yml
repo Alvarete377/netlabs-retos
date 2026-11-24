@@ -1,0 +1,9 @@
+- shell: {node: web2, cmd: "echo 'Bienvenido' > /etc/motd; systemctl stop nginx; userdel -r deploy 2>/dev/null; echo roto", expect: "roto", desc: "Se deshace a mano la configuración de web2 (para ver que el playbook la repone)"}
+- shell: {node: ctl, cmd: "cd /root/ansible && ansible-playbook -i hosts site.yml 2>&1 | grep -E '^(web1|web2) +:' | sed 's/ \\+/ /g' | tr '\\n' ' '", expect: "re:web1 : ok=\\d+ changed=\\d+ unreachable=0 failed=0 .*web2 : ok=\\d+ changed=[1-9]\\d* unreachable=0 failed=0", desc: "El playbook se ejecuta sin errores en web1 y web2 (y repone web2)"}
+- shell: {node: ctl, cmd: "cd /root/ansible && ansible-playbook -i hosts site.yml 2>&1 | grep -E '^(web1|web2) +:' | sed 's/ \\+/ /g' | grep -c 'changed=0 unreachable=0 failed=0'", expect: "2", desc: "Lanzado otra vez, no cambia nada (idempotente)"}
+- shell: {node: web1, cmd: "cat /etc/motd", expect: "Servidor gestionado por Ansible. No tocar a mano.", desc: "motd en web1"}
+- shell: {node: web2, cmd: "cat /etc/motd", expect: "Servidor gestionado por Ansible. No tocar a mano.", desc: "motd en web2"}
+- shell: {node: web1, cmd: "curl -s -m3 http://127.0.0.1/", expect: "Hola desde web1", desc: "Portada de web1"}
+- shell: {node: web2, cmd: "curl -s -m3 http://127.0.0.1/", expect: "Hola desde web2", desc: "Portada de web2"}
+- shell: {node: web1, cmd: "getent passwd deploy | cut -d: -f7; systemctl is-enabled nginx", expect: "/bin/bash\nenabled", desc: "web1: deploy con bash y nginx habilitado"}
+- shell: {node: web2, cmd: "getent passwd deploy | cut -d: -f7; systemctl is-enabled nginx", expect: "/bin/bash\nenabled", desc: "web2: deploy con bash y nginx habilitado"}

@@ -1,0 +1,16 @@
+id: s6-04-ansible
+title: Dos servidores, un playbook
+level: 106
+type: build
+difficulty: medium
+objectives:
+  - "Desde ctl, `/root/ansible/hosts` (grupo `web` con web1 y web2) y el playbook `/root/ansible/site.yml`"
+  - "El playbook deja en los dos servidores: el usuario `deploy` (shell bash), /etc/motd con `Servidor gestionado por Ansible. No tocar a mano.`, una portada `Hola desde <nombre del servidor>` y nginx en marcha y habilitado"
+  - "Es idempotente: si lo lanzas otra vez, no cambia nada (`changed=0`)"
+hints:
+  - "La clave SSH de ctl ya está autorizada en los dos (como root) y `/root/ansible/ansible.cfg` ya existe. Prueba la conexión: `ansible -i hosts web -m ping`."
+  - "Inventario en formato INI: `[web]` y una línea por servidor: `web1 ansible_host=10.0.1.11`."
+  - "Módulos útiles: `ansible.builtin.user`, `ansible.builtin.copy` (con `content:` y `dest:`) y `ansible.builtin.service` (`state: started`, `enabled: true`). `{{ inventory_hostname }}` es el nombre del servidor en el inventario."
+  - "Evita `shell:`/`command:` para cosas que tienen módulo: no son idempotentes y saldrán siempre como `changed`."
+flag_seed: s6-04-ansible
+ram_mb: 250

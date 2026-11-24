@@ -1,0 +1,18 @@
+name: netlabs
+topology:
+  nodes:
+    ctl:
+      kind: linux
+      image: netlabs/ansible:0.1
+      exec: ["ip addr add 10.0.1.1/24 dev eth1", "ip addr add 10.0.2.1/24 dev eth2"]
+    web1:
+      kind: linux
+      image: netlabs/debian:0.2
+      exec: ["ip addr add 10.0.1.11/24 dev eth1"]
+    web2:
+      kind: linux
+      image: netlabs/debian:0.2
+      exec: ["ip addr add 10.0.2.12/24 dev eth1"]
+  links:
+    - endpoints: ["ctl:eth1", "web1:eth1"]
+    - endpoints: ["ctl:eth2", "web2:eth1"]

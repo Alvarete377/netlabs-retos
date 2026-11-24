@@ -1,0 +1,18 @@
+id: s6-05-la-copia-que-nunca-se-hizo
+title: La copia que nunca se hizo
+level: 106
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "`systemctl start copia.service` hace una copia válida de /srv/datos en /var/backups/datos (un .tar.gz que se puede abrir)"
+  - "Un cerrojo que dejó una copia que murió a medias no impide las siguientes"
+  - "La rotación deja las 7 copias más recientes y no borra nada que no sea una copia (como LEEME.txt)"
+  - "Si /srv/datos no existe, el script termina con error"
+  - "Nada de copias fuera de su carpeta"
+hints:
+  - "`systemctl status copia` y `journalctl -u copia`: ¿qué dice la última vez? ¿Y qué hay en `/tmp`?"
+  - "Lánzalo como lo lanza systemd, no desde tu sesión: `systemctl start copia.service` y `systemctl show -p Environment copia`. ¿Qué vale `$DESTINO` ahí? ¿Existe esa carpeta? ¿Y dónde acaba la copia si lo lanzas tú a mano, sin esa variable?"
+  - "`tar | gzip`: el código de una tubería es el del último (`gzip`), que sale bien aunque `tar` falle. `set -o pipefail` hace que la tubería falle, y `set -e` que el script se pare ahí (si no, sigue y acaba diciendo «copia OK»). O deja que `tar -czf` comprima él solo."
+  - "Un cerrojo con `touch`/`rm` se queda puesto si el script muere entre medias. `flock` lo suelta el kernel al morir el proceso. Y la rotación cuenta todo lo que haya en la carpeta, sea una copia o no."
+flag_seed: s6-05-la-copia-que-nunca-se-hizo
+ram_mb: 200

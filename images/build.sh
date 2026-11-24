@@ -18,6 +18,10 @@ $DOCKER build -q -t netlabs/debian:0.2 -t netlabs/debian:0.1 "$HERE/debian"
 echo "== netlabs/samba:0.1"
 $DOCKER build -q -t netlabs/samba:0.1 "$HERE/samba"
 
+# Nodo de control de Ansible.
+echo "== netlabs/ansible:0.1"
+$DOCKER build -q -t netlabs/ansible:0.1 "$HERE/ansible"
+
 echo "== netlabs/chr:$CHR_VERSION"
 if $DOCKER image inspect "netlabs/chr:$CHR_VERSION" >/dev/null 2>&1; then
   echo "ya existe"; exit 0

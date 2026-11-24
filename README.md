@@ -171,3 +171,11 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | La CPU por las nubes | `s5-03-cpu-por-las-nubes` | Troubleshooting | Media |
 | De cron a timer | `s5-04-de-cron-a-timer` | Montar | Media |
 | En bucle | `s5-05-en-bucle` | Troubleshooting | Difícil |
+### Sistemas · Scripting y automatización
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| El script que miente | `s6-01-el-script-que-miente` | Troubleshooting | Fácil |
+| A mano funciona | `s6-02-a-mano-funciona` | Troubleshooting | Fácil |
+| Las IPs más pesadas | `s6-03-las-ips-mas-pesadas` | Montar | Media |
+| Dos servidores, un playbook | `s6-04-ansible` | Montar | Media |
+| La copia que nunca se hizo | `s6-05-la-copia-que-nunca-se-hizo` | Troubleshooting | Difícil |

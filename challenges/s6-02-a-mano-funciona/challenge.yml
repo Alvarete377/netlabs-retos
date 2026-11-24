@@ -1,0 +1,15 @@
+id: s6-02-a-mano-funciona
+title: A mano funciona
+level: 106
+type: troubleshoot
+difficulty: easy
+objectives:
+  - "`/usr/local/bin/informe-diario` funciona lanzado por cron: deja el informe del día en /var/informes/salida/"
+  - "La tarea de cron (/etc/cron.d/informe) sigue ahí, a las 07:00, y lo que el script escriba (también los errores) acaba en el journal con la etiqueta `informe-diario`"
+  - "Si algo falla, el script termina con error"
+hints:
+  - "Cron no te da tu sesión: sin `.bashrc`, con un PATH mínimo (`/usr/bin:/bin`) y en la carpeta de inicio del usuario. Prueba como lo haría cron: `cd / && env -i PATH=/usr/bin:/bin HOME=/root /usr/local/bin/informe-diario`."
+  - "¿Dónde está `informe-ventas`? `type informe-ventas` en tu sesión y `grep PATH /root/.bashrc`. En un script que lanza cron, rutas absolutas para los comandos y para los ficheros."
+  - "Para mandar la salida al journal: `... 2>&1 | logger -t informe-diario` al final de la línea de cron. Luego `journalctl -t informe-diario`."
+flag_seed: s6-02-a-mano-funciona
+ram_mb: 150
