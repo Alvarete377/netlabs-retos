@@ -1,0 +1,6 @@
+- routeros: {node: r1, cmd: '/routing bgp session print count-only where established', expect: "2", desc: "r1 tiene sesión con los dos operadores"}
+- routeros: {node: isp1, cmd: '/routing route print count-only where dst-address=203.0.113.0/24 and bgp.as-path~"^65000"', expect: "re:^[1-9]", desc: "isp1 recibe la red de la empresa"}
+- routeros: {node: isp2, cmd: '/routing route print count-only where dst-address=203.0.113.0/24 and bgp.as-path~"^65000"', expect: "re:^[1-9]", desc: "isp2 recibe la red de la empresa"}
+- routeros: {node: isp2, cmd: '/routing route print count-only where bgp.as-path~"^65000,65101"', expect: "0", desc: "isp2 no recibe por r1 las rutas de isp1 (r1 no es tránsito)"}
+- routeros: {node: isp1, cmd: '/routing route print count-only where bgp.as-path~"^65000,65102"', expect: "0", desc: "isp1 no recibe por r1 las rutas de isp2"}
+- ping: {from: pc1, to: 198.51.100.10, expect: ok, desc: "pc1 llega al servidor de isp1"}

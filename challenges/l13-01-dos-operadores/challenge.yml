@@ -1,0 +1,16 @@
+id: l13-01-dos-operadores
+title: Dos operadores mejor que uno
+level: 13
+type: build
+difficulty: medium
+objectives:
+  - "r1 tiene sesión eBGP con isp1 (AS 65101) y con isp2 (AS 65102)"
+  - "Los dos operadores aprenden la red de la empresa (203.0.113.0/24) desde r1"
+  - "r1 NO hace de tránsito: no reanuncia a un operador lo que aprende del otro"
+  - "pc1 llega al servidor de isp1 (198.51.100.10)"
+hints:
+  - "Cada operador ya tiene su sesión hacia r1 (AS 65000). En RouterOS 7: `/routing bgp connection add ... local.role=ebgp remote.address=... remote.as=...`, y lo que se anuncia, con `output.network=<lista de direcciones>`."
+  - "Ojo: por defecto BGP anuncia a cada vecino **todas** sus mejores rutas, también las que aprendió del otro operador. Una empresa con dos salidas que hace eso se convierte en tránsito entre ellos (y puede llevarse su tráfico)."
+  - "Un filtro de salida que sólo deje pasar tu prefijo: `/routing filter rule add chain=salida rule=\"if (dst in 203.0.113.0/24 && dst-len == 24) { accept } else { reject }\"` y `output.filter-chain=salida` en las dos conexiones."
+flag_seed: l13-01-dos-operadores
+ram_mb: 1600

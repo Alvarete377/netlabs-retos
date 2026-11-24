@@ -1,0 +1,16 @@
+id: l13-02-preferencias
+title: Por la puerta barata
+level: 13
+type: build
+difficulty: medium
+objectives:
+  - "Todo el tráfico que sale de la empresa va por isp2, también hacia la red de isp1"
+  - "El tráfico que llega a la empresa también entra por isp2 (isp1 prefiere el camino a través de isp2)"
+  - "isp1 sigue siendo la salida de reserva: r1 mantiene las dos sesiones y no hace de tránsito"
+hints:
+  - "Para la salida, r1 elige entre rutas BGP: lo primero que compara es la **local-pref** (más alta gana), antes que la longitud del AS-PATH. Mira por qué ahora va por isp1: `/routing route print detail where dst-address=198.51.100.0/24`."
+  - "Para la entrada no mandas tú, mandan los demás: lo único que puedes hacer es que el camino por isp1 les parezca peor. El truco clásico es alargar tu AS-PATH hacia isp1 (*AS-path prepending*)."
+  - "Entrada: `/routing filter rule add chain=entrada-isp2 rule=\"set bgp-local-pref 200; accept\"` y `input.filter=entrada-isp2` en la conexión con isp2."
+  - "Salida: otra cadena para isp1 que haga `set bgp-path-prepend 3;` antes del `accept` de tu prefijo, y `output.filter-chain=` esa cadena en la conexión con isp1."
+flag_seed: l13-02-preferencias
+ram_mb: 1600

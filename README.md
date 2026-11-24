@@ -133,3 +133,9 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Dos clientes, las mismas IPs | `l12-03-dos-clientes` | Troubleshooting | Media |
 | El cable más largo del mundo | `l12-04-vpls` | Montar | Media |
 | El túnel mudo | `l12-05-tunel-mudo` | Troubleshooting | Difícil |
+### BGP en Internet
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| Dos operadores mejor que uno | `l13-01-dos-operadores` | Montar | Media |
+| Por la puerta barata | `l13-02-preferencias` | Montar | Media |
+| Somos el tránsito de nadie | `l13-03-somos-transito` | Troubleshooting | Difícil |

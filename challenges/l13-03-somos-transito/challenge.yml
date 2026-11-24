@@ -1,0 +1,18 @@
+id: l13-03-somos-transito
+title: Somos el tránsito de nadie
+level: 13
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "r1 tiene sesión con los dos operadores"
+  - "Los dos operadores reciben la red de la empresa, 203.0.113.0/24 (y nada más de r1)"
+  - "r1 no hace de tránsito entre operadores"
+  - "La salida principal es isp1: r1 llega por isp1 a la red de isp2 (192.0.2.0/24) mientras isp1 esté vivo"
+  - "pc1 llega al servidor de isp1"
+hints:
+  - "Empieza por las sesiones: `/routing bgp session print` y `/log print where topics~\"bgp\"`. Compara lo que r1 cree que es cada vecino con lo que dice el enunciado."
+  - "Con las sesiones arriba, mira qué anuncia r1 (`/routing route print where ...` en los operadores) y qué tiene en `mis-redes`. `output.network` sólo anuncia prefijos que existen **exactamente** como ruta activa."
+  - "Después, la política: ¿qué anuncia r1 que no sea suyo? ¿a qué operador da más local-pref?"
+  - "Cuatro fallos: la sesión con isp2 tiene `remote.as=65120` (es 65102); `mis-redes` tiene 203.0.112.0/23 en vez de 203.0.113.0/24; no hay filtro de salida (r1 es tránsito); y la local-pref 200 se aplica a isp2 en vez de a isp1."
+flag_seed: l13-03-somos-transito
+ram_mb: 1600
