@@ -1,0 +1,11 @@
+- ping: {from: pc1, to: 192.168.2.10, expect: ok, desc: "pc1 (central, MikroTik) llega a pc2 (filial, VyOS)"}
+- ping: {from: pc2, to: 192.168.1.10, expect: ok, desc: "pc2 (filial, VyOS) llega a pc1 (central, MikroTik)"}
+- routeros: {node: r1, cmd: "/routing bgp session print count-only where established", expect: "1", desc: "r1 tiene la sesión BGP con la filial establecida"}
+- routeros: {node: r1, cmd: "/ip route print count-only where dst-address=192.168.2.0/24 and bgp and active", expect: "1", desc: "la central aprende por BGP la LAN de la filial"}
+- vyos: {node: vy1, cmd: "show ip route", expect: 're:B>\*\s+192\.168\.1\.0/24', desc: "vy1 aprende por BGP la LAN de la central"}
+- routeros: {node: r1, cmd: "/ip route print count-only where bgp and dst-address!=192.168.2.0/24", expect: "0", desc: "la central no aprende de la filial redes que no existen"}
+- routeros: {node: r1, cmd: ":put [/routing bgp connection get [find name=filial] as]", expect: "65001", desc: "la central sigue siendo el AS 65001"}
+- routeros: {node: r1, cmd: ":put [/routing bgp connection get [find name=filial] remote.as]", expect: "65002", desc: "la central sigue esperando a la filial como AS 65002"}
+- vyos: {node: vy1, cmd: "show configuration commands", expect: "re:set protocols bgp system-as .?65002", desc: "la filial sigue siendo el AS 65002"}
+- routeros: {node: r1, cmd: "/ip route print count-only where static and !disabled", expect: "0", desc: "la central no usa rutas estáticas"}
+- vyos: {node: vy1, cmd: "show ip route", expect: 're:(?s)^(?!.*S>\*\s+192\.168\.1\.0/24)', desc: "vy1 no usa rutas estáticas hacia la central"}

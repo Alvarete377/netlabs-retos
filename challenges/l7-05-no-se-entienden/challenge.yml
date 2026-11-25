@@ -1,0 +1,17 @@
+id: l7-05-no-se-entienden
+title: No se entienden
+level: 7
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "La central (r1, MikroTik, AS 65001) y la filial (vy1, VyOS, AS 65002) intercambian sus LAN por eBGP"
+  - "pc1 y pc2 se ven en los dos sentidos"
+  - "Cada router aprende por BGP sólo la LAN real del otro (192.168.1.0/24 y 192.168.2.0/24)"
+  - "Sin rutas estáticas y sin cambiar los números de AS"
+hints:
+  - "Empieza por la sesión, desde los dos lados: `/routing bgp session print` y `/log print where topics~\"bgp\"` en r1; `show ip bgp summary` y `show ip bgp neighbors 172.16.12.1` en vy1. ¿Coincide lo que cada uno cree que es el otro?"
+  - "Con la sesión arriba, mira qué anuncia cada uno: `show ip bgp` en vy1 y `/routing route print where bgp` en r1. En VyOS (FRR), `network` sólo anuncia una red que exista en la tabla de rutas."
+  - "Si vy1 anuncia y r1 no instala nada, mira si la conexión de r1 tiene un `input.filter`."
+  - "Tres fallos: en vy1, `remote-as 65010` (es 65001) y `network 192.168.20.0/24` (es 192.168.2.0/24); en r1, la cadena `entrada` rechaza todo."
+flag_seed: l7-05-no-se-entienden
+ram_mb: 1150

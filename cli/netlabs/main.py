@@ -87,8 +87,12 @@ def cmd_list(args, store):
 def cmd_up(args, store):
     ch = find(args.id)
     if store.active == ch.id and not getattr(args, "force", False):
-        print("Ese reto ya está activo. Usa `lab reset` para empezar de cero.")
-        return 0
+        if all(runtime.is_running(n) for n in ch.nodes):
+            print("Ese reto ya está activo. Usa `lab reset` para empezar de cero.")
+            return 0
+        print("Ese reto figura como activo pero el lab no está en marcha "
+              "(¿se cortó el despliegue o reiniciaste WSL?). Lo vuelvo a levantar.")
+        args.yes = True
     if store.active and store.active != ch.id and not args.yes:
         answer = input(f"Hay otro lab activo ({store.active}). ¿Apagarlo? [s/N] ").strip().lower()
         if answer not in ("s", "si", "sí", "y", "yes"):
@@ -117,7 +121,8 @@ def cmd_status(args, store):
     print(f"Lab activo: {ch.id}")
     labels = {"healthy": "listo", "starting": "arrancando", "none": "en marcha", "missing": "no existe"}
     for node, kind in ch.nodes.items():
-        print(f"  {node:10} {kind:14} {labels.get(runtime.health(node), runtime.health(node))}")
+        state = runtime.health(node)
+        print(f"  {node:10} {kind:14} {labels.get(state, state)}")
     return 0
 
 
@@ -287,4 +292,9 @@ def run(argv: list[str], store: Store) -> int:
 
 
 def main(argv: list[str] | None = None) -> None:
-    sys.exit(run(sys.argv[1:] if argv is None else argv, Store(STORE_PATH)))
+    try:
+        store = Store(STORE_PATH)
+    except OSError as e:
+        print(f"error: no puedo leer ni recuperar {STORE_PATH} (state.json): {e}", file=sys.stderr)
+        sys.exit(1)
+    sys.exit(run(sys.argv[1:] if argv is None else argv, store))

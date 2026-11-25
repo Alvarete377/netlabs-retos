@@ -14,7 +14,7 @@ echo "[1/7] KVM"
 
 echo "[2/7] systemd"
 if grep -qi microsoft /proc/version && [ "$(ps -p 1 -o comm=)" != "systemd" ]; then
-  [ -f /etc/wsl.conf ] && cp /etc/wsl.conf /etc/wsl.conf.bak
+  [ -f /etc/wsl.conf ] && [ ! -f /etc/wsl.conf.bak ] && cp /etc/wsl.conf /etc/wsl.conf.bak
   if ! grep -Eq '^[[:space:]]*systemd[[:space:]]*=[[:space:]]*true' /etc/wsl.conf 2>/dev/null; then
     sed -i '/^[[:space:]]*systemd[[:space:]]*=/d' /etc/wsl.conf 2>/dev/null || true
     if grep -q '^\[boot\]' /etc/wsl.conf 2>/dev/null; then

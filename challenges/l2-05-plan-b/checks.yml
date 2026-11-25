@@ -1,0 +1,8 @@
+- ping: {from: pc1, to: 192.168.99.10, expect: ok}
+- ping: {from: srv, to: 192.168.1.10, expect: ok}
+- routeros: {node: r1, cmd: '/ip route print count-only where static and dst-address=0.0.0.0/0 and gateway=172.16.12.2 and distance=1 and check-gateway=ping and !disabled', expect: "1", desc: "r1 conserva la salida por la fibra (distance 1) y comprueba su gateway con ping"}
+- routeros: {node: r1, cmd: '/ip route print count-only where static and dst-address=0.0.0.0/0 and gateway=172.16.13.2 and distance>1 and !disabled', expect: "1", desc: "r1 tiene una ruta por defecto de respaldo por el 4G con más distancia que la fibra"}
+- routeros: {node: r1, cmd: '/ip route print count-only where static and dst-address=0.0.0.0/0 and gateway=172.16.13.2 and distance<=1', expect: "0", desc: "el 4G no compite de igual a igual con la fibra"}
+- routeros: {node: r1, cmd: '/ip route print count-only where active and dst-address=0.0.0.0/0 and gateway=172.16.13.2', expect: "1", desc: "con la fibra caída, r1 sale ahora por el 4G"}
+- routeros: {node: r2, cmd: '/interface print count-only where name="ether2" and disabled', expect: "1", desc: "la fibra sigue caída (es del operador: no la arregles tú)"}
+- routeros: {node: r1, cmd: "/ip firewall nat print count-only", expect: "0", desc: "r1 no usa NAT"}

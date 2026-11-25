@@ -45,7 +45,7 @@ done
 curl -fsSL -o "$WORK/chr.zip" "https://download.mikrotik.com/routeros/$CHR_VERSION/chr-$CHR_VERSION.vmdk.zip"
 unzip -q -o "$WORK/chr.zip" -d "$DIR"
 (cd "$DIR" && make docker-image)
-BUILT="$($DOCKER images --format '{{.Repository}}:{{.Tag}}' | grep -i routeros | grep -F "$CHR_VERSION" | head -1)"
+BUILT="$($DOCKER images --format '{{.Repository}}:{{.Tag}}' | grep -i routeros | grep -E ":${CHR_VERSION//./\.}$" | head -1)"
 [ -n "$BUILT" ] || { echo "ERROR: vrnetlab no generó la imagen"; exit 1; }
 $DOCKER tag "$BUILT" "netlabs/chr:$CHR_VERSION"
 echo "OK: $BUILT -> netlabs/chr:$CHR_VERSION"

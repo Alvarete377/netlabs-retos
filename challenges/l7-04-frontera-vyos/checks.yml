@@ -1,0 +1,8 @@
+- ping: {from: pc1, to: 198.51.100.10, expect: ok, desc: "la oficina sale a Internet"}
+- ping: {from: web, to: 198.51.100.10, expect: ok, desc: "la DMZ sale a Internet (actualizaciones)"}
+- http: {from: srv, url: "http://100.64.0.2/", contains: "web de la empresa", desc: "desde Internet se abre la web en la IP pública de vy1"}
+- shell: {node: srv, cmd: "nc -w 3 100.64.0.2 2222 </dev/null | head -1 | grep -c web-dmz", expect: "1", desc: "el SSH de la web responde desde Internet en el puerto 2222"}
+- shell: {node: srv, cmd: "nc -w 3 100.64.0.2 22 </dev/null | head -1 | grep -c web-dmz", expect: "0", desc: "el puerto 22 público no lleva al SSH de la web (es el del propio vy1)"}
+- http: {from: pc1, url: "http://192.168.50.10/", contains: "web de la empresa", desc: "la oficina abre la web por su IP interna"}
+- vyos: {node: vy1, cmd: "show configuration commands", expect: 're:set nat source rule \d+ outbound-interface name .?eth1', desc: "vy1 traduce en la salida por la WAN (eth1)"}
+- routeros: {node: isp, cmd: "/ip route print count-only where static", expect: "0", desc: "el operador no tiene rutas hacia tus redes privadas (hace falta NAT)"}

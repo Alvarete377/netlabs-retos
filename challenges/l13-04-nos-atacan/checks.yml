@@ -1,0 +1,9 @@
+- routeros: {node: isp1, cmd: '/ip route print count-only where dst-address=203.0.113.130/32 and blackhole', expect: "1", desc: "isp1 tira en su red el tráfico hacia la web (blackhole remoto)"}
+- ping: {from: srv, to: 203.0.113.130, expect: fail, desc: "el ataque ya no llega a la web"}
+- ping: {from: srv, to: 203.0.113.10, expect: ok, desc: "el resto de la empresa sigue accesible desde Internet"}
+- routeros: {node: isp2, cmd: '/routing route print count-only where dst-address in 203.0.113.0/24 and dst-address!=203.0.113.0/24 and bgp.as-path~"^65000"', expect: "0", desc: "isp2 no recibe de r1 más que la /24"}
+- routeros: {node: isp1, cmd: '/routing route print count-only where dst-address=203.0.113.0/24 and bgp.as-path~"^65000"', expect: "re:^[1-9]", desc: "isp1 sigue recibiendo la red de la empresa"}
+- routeros: {node: isp1, cmd: '/routing filter rule print count-only where chain=desde-cliente', expect: "3", desc: "las condiciones de isp1 no se han tocado"}
+- routeros: {node: r1, cmd: '/routing bgp session print count-only where established', expect: "2", desc: "r1 mantiene las dos sesiones"}
+- routeros: {node: isp2, cmd: '/routing route print count-only where bgp.as-path~"^65000,65101"', expect: "0", desc: "isp2 no recibe por r1 las rutas de isp1 (r1 no es tránsito)"}
+- routeros: {node: isp1, cmd: '/routing route print count-only where bgp.as-path~"^65000,65102"', expect: "0", desc: "isp1 no recibe por r1 las rutas de isp2"}

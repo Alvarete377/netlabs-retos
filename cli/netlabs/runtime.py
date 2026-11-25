@@ -101,7 +101,10 @@ def destroy(cid: str | None = None) -> None:
     """
     try:
         _run(["sudo", "-n", "containerlab", "destroy", "--name", LAB_NAME, "--cleanup"])
-    except LabError:
+    except LabError as e:
+        if "password" in str(e).lower():
+            raise LabError("sudo pide contraseña para containerlab: vuelve a ejecutar runner/install.sh "
+                           "(instala la regla de sudoers de NetLabs).") from None
         # Sin lab desplegado containerlab falla; limpiamos a mano cualquier resto.
         ids = _run(["docker", "ps", "-aq", "--filter", f"label=containerlab={LAB_NAME}"]).split()
         if ids:

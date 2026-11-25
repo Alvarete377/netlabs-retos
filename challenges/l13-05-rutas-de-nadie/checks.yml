@@ -1,0 +1,10 @@
+- ping: {from: pc1, to: 198.51.100.10, expect: ok, desc: "pc1 llega al servidor de isp1"}
+- ping: {from: srv, to: 203.0.113.10, expect: ok, desc: "desde Internet se llega a pc1"}
+- routeros: {node: r1, cmd: '/ip route print count-only where bgp and active and dst-address in 203.0.113.0/24', expect: "0", desc: "r1 no usa rutas de fuera para su propia red"}
+- routeros: {node: r1, cmd: '/ip route print count-only where bgp and active and dst-address in 10.0.0.0/8', expect: "0", desc: "r1 no usa rutas a redes privadas (bogons)"}
+- routeros: {node: r1, cmd: '/ip route print count-only where bgp and active and dst-address=198.51.100.0/25', expect: "0", desc: "r1 no usa el más específico falso de la red de isp1"}
+- routeros: {node: r1, cmd: '/ip route print count-only where bgp and active and dst-address=198.51.100.0/24 and gateway=100.64.1.1', expect: "1", desc: "r1 sigue aprendiendo de isp1 su red (directa)"}
+- routeros: {node: r1, cmd: '/ip route print count-only where bgp and active and dst-address=192.0.2.0/24 and gateway=100.64.2.1', expect: "1", desc: "r1 sigue aprendiendo de isp2 su red (directa: no vale rechazar todo lo de isp2)"}
+- routeros: {node: r1, cmd: '/routing bgp session print count-only where established', expect: "2", desc: "r1 mantiene las dos sesiones"}
+- routeros: {node: isp2, cmd: '/ip firewall address-list print count-only where list=isp2-cliente', expect: "4", desc: "isp2 sigue igual (es del operador: se filtra en tu lado)"}
+- routeros: {node: r1, cmd: '/ip route print count-only where static and !blackhole and dst-address in 203.0.113.0/24', expect: "0", desc: "sin parches con rutas estáticas en r1"}

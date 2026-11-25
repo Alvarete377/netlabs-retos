@@ -1,0 +1,17 @@
+id: l13-04-nos-atacan
+title: Nos atacan
+level: 13
+type: build
+difficulty: medium
+objectives:
+  - "La web (203.0.113.130) sufre un ataque de denegación de servicio que satura la línea de isp1. Pide a isp1 que tire en su red todo el tráfico hacia esa IP (blackhole remoto, RTBH)"
+  - "El resto de la empresa sigue accesible: el servidor de isp1 llega a pc1"
+  - "Sólo isp1 recibe la /32; a isp2 se le sigue anunciando únicamente 203.0.113.0/24"
+  - "Sin tocar los routers de los operadores"
+hints:
+  - "Lee las condiciones de isp1 en el enunciado: qué *community* hay que poner y a qué prefijos la acepta."
+  - "Para que r1 anuncie la /32 tiene que existir como ruta activa: una ruta `blackhole` en r1 vale (la web va a quedar aislada igualmente: es el precio de RTBH). Añádela también a `mis-redes`."
+  - "El filtro de salida actual sólo deja pasar la /24. Haz una cadena propia para isp1 que además deje pasar la /32 poniéndole la community: `set bgp-communities 65101:666; accept`."
+  - "`/routing filter rule add chain=salida-isp1 rule=\"if (dst == 203.0.113.130/32) { set bgp-communities 65101:666; accept }\"` (más otra regla para la /24 y un `reject` final) y `output.filter-chain=salida-isp1` en la conexión con isp1."
+flag_seed: l13-04-nos-atacan
+ram_mb: 1700

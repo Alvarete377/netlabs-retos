@@ -1,0 +1,16 @@
+id: l13-05-rutas-de-nadie
+title: Rutas de nadie
+level: 13
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "Desde que isp2 hizo una migración, pc1 no llega al servidor de isp1 y desde Internet no se ve a pc1. Arréglalo en r1: no aceptes de los operadores rutas que no pueden ser buenas"
+  - "r1 sigue aprendiendo las redes legítimas de los dos operadores (198.51.100.0/24 y 192.0.2.0/24)"
+  - "Las dos sesiones siguen arriba y no se toca la configuración de los operadores"
+hints:
+  - "Compara `/ip route print where bgp` en r1 con lo que cada operador debería anunciar. ¿Hay rutas que no son suyas?"
+  - "Recuerda el orden: el router elige la ruta de **prefijo más largo**, aunque venga de BGP y la otra sea una red conectada. Una /25 de tu propia /24 aprendida de fuera gana a tu LAN."
+  - "La política de entrada sensata para un cliente con dos operadores: rechazar tu propio prefijo, las redes privadas (bogons) y todo lo más específico que /24, y aceptar el resto."
+  - "Una cadena `entrada` con cuatro reglas (`if (dst in 203.0.113.0/24) { reject }`, `if (dst in 10.0.0.0/8 || dst in 172.16.0.0/12 || dst in 192.168.0.0/16) { reject }`, `if (dst-len > 24) { reject }`, `accept`) y `input.filter=entrada` en las dos conexiones."
+flag_seed: l13-05-rutas-de-nadie
+ram_mb: 1600

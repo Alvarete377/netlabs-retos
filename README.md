@@ -50,6 +50,7 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Dos sedes | `l2-02-dos-sedes` | Montar | Fácil |
 | Todo hacia el núcleo | `l2-03-ruta-por-defecto` | Montar | Fácil |
 | No hay vuelta | `l2-04-no-hay-vuelta` | Troubleshooting | Media |
+| Plan B | `l2-05-plan-b` | Troubleshooting | Media |
 ### Enrutamiento dinámico
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|
@@ -93,6 +94,8 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Hola, VyOS | `l7-01-hola-vyos` | Montar | Fácil |
 | OSPF entre fabricantes | `l7-02-ospf-entre-fabricantes` | Montar | Media |
 | IPsec entre fabricantes | `l7-03-ipsec-entre-fabricantes` | Montar | Difícil |
+| Frontera VyOS | `l7-04-frontera-vyos` | Montar | Media |
+| No se entienden | `l7-05-no-se-entienden` | Troubleshooting | Media |
 ### Diagnóstico
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|
@@ -100,6 +103,7 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | ¿Quién escucha? | `l8-02-quien-escucha` | Captura | Fácil |
 | Contraseñas en claro | `l8-03-contrasenas-en-claro` | Captura | Media |
 | El MTU traicionero | `l8-04-mtu-traicionero` | Troubleshooting | Media |
+| El impostor | `l8-05-el-impostor` | Troubleshooting | Media |
 ### TLS y certificados
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|
@@ -139,6 +143,8 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Dos operadores mejor que uno | `l13-01-dos-operadores` | Montar | Media |
 | Por la puerta barata | `l13-02-preferencias` | Montar | Media |
 | Somos el tránsito de nadie | `l13-03-somos-transito` | Troubleshooting | Difícil |
+| Nos atacan | `l13-04-nos-atacan` | Montar | Media |
+| Rutas de nadie | `l13-05-rutas-de-nadie` | Troubleshooting | Media |
 ### Monitorización
 | Reto | id | Tipo | Dificultad |
 |---|---|---|---|

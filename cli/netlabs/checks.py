@@ -81,6 +81,9 @@ def parse_checks(raw) -> list[Check]:
                 re.compile(str(params["expect"])[3:])
             except re.error as e:
                 raise CheckError(f"check #{i} ({kind}): regex inválida: {e}")
+        if kind == "answer" and not re.fullmatch(r"[0-9a-f]{64}", str(params["answer"])):
+            raise CheckError(f"check #{i} (answer): answer debe ser el SHA-256 en hexadecimal de la "
+                             "respuesta normalizada (usa hash_answer), no la respuesta en claro")
         desc = params.pop("desc", None) or _default_desc(kind, params)
         checks.append(Check(kind, params, desc))
     return checks

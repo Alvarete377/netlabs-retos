@@ -4,5 +4,7 @@
 - ping: {from: pc3, to: 10.0.0.2, expect: fail}
 - ping: {from: pc1, to: 10.0.0.3, expect: fail}
 - ping: {from: pc2, to: 10.0.0.4, expect: fail}
+- ping: {from: pc4, to: 10.0.0.1, expect: fail}
+- ping: {from: pc2, to: 10.0.0.3, expect: fail}
 - routeros: {node: sw1, cmd: "/interface bridge print count-only where vlan-filtering=yes", expect: "1", desc: "sw1 tiene el filtrado de VLANs activado en el bridge"}
 - routeros: {node: sw2, cmd: "/interface bridge print count-only where vlan-filtering=yes", expect: "1", desc: "sw2 tiene el filtrado de VLANs activado en el bridge"}

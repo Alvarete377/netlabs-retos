@@ -41,7 +41,7 @@ def _read_yaml(p: Path):
     except FileNotFoundError:
         raise ChallengeError(f"{p.parent.name}: falta {p.name}")
     except yaml.YAMLError as e:
-        raise ChallengeError(f"{p.parent.name}/{p.name}: YAML inválido: {e}")
+        raise ChallengeError(f"{p.parent.name}/{p.name}: YAML inválido: {e}") from None
 
 
 def topology_nodes(topo: dict) -> dict[str, str]:
@@ -53,6 +53,8 @@ def topology_nodes(topo: dict) -> dict[str, str]:
 def load_challenge(path: Path) -> Challenge:
     name = path.name
     meta = _read_yaml(path / "challenge.yml") or {}
+    if not isinstance(meta, dict):
+        raise ChallengeError(f"{name}: challenge.yml debe ser un mapa de campos (id, title, level...)")
     missing = [k for k in REQUIRED if k not in meta]
     if missing:
         raise ChallengeError(f"{name}: faltan campos {missing}")
@@ -62,6 +64,16 @@ def load_challenge(path: Path) -> Challenge:
         raise ChallengeError(f"{name}: type debe ser uno de {sorted(TYPES)}")
     if meta["difficulty"] not in DIFFICULTIES:
         raise ChallengeError(f"{name}: difficulty debe ser uno de {sorted(DIFFICULTIES)}")
+    try:
+        float(meta["level"])
+    except (TypeError, ValueError):
+        raise ChallengeError(f"{name}: level debe ser un número (p. ej. 3 o 101)") from None
+    try:
+        ram_mb = int(meta["ram_mb"])
+    except (TypeError, ValueError):
+        raise ChallengeError(f"{name}: ram_mb debe ser un número entero de MB") from None
+    if ram_mb <= 0:
+        raise ChallengeError(f"{name}: ram_mb debe ser mayor que 0")
 
     for field in ("objectives", "hints"):
         value = meta.get(field)
@@ -79,7 +91,7 @@ def load_challenge(path: Path) -> Challenge:
     try:
         checks = parse_checks(_read_yaml(path / "checks.yml") or [])
     except CheckError as e:
-        raise ChallengeError(f"{name}: {e}")
+        raise ChallengeError(f"{name}: {e}") from None
     if not checks:
         raise ChallengeError(f"{name}: checks.yml no tiene comprobaciones")
     for c in checks:
@@ -91,7 +103,7 @@ def load_challenge(path: Path) -> Challenge:
         id=meta["id"], title=meta["title"], level=str(meta["level"]), type=meta["type"],
         difficulty=meta["difficulty"], objectives=list(meta["objectives"]),
         hints=list(meta.get("hints") or []), flag_seed=str(meta["flag_seed"]),
-        ram_mb=int(meta["ram_mb"]), path=path, checks=checks, nodes=nodes,
+        ram_mb=ram_mb, path=path, checks=checks, nodes=nodes,
     )
 
 

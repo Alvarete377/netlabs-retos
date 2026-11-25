@@ -1,0 +1,8 @@
+- answer: {id: equipo, question: "¿Qué equipo tenía la IP de pc1 (escribe su nombre en el lab, p. ej. pc2)?", answer: "499a30ecdcccbb1941327c159903ba16e9fa10d8d414789d59c8713f07fa93af"}
+- answer: {id: puerto, question: "¿A qué puerto de r1 está conectado ese equipo (p. ej. ether2)?", answer: "4d15f673ff67720ae5531325b12a232f98d165311ca13cbd82c9d4944db99ba7"}
+- shell: {node: pc1, cmd: "ping -q -c 15 -i 0.3 -W 1 -I eth1 192.168.20.10 | grep -c ' 0% packet loss'", expect: "1", desc: "pc1 llega al servidor sin perder ni un paquete (15 pings)"}
+- shell: {node: pc3, cmd: "ip -4 -br addr show dev eth1 | awk '{print $3}'", expect: "192.168.1.30/24", desc: "pc3 tiene su IP del inventario (192.168.1.30) y sólo esa"}
+- ping: {from: pc3, to: 192.168.20.10, expect: ok, desc: "pc3 también llega al servidor (sigue conectado)"}
+- ping: {from: pc2, to: 192.168.20.10, expect: ok}
+- routeros: {node: r1, cmd: "/ip arp print count-only where !dynamic", expect: "0", desc: "r1 no tiene entradas ARP estáticas (se arregla en el origen)"}
+- routeros: {node: r1, cmd: "/interface print count-only where disabled", expect: "0", desc: "ningún puerto de r1 está desactivado"}

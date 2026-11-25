@@ -1,0 +1,8 @@
+set system host-name vy1
+set interfaces ethernet eth1 address 100.64.0.2/30
+set interfaces ethernet eth1 description 'WAN (operador)'
+set interfaces ethernet eth2 address 192.168.1.1/24
+set interfaces ethernet eth2 description 'LAN oficina'
+set interfaces ethernet eth3 address 192.168.50.1/24
+set interfaces ethernet eth3 description 'DMZ (web)'
+set protocols static route 0.0.0.0/0 next-hop 100.64.0.1

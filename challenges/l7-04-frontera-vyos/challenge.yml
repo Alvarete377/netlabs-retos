@@ -1,0 +1,17 @@
+id: l7-04-frontera-vyos
+title: Frontera VyOS
+level: 7
+type: build
+difficulty: medium
+objectives:
+  - "La oficina (192.168.1.0/24) y la DMZ (192.168.50.0/24) salen a Internet con la IP pública de vy1 (100.64.0.2)"
+  - "La web de la DMZ (192.168.50.10, puerto 80) se publica en el puerto 80 de la IP pública"
+  - "El SSH de la web se publica en el puerto 2222 de la IP pública (no en el 22)"
+  - "Sin tocar el router del operador: no tiene rutas hacia tus redes privadas"
+hints:
+  - "Dos piezas: NAT de origen (que la oficina y la DMZ salgan con la IP de vy1) y NAT de destino (publicar servicios). En VyOS todo va bajo `configure` y se aplica con `commit`."
+  - "NAT de salida: `set nat source rule 100 outbound-interface name eth1`, `... source address 192.168.0.0/16`, `... translation address masquerade`."
+  - "Publicar la web: `set nat destination rule 10 inbound-interface name eth1`, `protocol tcp`, `destination port 80`, `translation address 192.168.50.10`. Para el SSH, otra regla con `destination port 2222` y además `translation port 22`."
+  - "Comprueba con `show nat source rules`, `show nat destination rules`, `show nat source translations` y, desde srv, `curl http://100.64.0.2/` y `nc 100.64.0.2 2222`."
+flag_seed: l7-04-frontera-vyos
+ram_mb: 1100

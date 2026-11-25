@@ -1,0 +1,16 @@
+id: l8-05-el-impostor
+title: El impostor
+level: 8
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "Desde que llegó un equipo nuevo, pc1 pierde la conexión con el servidor a ratos. Encuentra al culpable y responde con `lab answer`: qué equipo es y a qué puerto de r1 está conectado"
+  - "Pon a cada equipo su IP del inventario (pc1 .10, pc2 .20, pc3 .30) para que pc1 llegue al servidor sin cortes"
+  - "Arréglalo en el origen: nada de entradas ARP estáticas en r1 ni de desconectar puertos"
+hints:
+  - "Ejecuta varias veces `/ip arp print` en r1 y fíjate en la MAC de 192.168.1.10. ¿Cambia?"
+  - "La tabla MAC del switch dice por qué puerto llega cada MAC: `/interface bridge host print`. Y en los PCs, `ip -br addr` y `ip -br link` enseñan su IP y su MAC."
+  - "Para ver al impostor en directo: `tcpdump -eni eth1 arp` en pc1 o `/tool sniffer quick interface=bridge-lan ip-protocol=` en r1: verás anuncios ARP de 192.168.1.10 con una MAC que no es la de pc1."
+  - "Es pc3 (ether4 de r1). En pc3: `ip addr flush dev eth1 && ip addr add 192.168.1.30/24 dev eth1 && ip route replace default via 192.168.1.1 dev eth1`. Si r1 tarda en enterarse, `/ip arp remove [find address=192.168.1.10]`."
+flag_seed: l8-05-el-impostor
+ram_mb: 600

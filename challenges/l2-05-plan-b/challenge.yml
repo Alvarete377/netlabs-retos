@@ -1,0 +1,18 @@
+id: l2-05-plan-b
+title: Plan B
+level: 2
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "pc1 (sucursal) llega al servidor (192.168.99.10) y el servidor responde, aunque la fibra siga caída"
+  - "La fibra (r2, 172.16.12.2) sigue siendo la salida principal: cuando vuelva, r1 debe preferirla sola"
+  - "El 4G (r3, 172.16.13.2) es sólo la salida de respaldo"
+  - "No toques el lado del operador: la fibra caída (ether2 de r2) no la arreglas tú"
+  - "Sin NAT en r1"
+hints:
+  - "Mira `/ip route print` en r1: ¿por qué la ruta por la fibra sigue con la flag A si al otro lado no hay nadie?"
+  - "Un enlace puede estar «arriba» (luz, cable) y el router de enfrente no responder. RouterOS sólo retira una ruta estática por sí solo cuando la interfaz cae; si no, hay que pedirle que compruebe el gateway: `check-gateway=ping`."
+  - "Una segunda ruta por defecto con más `distance` sólo se usa cuando la de menos distancia deja de estar activa: es una ruta flotante."
+  - "`/ip route set [find gateway=172.16.12.2] check-gateway=ping` y `/ip route add dst-address=0.0.0.0/0 gateway=172.16.13.2 distance=2`. Espera ~20 s a que r1 dé la fibra por muerta."
+flag_seed: l2-05-plan-b
+ram_mb: 1450
