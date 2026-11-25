@@ -1,0 +1,17 @@
+id: s7-01-disco-nuevo
+title: Disco nuevo
+level: 107
+type: build
+difficulty: easy
+objectives:
+  - "Al servidor le han añadido un disco de 1 GB (/dev/vdb). Crea en él una tabla de particiones GPT con una sola partición que ocupe todo el disco"
+  - "Formatéala en ext4 con la etiqueta DATOS"
+  - "Móntala en /datos de forma permanente: entrada en /etc/fstab por UUID (no por /dev/vdb1)"
+  - "Comprueba que el fstab es correcto: `umount /datos && mount -a` la vuelve a montar"
+hints:
+  - "Primero mira qué discos hay: `lsblk -f`. El disco del sistema es vda; el nuevo, vdb (vacío)."
+  - "Particionar: `parted /dev/vdb mklabel gpt` y `parted /dev/vdb mkpart datos ext4 1MiB 100%` (o `fdisk`/`gdisk` de forma interactiva)."
+  - "`mkfs.ext4 -L DATOS /dev/vdb1`, luego `blkid /dev/vdb1` te da el UUID para el fstab."
+  - "Línea del fstab: `UUID=<el-uuid> /datos ext4 defaults 0 2`. Después `mkdir /datos`, `systemctl daemon-reload` y `mount /datos`."
+flag_seed: s7-01-disco-nuevo
+ram_mb: 900

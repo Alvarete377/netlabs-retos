@@ -1,0 +1,6 @@
+- shell: {node: srv, cmd: "grep -A1 '^md0' /proc/mdstat | grep -o '\\[[0-9]/[0-9]\\] \\[[U_]*\\]'", expect: "[2/2] [UU]", desc: "md0 vuelve a tener sus dos discos funcionando ([2/2] [UU])"}
+- shell: {node: srv, cmd: "mdadm --detail /dev/md0 | awk -F' : ' '/ State :/{print $2}' | tr -d ' '", expect: "re:^(clean|active)$", desc: "el RAID está limpio: ni degradado ni reconstruyéndose"}
+- shell: {node: srv, cmd: "mdadm --detail /dev/md0 | grep -c 'active sync.*/dev/vdd'", expect: "1", desc: "el disco nuevo (vdd) forma parte del RAID"}
+- shell: {node: srv, cmd: "mdadm --detail /dev/md0 | grep -c '/dev/vdc'", expect: "0", desc: "el disco averiado (vdc) no se ha vuelto a meter"}
+- shell: {node: srv, cmd: "findmnt -n -o SOURCE /srv/contabilidad", expect: "/dev/md0", desc: "/srv/contabilidad sigue montado desde md0"}
+- shell: {node: srv, cmd: "md5sum < /srv/contabilidad/libro-mayor.dat | cut -d' ' -f1", expect: "c2b0a14cc72eee5636c473d02e98671d", desc: "los datos de contabilidad siguen intactos"}

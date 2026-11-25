@@ -1,0 +1,17 @@
+id: s7-05-datos-cifrados
+title: Datos cifrados
+level: 107
+type: build
+difficulty: medium
+objectives:
+  - "Las nóminas (/root/nominas.csv) no pueden estar en claro. Cifra entero el disco nuevo (/dev/vdb) con LUKS2"
+  - "Ábrelo como «secreto», formatéalo en ext4 y móntalo en /secreto"
+  - "Que se desbloquee y se monte solo al arrancar, con un fichero de clave que sólo pueda leer root (/etc/crypttab y /etc/fstab)"
+  - "Mueve las nóminas a /secreto: no debe quedar copia en /root"
+hints:
+  - "Crea la clave: `dd if=/dev/urandom of=/root/secreto.key bs=512 count=8` y `chmod 400 /root/secreto.key`."
+  - "`cryptsetup luksFormat --type luks2 /dev/vdb /root/secreto.key` cifra el disco (borra lo que tenga). `cryptsetup open --key-file /root/secreto.key /dev/vdb secreto` lo abre como /dev/mapper/secreto, y eso es lo que se formatea y se monta."
+  - "/etc/crypttab: `secreto UUID=<uuid de vdb> /root/secreto.key luks` (`blkid /dev/vdb` da el UUID del contenedor LUKS). /etc/fstab: `/dev/mapper/secreto /secreto ext4 defaults 0 2`."
+  - "Pruébalo como en el arranque: `umount /secreto; cryptsetup close secreto; systemctl daemon-reload; systemctl start systemd-cryptsetup@secreto secreto.mount`."
+flag_seed: s7-05-datos-cifrados
+ram_mb: 900

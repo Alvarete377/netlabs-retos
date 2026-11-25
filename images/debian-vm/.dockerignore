@@ -1,0 +1,3 @@
+cache/debian-12-*
+cache/*.part
+cache/bake.*

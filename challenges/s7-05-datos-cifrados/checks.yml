@@ -1,0 +1,7 @@
+- shell: {node: srv, cmd: "cryptsetup isLuks /dev/vdb && cryptsetup luksDump /dev/vdb | awk '/^Version:/{print $2}'", expect: "2", desc: "vdb está cifrado con LUKS2"}
+- shell: {node: srv, cmd: "findmnt -n -o SOURCE /secreto", expect: "/dev/mapper/secreto", desc: "/secreto está montado desde el volumen descifrado /dev/mapper/secreto"}
+- shell: {node: srv, cmd: "set -- $(awk '$1==\"secreto\"{print $2, $3}' /etc/crypttab); { [ \"$1\" = /dev/vdb ] || [ \"$1\" = \"UUID=$(blkid -s UUID -o value /dev/vdb)\" ]; } && [ -f \"$2\" ] && echo ok", expect: "ok", desc: "/etc/crypttab abre vdb como «secreto» con un fichero de clave"}
+- shell: {node: srv, cmd: "stat -c %a $(awk '$1==\"secreto\"{print $3}' /etc/crypttab)", expect: "re:^[46]00$", desc: "el fichero de clave sólo lo puede leer root"}
+- shell: {node: srv, cmd: "awk '$2==\"/secreto\"{print $1}' /etc/fstab", expect: "/dev/mapper/secreto", desc: "/etc/fstab monta /secreto"}
+- shell: {node: srv, cmd: "umount /secreto && cryptsetup close secreto && systemctl daemon-reload && systemctl start systemd-cryptsetup@secreto.service && systemctl start secreto.mount && findmnt -n -o SOURCE /secreto", expect: "/dev/mapper/secreto", desc: "en el arranque se desbloquea y se monta solo (simulado con systemd)"}
+- shell: {node: srv, cmd: "grep -c ';' /secreto/nominas.csv; ls /root/nominas.csv 2>/dev/null | wc -l", expect: "4\n0", desc: "las nóminas están en /secreto y ya no quedan en claro en /root"}

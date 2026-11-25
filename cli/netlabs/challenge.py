@@ -29,6 +29,8 @@ class Challenge:
     path: Path
     checks: list[Check]
     nodes: dict[str, str]
+    # Nodos que son máquinas virtuales (netlabs/debian-vm): sus órdenes van por SSH dentro de la VM.
+    vms: frozenset[str] = frozenset()
 
     @property
     def topology(self) -> Path:
@@ -48,6 +50,24 @@ def topology_nodes(topo: dict) -> dict[str, str]:
     t = topo.get("topology") or {}
     default_kind = (t.get("defaults") or {}).get("kind")
     return {name: (spec or {}).get("kind", default_kind) for name, spec in (t.get("nodes") or {}).items()}
+
+
+VM_IMAGE_PREFIX = "netlabs/debian-vm"
+
+
+def topology_vms(topo: dict) -> frozenset[str]:
+    """Nodos cuya imagen es una máquina virtual de NetLabs (por imagen del nodo, de su kind o por defecto)."""
+    t = topo.get("topology") or {}
+    kinds = t.get("kinds") or {}
+    defaults = t.get("defaults") or {}
+    out = set()
+    for name, spec in (t.get("nodes") or {}).items():
+        spec = spec or {}
+        kind = spec.get("kind", defaults.get("kind"))
+        img = spec.get("image") or (kinds.get(kind) or {}).get("image") or defaults.get("image") or ""
+        if str(img).startswith(VM_IMAGE_PREFIX):
+            out.add(name)
+    return frozenset(out)
 
 
 def load_challenge(path: Path) -> Challenge:
@@ -103,7 +123,7 @@ def load_challenge(path: Path) -> Challenge:
         id=meta["id"], title=meta["title"], level=str(meta["level"]), type=meta["type"],
         difficulty=meta["difficulty"], objectives=list(meta["objectives"]),
         hints=list(meta.get("hints") or []), flag_seed=str(meta["flag_seed"]),
-        ram_mb=ram_mb, path=path, checks=checks, nodes=nodes,
+        ram_mb=ram_mb, path=path, checks=checks, nodes=nodes, vms=topology_vms(topo),
     )
 
 

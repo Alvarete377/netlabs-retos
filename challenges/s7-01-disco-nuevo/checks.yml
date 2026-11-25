@@ -1,0 +1,8 @@
+- shell: {node: srv, cmd: "lsblk -n -o PTTYPE /dev/vdb | head -1", expect: "gpt", desc: "vdb tiene una tabla de particiones GPT"}
+- shell: {node: srv, cmd: "lsblk -n -r -o NAME /dev/vdb | grep -c '^vdb[0-9]'", expect: "1", desc: "vdb tiene una única partición"}
+- shell: {node: srv, cmd: "echo $(( $(blockdev --getsize64 /dev/vdb1) * 100 / $(blockdev --getsize64 /dev/vdb) ))", expect: "re:^(9[5-9]|100)$", desc: "la partición ocupa (casi) todo el disco"}
+- shell: {node: srv, cmd: "blkid -s TYPE -o value /dev/vdb1; blkid -s LABEL -o value /dev/vdb1", expect: "ext4\nDATOS", desc: "vdb1 está formateada en ext4 con la etiqueta DATOS"}
+- shell: {node: srv, cmd: "findmnt -n -o SOURCE /datos", expect: "/dev/vdb1", desc: "vdb1 está montada en /datos"}
+- shell: {node: srv, cmd: "awk '$2==\"/datos\"{print $1}' /etc/fstab", expect: "re:^UUID=[0-9a-f-]{36}$", desc: "el fstab monta /datos por UUID"}
+- shell: {node: srv, cmd: "[ \"$(awk '$2==\"/datos\"{print $1}' /etc/fstab)\" = \"UUID=$(blkid -s UUID -o value /dev/vdb1)\" ] && echo coincide", expect: "coincide", desc: "el UUID del fstab es el de vdb1"}
+- shell: {node: srv, cmd: "systemctl daemon-reload; umount /datos 2>/dev/null; mount -a 2>&1; findmnt -n -o SOURCE /datos", expect: "/dev/vdb1", desc: "con `mount -a` (como en el arranque) /datos se vuelve a montar"}

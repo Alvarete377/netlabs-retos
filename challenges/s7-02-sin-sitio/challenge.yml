@@ -1,0 +1,17 @@
+id: s7-02-sin-sitio
+title: Se queda sin sitio
+level: 107
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "La web de la tienda (/srv/web) está casi llena y necesita al menos 1,5 GB. Está en un volumen lógico LVM (datos/web) de 400 MB"
+  - "Ya han instalado un segundo disco (/dev/vdc). Úsalo para ampliar el volumen sin apagar el servidor ni desmontar /srv/web"
+  - "Que el sistema de ficheros crezca también (que `df` vea el espacio nuevo)"
+  - "Sin perder ni un byte de lo que hay en /srv/web"
+hints:
+  - "Haz el mapa primero: `lsblk`, `pvs`, `vgs`, `lvs` y `df -h /srv/web`. LVM son tres capas: volúmenes físicos (discos) → grupo de volúmenes (la bolsa de espacio) → volúmenes lógicos (lo que se formatea)."
+  - "El disco nuevo tiene que entrar en la bolsa: `pvcreate /dev/vdc` y `vgextend datos /dev/vdc`."
+  - "Después, ampliar el volumen lógico Y el sistema de ficheros: `lvextend -r` hace las dos cosas (sin `-r`, haría falta `resize2fs` después)."
+  - "`lvextend -r -l +100%FREE datos/web` usa todo el espacio libre del grupo. ext4 crece en caliente, montado."
+flag_seed: s7-02-sin-sitio
+ram_mb: 900

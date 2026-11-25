@@ -1,0 +1,7 @@
+# Herramientas para arrancar la máquina virtual Debian dentro de un contenedor (QEMU/KVM).
+# Base de netlabs/debian-vm (sólo lo necesario para ejecutar la VM).
+FROM debian:12-slim
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      qemu-system-x86 qemu-utils openssh-client iproute2 telnet procps ca-certificates \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*

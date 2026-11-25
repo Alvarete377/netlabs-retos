@@ -40,6 +40,7 @@ MODULES = {
     104: "Sistemas · Usuarios y permisos",
     105: "Sistemas · Servicios y procesos",
     106: "Sistemas · Scripting y automatización",
+    107: "Sistemas · Discos y arranque",
 }
 
 
@@ -119,7 +120,7 @@ def cmd_up(args, store):
 def cmd_status(args, store):
     ch = active(store)
     print(f"Lab activo: {ch.id}")
-    labels = {"healthy": "listo", "starting": "arrancando", "none": "en marcha", "missing": "no existe"}
+    labels = {"healthy": "listo", "starting": "arrancando", "unhealthy": "no responde", "none": "en marcha", "missing": "no existe"}
     for node, kind in ch.nodes.items():
         state = runtime.health(node)
         print(f"  {node:10} {kind:14} {labels.get(state, state)}")
@@ -134,6 +135,14 @@ def cmd_console(args, store):
     if ch.nodes[args.node] == runtime.ROS_KIND:
         print("Usuario: admin  Contraseña: admin   (salir: Ctrl+] y luego 'quit')")
         argv = ["docker", "exec", "-it", name, "telnet", "127.0.0.1", "5000"]
+    elif args.node in ch.vms:
+        if not getattr(args, "serie", False) and runtime.vm_ready(args.node):
+            print(f"Máquina virtual Debian (salir: exit). Para ver el arranque y GRUB: lab console {args.node} --serie")
+            argv = ["docker", "exec", "-it", name, runtime.VMEXEC]
+        else:
+            print("Consola serie de la máquina virtual: ves el arranque y GRUB; pulsa Intro si no sale nada "
+                  "(salir: Ctrl+] y luego 'quit').")
+            argv = ["docker", "exec", "-it", name, "telnet", "127.0.0.1", "5000"]
     elif ch.nodes[args.node] == runtime.VYOS_KIND:
         print("CLI de VyOS (configure / set ... / commit / exit; salir: exit)")
         argv = ["docker", "exec", "-it", name, "su", "-", "vyos"]
@@ -146,7 +155,7 @@ def cmd_console(args, store):
 def cmd_check(args, store):
     ch = active(store)
     runtime.wait_ready(ch, on_wait=lambda p: print(f"esperando a {', '.join(p)}..."))
-    results = run_all(ch.checks, runtime.LabExecutor(), store.answered(ch.id))
+    results = run_all(ch.checks, runtime.LabExecutor(ch.vms), store.answered(ch.id))
     for r in results:
         mark = ERR if r.internal_error else (OK if r.ok else KO)
         print(f" {mark} {r.check.desc}   ({r.detail})")
@@ -257,6 +266,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("status", help="estado del lab activo").set_defaults(fn=cmd_status)
     con = sub.add_parser("console", help="abre una terminal en un equipo")
     con.add_argument("node")
+    con.add_argument("--serie", action="store_true", help="consola serie de una máquina virtual (arranque, GRUB)")
     con.set_defaults(fn=cmd_console)
     sub.add_parser("check", help="comprueba si el reto está resuelto").set_defaults(fn=cmd_check)
     sub.add_parser("hint", help="muestra la siguiente pista").set_defaults(fn=cmd_hint)

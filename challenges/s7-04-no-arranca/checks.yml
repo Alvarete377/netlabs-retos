@@ -1,0 +1,6 @@
+- shell: {node: srv, cmd: "systemctl is-system-running", expect: "re:^(running|degraded)$", desc: "el servidor arranca con normalidad (no en modo de emergencia)"}
+- shell: {node: srv, cmd: "systemctl --failed --no-legend --plain | grep -c '\\.mount'", expect: "0", desc: "ningún montaje falla al arrancar"}
+- shell: {node: srv, cmd: "findmnt -n -o SOURCE /datos; findmnt -n -o SOURCE /copias", expect: "/dev/vdb1\n/dev/vdb2", desc: "/datos y /copias están montados desde vdb1 y vdb2"}
+- shell: {node: srv, cmd: "[ \"$(awk '$2==\"/datos\"{print $1}' /etc/fstab)\" = \"UUID=$(blkid -s UUID -o value /dev/vdb1)\" ] && echo coincide", expect: "coincide", desc: "el fstab monta /datos por el UUID actual del disco"}
+- shell: {node: srv, cmd: "awk '$2==\"/datos\" || $2==\"/copias\"{print $4}' /etc/fstab | grep -c nofail", expect: "0", desc: "arreglado de verdad: sin esconder el fallo con nofail"}
+- shell: {node: srv, cmd: "cat /datos/presupuesto.txt", expect: "presupuesto 2027", desc: "los datos siguen ahí"}

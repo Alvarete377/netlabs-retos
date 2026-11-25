@@ -1,0 +1,17 @@
+id: s7-03-raid-degradado
+title: RAID degradado
+level: 107
+type: troubleshoot
+difficulty: medium
+objectives:
+  - "Los datos de contabilidad (/srv/contabilidad) están en un RAID 1 por software (md0). Uno de sus discos ha muerto y el RAID funciona con uno solo"
+  - "El técnico ya ha conectado un disco nuevo. Averigua cuál es y reconstruye el RAID con él, sin desmontar /srv/contabilidad"
+  - "No vuelvas a meter el disco averiado"
+  - "Al terminar, el RAID debe estar limpio (dos discos sincronizados) y los datos intactos"
+hints:
+  - "`cat /proc/mdstat` y `mdadm --detail /dev/md0` te dicen el estado: `[2/1] [U_]` significa que de dos discos sólo funciona uno."
+  - "Para saber qué disco es cuál: `lsblk -f`, `mdadm --examine /dev/vdX` y mirar el principio de cada disco (`head -c 1024 /dev/vdX | strings`)."
+  - "Añadir un disco a un RAID degradado: `mdadm /dev/md0 --add /dev/<nuevo>`. La reconstrucción empieza sola; sigue su progreso en /proc/mdstat."
+  - "El disco averiado es vdc (lleva la marca DISCO AVERIADO); el nuevo es vdd: `mdadm /dev/md0 --add /dev/vdd`, y `mdadm --detail --scan > /etc/mdadm/mdadm.conf` para que conste."
+flag_seed: s7-03-raid-degradado
+ram_mb: 900

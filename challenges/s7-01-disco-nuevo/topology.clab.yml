@@ -1,0 +1,9 @@
+name: netlabs
+topology:
+  nodes:
+    srv:
+      kind: linux
+      image: netlabs/debian-vm:0.1
+      env:
+        EXTRA_DISKS: "1"
+        EXTRA_DISK_SIZE: 1G

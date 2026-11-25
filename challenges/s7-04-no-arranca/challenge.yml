@@ -1,0 +1,17 @@
+id: s7-04-no-arranca
+title: No arranca
+level: 107
+type: troubleshoot
+difficulty: hard
+objectives:
+  - "Tras «restaurar el disco de datos de una copia» y reiniciar, el servidor no arranca. Entra por la consola serie (`lab console srv --serie`) y averigua por qué"
+  - "Arréglalo para que arranque solo, con /datos y /copias montados, sin perder los datos"
+  - "Nada de esconder el problema con `nofail`: cada línea del fstab tiene que ser correcta"
+  - "La contraseña de root (sólo para la consola de emergencia) es netlabs"
+hints:
+  - "En la consola serie verás el arranque y un mensaje de modo de emergencia. Escribe la contraseña de root y estarás dentro, aunque el sistema no haya terminado de arrancar."
+  - "Pregunta a systemd qué ha fallado: `systemctl --failed` y `journalctl -xb -p err`. Cada montaje del fstab es una unidad (`datos.mount`, `copias.mount`)."
+  - "Compara el fstab con la realidad: `lsblk -f` o `blkid` te dan el UUID actual de cada partición. Y lee las opciones de montaje con lupa."
+  - "Dos fallos: el UUID de /datos es el del disco viejo (`blkid -s UUID -o value /dev/vdb1` da el bueno) y /copias tiene `defualts` en vez de `defaults`. Corrige /etc/fstab, `systemctl daemon-reload && mount -a` para probar, y `systemctl reboot`."
+flag_seed: s7-04-no-arranca
+ram_mb: 900

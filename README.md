@@ -193,3 +193,11 @@ Con una cuenta en la web, `lab login <token>` hace que `lab check` te dé tu fla
 | Las IPs más pesadas | `s6-03-las-ips-mas-pesadas` | Montar | Media |
 | Dos servidores, un playbook | `s6-04-ansible` | Montar | Media |
 | La copia que nunca se hizo | `s6-05-la-copia-que-nunca-se-hizo` | Troubleshooting | Difícil |
+### Sistemas · Discos y arranque
+| Reto | id | Tipo | Dificultad |
+|---|---|---|---|
+| Disco nuevo | `s7-01-disco-nuevo` | Montar | Fácil |
+| Se queda sin sitio | `s7-02-sin-sitio` | Troubleshooting | Media |
+| RAID degradado | `s7-03-raid-degradado` | Troubleshooting | Media |
+| No arranca | `s7-04-no-arranca` | Troubleshooting | Difícil |
+| Datos cifrados | `s7-05-datos-cifrados` | Montar | Media |

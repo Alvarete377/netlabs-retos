@@ -1,3 +1,4 @@
+import shlex
 import shutil
 import subprocess
 import time
@@ -60,6 +61,9 @@ def preflight(ch: Challenge) -> None:
                        "%UserProfile%\\.wslconfig y ejecuta `wsl --shutdown`.")
     missing = [img for img in required_images(ch)
                if subprocess.run(["docker", "image", "inspect", img], capture_output=True).returncode != 0]
+    if any(img.startswith("netlabs/debian-vm") for img in missing):
+        raise LabError("Este reto usa máquinas virtuales Debian y falta su imagen. Constrúyela una vez con: "
+                       "bash images/debian-vm/build.sh (descarga ~350 MB).")
     if any(img.startswith("netlabs/vyos") for img in missing):
         raise LabError("Este reto usa routers VyOS y falta su imagen. Constrúyela una vez con: "
                        "bash images/build-vyos.sh (descarga ~650 MB).")
@@ -135,14 +139,15 @@ def is_running(node: str) -> bool:
 def wait_ready(ch: Challenge, timeout: int = 420, poll: int = 5, on_wait=None) -> None:
     routers = [n for n, k in ch.nodes.items() if k == ROS_KIND]
     vyos = [n for n, k in ch.nodes.items() if k == VYOS_KIND]
-    linux = [n for n, k in ch.nodes.items() if k not in (ROS_KIND, VYOS_KIND)]
+    linux = [n for n, k in ch.nodes.items() if k not in (ROS_KIND, VYOS_KIND) and n not in ch.vms]
+    vms = sorted(ch.vms)
     deadline = time.monotonic() + timeout
     while True:
         states = {n: health(n) for n in routers}
-        if any(s == "missing" for s in states.values()) or not all(is_running(n) for n in routers + vyos):
+        if any(s == "missing" for s in states.values()) or not all(is_running(n) for n in routers + vyos + vms):
             raise LabError("El lab no está en marcha (¿reiniciaste WSL?). Usa `lab reset`.")
         pending = ([n for n in routers if states[n] != "healthy"] + [n for n in vyos if not vyos_ready(n)]
-                   + [n for n in linux if not systemd_ready(n)])
+                   + [n for n in linux if not systemd_ready(n)] + [n for n in vms if not vm_ready(n)])
         if not pending:
             for n in vyos:
                 # Docker deja en VyOS una ruta por defecto por eth0 (gestión) que gana a la del reto:
@@ -151,7 +156,9 @@ def wait_ready(ch: Challenge, timeout: int = 420, poll: int = 5, on_wait=None) -
                                capture_output=True)
             return
         if time.monotonic() > deadline:
-            raise LabError(f"Los routers no arrancaron en {timeout}s: {', '.join(pending)}")
+            stuck_vms = [n for n in pending if n in ch.vms]
+            extra = (f" Mira su arranque con `lab console {stuck_vms[0]} --serie`." if stuck_vms else "")
+            raise LabError(f"Estos equipos no terminaron de arrancar en {timeout}s: {', '.join(pending)}.{extra}")
         if on_wait:
             on_wait(pending)
         time.sleep(poll)
@@ -168,6 +175,19 @@ def systemd_ready(node: str) -> bool:
     except subprocess.TimeoutExpired:
         return False
     return r.stdout.strip() in ("nosystemd", "running", "degraded")
+
+
+VMEXEC = "vmexec"
+
+
+def vm_ready(node: str) -> bool:
+    """Una máquina virtual (netlabs/debian-vm) está lista cuando responde por SSH y systemd terminó de arrancar."""
+    try:
+        r = subprocess.run(["docker", "exec", container(node), VMEXEC, "systemctl", "is-system-running"],
+                           capture_output=True, text=True, timeout=20)
+    except subprocess.TimeoutExpired:
+        return False
+    return r.stdout.strip() in ("running", "degraded")
 
 
 def vyos_ready(node: str) -> bool:
@@ -196,30 +216,64 @@ def files_for(ch: Challenge, sub: str) -> list[tuple[str, Path]]:
     for f in sorted(d.iterdir()):
         if f.name == "README.md":
             continue
-        if f.suffix not in (".rsc", ".sh", ".vyos"):
-            raise LabError(f"{sub}/{f.name}: solo se admiten .rsc (MikroTik), .vyos (VyOS) y .sh (clientes)")
+        if f.suffix not in (".rsc", ".sh", ".vyos", ".serial"):
+            raise LabError(f"{sub}/{f.name}: solo se admiten .rsc (MikroTik), .vyos (VyOS), .sh (Linux) "
+                           "y .serial (consola serie de una VM)")
         if f.stem not in ch.nodes:
             raise LabError(f"{sub}/{f.name}: el nodo '{f.stem}' no existe en la topología")
+        if f.suffix == ".serial" and f.stem not in ch.vms:
+            raise LabError(f"{sub}/{f.name}: .serial sólo vale para máquinas virtuales (netlabs/debian-vm)")
         out.append((f.stem, f))
     return out
 
 
+def serial_script(content: str) -> str:
+    """Script de bash (para el contenedor de una VM) que teclea `content` en su consola serie.
+
+    Cada línea se envía seguida de Intro y un segundo de pausa. `# espera N` hace una pausa de N
+    segundos (p. ej. a que la VM arranque); el resto de líneas que empiezan por `#` se ignoran.
+    """
+    out = ["exec 3<>/dev/tcp/127.0.0.1/5000", "sleep 1"]
+    for line in content.splitlines():
+        s = line.strip()
+        if s.startswith("# espera"):
+            out.append(f"sleep {int(s.split()[2])}")
+        elif s.startswith("#"):
+            continue
+        else:
+            out.append(f"printf '%s\\r' {shlex.quote(line)} >&3")
+            out.append("sleep 1")
+    out.append("sleep 2")
+    return "\n".join(out) + "\n"
+
+
 def apply_dir(ch: Challenge, sub: str) -> None:
+    if sub == "configs":
+        # Las VMs arrancan todas como "debian": cada una toma el nombre de su nodo.
+        for node in sorted(ch.vms):
+            _run(["docker", "exec", container(node), VMEXEC, "hostnamectl", "set-hostname", node])
     for node, f in files_for(ch, sub):
         content = f.read_text(encoding="utf-8")
         if f.suffix == ".rsc":
             RouterOS(mgmt_ip(node)).import_script(f.name, content)
+        elif f.suffix == ".serial":
+            _run(["docker", "exec", "-i", container(node), "bash", "-s"], input=serial_script(content), timeout=1200)
         elif f.suffix == ".vyos":
             out = _run(["docker", "exec", "-i", container(node), "/bin/vbash", "-s"], input=vyos_script(content))
             if "Commit failed" in out or "Set failed" in out or "Invalid command" in out:
                 raise LabError(f"{sub}/{f.name}: VyOS rechazó la configuración:\n{out[-1500:]}")
         else:
-            _run(["docker", "exec", "-i", container(node), "sh", "-s"], input=content)
+            vm = [VMEXEC] if node in ch.vms else []
+            _run(["docker", "exec", "-i", container(node), *vm, "sh", "-s"], input=content)
 
 
 class LabExecutor:
+    def __init__(self, vms=frozenset()):
+        self.vms = frozenset(vms)
+
     def exec(self, node: str, argv: list[str]) -> tuple[int, str]:
-        r = subprocess.run(["docker", "exec", container(node), *argv], capture_output=True, text=True, timeout=30)
+        vm = [VMEXEC] if node in self.vms else []
+        r = subprocess.run(["docker", "exec", container(node), *vm, *argv], capture_output=True, text=True, timeout=30)
         return r.returncode, r.stdout + r.stderr
 
     def routeros(self, node: str, cmd: str) -> str:

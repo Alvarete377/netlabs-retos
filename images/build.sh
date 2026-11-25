@@ -31,6 +31,11 @@ $DOCKER save -o "$HERE/podman/imagenes.tar" docker.io/library/alpine:3.20 docker
 $DOCKER build -q -t netlabs/podman:0.1 "$HERE/podman"
 rm -f "$HERE/podman/imagenes.tar"
 
+# Debian como máquina virtual (módulo Discos y arranque): kernel, GRUB y discos propios. Descarga la
+# imagen cloud oficial de Debian (~350 MB) y la prepara una vez.
+echo "== netlabs/debian-vm:0.1"
+DOCKER="$DOCKER" bash "$HERE/debian-vm/build.sh"
+
 echo "== netlabs/chr:$CHR_VERSION"
 if $DOCKER image inspect "netlabs/chr:$CHR_VERSION" >/dev/null 2>&1; then
   echo "ya existe"; exit 0

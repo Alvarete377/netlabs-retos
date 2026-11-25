@@ -1,0 +1,6 @@
+- shell: {node: srv, cmd: "vgs --noheadings -o pv_count datos | tr -d ' '", expect: "2", desc: "el grupo de volúmenes datos usa los dos discos (vdb y vdc)"}
+- shell: {node: srv, cmd: "pvs --noheadings -o vg_name /dev/vdc | tr -d ' '", expect: "datos", desc: "vdc es un volumen físico del grupo datos"}
+- shell: {node: srv, cmd: "[ $(lvs --noheadings --units m --nosuffix -o lv_size datos/web | cut -d. -f1) -ge 1500 ] && echo ok", expect: "ok", desc: "el volumen lógico web mide al menos 1,5 GB"}
+- shell: {node: srv, cmd: "[ $(df -BM --output=size /srv/web | tail -1 | tr -dc 0-9) -ge 1400 ] && echo ok", expect: "ok", desc: "el sistema de ficheros de /srv/web también ha crecido (df lo ve)"}
+- shell: {node: srv, cmd: "findmnt -n -o SOURCE /srv/web", expect: "re:^/dev/mapper/datos-web$", desc: "/srv/web sigue montado desde datos/web"}
+- shell: {node: srv, cmd: "md5sum < /srv/web/contenido.bin | cut -d' ' -f1; cat /srv/web/LEEME.txt", expect: "a181658c783b06cf55eeb78c84c40554\nCatálogo de la tienda: NO BORRAR", desc: "los datos de la web siguen intactos (sin reformatear ni restaurar)"}
